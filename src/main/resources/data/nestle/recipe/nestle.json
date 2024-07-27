@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nestle",
+  "key": {
+    "#": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "id": "nestle:nestle",
+    "count": 4
+  }
+}

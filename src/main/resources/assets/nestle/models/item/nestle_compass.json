@@ -1,0 +1,57 @@
+{
+  "loader": "neoforge:item_layers",
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/compass_16",
+    "layer1": "nestle:item/nestle_icon"
+  },
+  "neoforge_data": {
+    "0": {
+      "color": "0xFFFFFFFF",
+      "block_light": 15,
+      "sky_light": 15,
+      "ambient_occlusion": false
+    },
+    "1": {
+      "color": "0xFFFFFFFF",
+      "block_light": 15,
+      "sky_light": 15,
+      "ambient_occlusion": false
+    }
+  },
+  "overrides": [
+    { "predicate": { "angle": 0.000000 }, "model": "nestle:item/nestle_compass" },
+    { "predicate": { "angle": 0.015625 }, "model": "nestle:item/compass_17" },
+    { "predicate": { "angle": 0.046875 }, "model": "nestle:item/compass_18" },
+    { "predicate": { "angle": 0.078125 }, "model": "nestle:item/compass_19" },
+    { "predicate": { "angle": 0.109375 }, "model": "nestle:item/compass_20" },
+    { "predicate": { "angle": 0.140625 }, "model": "nestle:item/compass_21" },
+    { "predicate": { "angle": 0.171875 }, "model": "nestle:item/compass_22" },
+    { "predicate": { "angle": 0.203125 }, "model": "nestle:item/compass_23" },
+    { "predicate": { "angle": 0.234375 }, "model": "nestle:item/compass_24" },
+    { "predicate": { "angle": 0.265625 }, "model": "nestle:item/compass_25" },
+    { "predicate": { "angle": 0.296875 }, "model": "nestle:item/compass_26" },
+    { "predicate": { "angle": 0.328125 }, "model": "nestle:item/compass_27" },
+    { "predicate": { "angle": 0.359375 }, "model": "nestle:item/compass_28" },
+    { "predicate": { "angle": 0.390625 }, "model": "nestle:item/compass_29" },
+    { "predicate": { "angle": 0.421875 }, "model": "nestle:item/compass_30" },
+    { "predicate": { "angle": 0.453125 }, "model": "nestle:item/compass_31" },
+    { "predicate": { "angle": 0.484375 }, "model": "nestle:item/compass_00" },
+    { "predicate": { "angle": 0.515625 }, "model": "nestle:item/compass_01" },
+    { "predicate": { "angle": 0.546875 }, "model": "nestle:item/compass_02" },
+    { "predicate": { "angle": 0.578125 }, "model": "nestle:item/compass_03" },
+    { "predicate": { "angle": 0.609375 }, "model": "nestle:item/compass_04" },
+    { "predicate": { "angle": 0.640625 }, "model": "nestle:item/compass_05" },
+    { "predicate": { "angle": 0.671875 }, "model": "nestle:item/compass_06" },
+    { "predicate": { "angle": 0.703125 }, "model": "nestle:item/compass_07" },
+    { "predicate": { "angle": 0.734375 }, "model": "nestle:item/compass_08" },
+    { "predicate": { "angle": 0.765625 }, "model": "nestle:item/compass_09" },
+    { "predicate": { "angle": 0.796875 }, "model": "nestle:item/compass_10" },
+    { "predicate": { "angle": 0.828125 }, "model": "nestle:item/compass_11" },
+    { "predicate": { "angle": 0.859375 }, "model": "nestle:item/compass_12" },
+    { "predicate": { "angle": 0.890625 }, "model": "nestle:item/compass_13" },
+    { "predicate": { "angle": 0.921875 }, "model": "nestle:item/compass_14" },
+    { "predicate": { "angle": 0.953125 }, "model": "nestle:item/compass_15" },
+    { "predicate": { "angle": 0.984375 }, "model": "nestle:item/nestle_compass" }
+  ]
+}

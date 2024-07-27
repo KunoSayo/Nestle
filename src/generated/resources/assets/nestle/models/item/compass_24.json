@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:item/generated",
+  "loader": "neoforge:item_layers",
+  "neoforge_data": {
+    "layers": {}
+  },
+  "render_types": {},
+  "textures": {
+    "layer0": "minecraft:item/compass_24",
+    "layer1": "nestle:item/nestle_icon"
+  }
+}
