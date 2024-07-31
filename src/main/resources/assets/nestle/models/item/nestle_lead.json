@@ -1,0 +1,22 @@
+{
+  "loader": "neoforge:item_layers",
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/lead",
+    "layer1": "nestle:item/nestle_icon"
+  },
+  "neoforge_data": {
+    "0": {
+      "color": "0xFFFFFFFF",
+      "block_light": 15,
+      "sky_light": 15,
+      "ambient_occlusion": false
+    },
+    "1": {
+      "color": "0xFFFFFFFF",
+      "block_light": 15,
+      "sky_light": 15,
+      "ambient_occlusion": false
+    }
+  }
+}

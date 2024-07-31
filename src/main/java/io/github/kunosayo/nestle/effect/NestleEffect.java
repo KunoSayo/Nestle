@@ -41,6 +41,7 @@ public class NestleEffect extends MobEffect {
                     double pushVel = Math.max(Math.sqrt(Math.min(speed, sizeSqr)) - 0.5, 0.0);
                     pLivingEntity.push(normal.x * pushVel, normal.y * pushVel, normal.z * pushVel);
 
+
                 });
 
         return true;

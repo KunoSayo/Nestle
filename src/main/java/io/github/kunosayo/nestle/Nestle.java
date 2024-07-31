@@ -2,10 +2,7 @@ package io.github.kunosayo.nestle;
 
 import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.entity.data.NestleData;
-import io.github.kunosayo.nestle.init.ModCreativeTab;
-import io.github.kunosayo.nestle.init.ModData;
-import io.github.kunosayo.nestle.init.ModEffects;
-import io.github.kunosayo.nestle.init.ModItems;
+import io.github.kunosayo.nestle.init.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -36,6 +33,7 @@ public class Nestle {
 
     public Nestle(IEventBus modEventBus, ModContainer modContainer) {
         ModItems.ITEMS.register(modEventBus);
+        ModEntities.ENTITIES.register(modEventBus);
 
         // Effects (and potions)
         ModEffects.MOB_EFFECTS.register(modEventBus);
@@ -106,6 +104,4 @@ public class Nestle {
             clientNearestEntityVec = entity == null ? null : entity.blockPosition();
         }
     }
-
-
 }

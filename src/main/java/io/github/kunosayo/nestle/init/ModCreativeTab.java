@@ -16,5 +16,6 @@ public class ModCreativeTab {
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.NESTLE.get());
                 output.accept(ModItems.NESTLE_COMPASS.get());
+                output.accept(ModItems.NESTLE_LEAD.get());
             }).build());
 }

@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class NestleData implements INBTSerializable<CompoundTag> {
-    public static final AttachmentType<NestleData> ATTACHMENT_TYPE = AttachmentType.serializable(NestleData::new).copyOnDeath().build();
+    public static final AttachmentType<NestleData> ATTACHMENT_TYPE = AttachmentType.serializable(NestleData::new)
+            .copyOnDeath()
+            .build();
 
     public final HashMap<UUID, NestleValue> values = new HashMap<>();
 
