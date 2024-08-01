@@ -12,5 +12,7 @@
   "item.minecraft.splash_potion.effect.nestle_potion": "喷溅型贴贴药水",
   "item.minecraft.splash_potion.effect.desire_nestle_potion": "喷溅型渴望贴贴药水",
   "item.minecraft.lingering_potion.effect.nestle_potion": "滞留型贴贴药水",
-  "item.minecraft.lingering_potion.effect.desire_nestle_potion": "滞留型渴望贴贴药水"
+  "item.minecraft.lingering_potion.effect.desire_nestle_potion": "滞留型渴望贴贴药水",
+  "effect.nestle.desire_nestle": "渴望贴贴",
+  "effect.nestle.nestle": "贴贴"
 }

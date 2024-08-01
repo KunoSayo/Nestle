@@ -26,9 +26,9 @@ import java.util.UUID;
 @EventBusSubscriber(modid = Nestle.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class GameListener {
 
+    public static final HashMap<UUID, Vec3> pendingVel = new HashMap<>();
     private static final HashSet<UUID> damaging = new HashSet<>();
     private static final Vec3 ALL_FIVE = new Vec3(5.0, 5.0, 5.0);
-    public static final HashMap<UUID, Vec3> pendingVel = new HashMap<>();
     private static boolean isRoot = true;
 
     @SubscribeEvent

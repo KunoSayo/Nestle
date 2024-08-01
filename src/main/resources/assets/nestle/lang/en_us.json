@@ -12,5 +12,7 @@
   "item.minecraft.splash_potion.effect.nestle_potion": "Splash Potion of Nestle",
   "item.minecraft.splash_potion.effect.desire_nestle_potion": "Splash Potion of Desire Nestle",
   "item.minecraft.lingering_potion.effect.nestle_potion": "Lingering Potion of Nestle",
-  "item.minecraft.lingering_potion.effect.desire_nestle_potion": "Lingering Potion of Desire Nestle"
+  "item.minecraft.lingering_potion.effect.desire_nestle_potion": "Lingering Potion of Desire Nestle",
+  "effect.nestle.desire_nestle": "Desire Nestle",
+  "effect.nestle.nestle": "Nestle"
 }
