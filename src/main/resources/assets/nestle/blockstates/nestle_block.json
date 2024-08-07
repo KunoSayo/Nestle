@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "inverted=false": {
+      "model": "nestle:block/nestle_block"
+    },
+    "inverted=true": {
+      "model": "nestle:block/desire_nestle_block"
+    }
+  }
+}

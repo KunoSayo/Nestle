@@ -3,20 +3,15 @@ package io.github.kunosayo.nestle;
 import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.github.kunosayo.nestle.init.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -38,6 +33,9 @@ public class Nestle {
         // Effects (and potions)
         ModEffects.MOB_EFFECTS.register(modEventBus);
         ModEffects.POTIONS.register(modEventBus);
+
+
+        ModBlocks.BLOCKS.register(modEventBus);
         ModCreativeTab.TABS.register(modEventBus);
         ModData.ATTACHMENT_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.register(this);
@@ -82,10 +80,13 @@ public class Nestle {
     @SubscribeEvent
     public void onServerPostTick(ServerTickEvent.Post event) {
         long now = System.currentTimeMillis();
+        if (lastCalcTime - now >= 5000) {
+            lastCalcTime = now;
+        }
         if (now - lastCalcTime >= 1000) {
             calcNestleValue(event.getServer());
             lastCalcTime += 1000;
-            if (lastCalcTime + 1000 < now) {
+            if (lastCalcTime + 250 < now) {
                 lastCalcTime = now;
             }
         }

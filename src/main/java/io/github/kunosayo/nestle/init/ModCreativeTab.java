@@ -14,6 +14,7 @@ public class ModCreativeTab {
             .title(Component.translatable("item_group." + Nestle.MOD_ID + ".name"))
             .icon(() -> ModItems.NESTLE.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
+                output.accept(ModItems.NESTLE_BLOCK_ITEM);
                 output.accept(ModItems.NESTLE.get());
                 output.accept(ModItems.NESTLE_COMPASS.get());
                 output.accept(ModItems.NESTLE_LEAD.get());
