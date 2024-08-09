@@ -49,7 +49,9 @@ public class Nestle {
         var builder = event.getBuilder();
 
         builder.addMix(Potions.THICK, ModItems.NESTLE.asItem(), ModEffects.NESTLE_POTION);
-        builder.addMix(ModEffects.NESTLE_POTION, Items.FERMENTED_SPIDER_EYE, ModEffects.DESIRE_NESTLE_POTION);
+        builder.addMix(ModEffects.NESTLE_POTION, Items.SLIME_BALL, ModEffects.DESIRE_NESTLE_POTION); // 粘液球
+        builder.addMix(ModEffects.NESTLE_POTION, Items.CACTUS, ModEffects.NESTLE_RESISTANCE_POTION); // 仙人掌
+        builder.addMix(ModEffects.NESTLE_RESISTANCE_POTION, Items.REDSTONE, ModEffects.LONG_NESTLE_RESISTANCE_POTION); // 红石
     }
 
     private void calcNestleValue(MinecraftServer server) {

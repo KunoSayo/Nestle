@@ -34,7 +34,8 @@ Nestle each other!
 贴贴实体可均匀分摊伤害
 被分摊的伤害可链条传导下去
 
-分摊要求：  
+分摊要求：
+
 1. 自身没有贴贴抗性且分摊伤害的实体没有贴贴抗性
 2. 相同类型实体一格以内或玩家贴贴值超过配置值且在贴贴范围内
 3. 不同类型实体，贴贴范围内且分摊实体拥有渴望贴贴或者贴贴属性并且没有贴贴抗性
@@ -49,9 +50,9 @@ Nestle each other!
 
 # Credits
 
-程序: Yys  
-图标：Kzi, yu_ze_fish  
-吉祥物：心愿  
+程序: Yys, CakeAL  
+美工：Kzi, yu_ze_fish  
+吉祥物 & UI：心愿  
 
 参加活动：https://www.teacon.cn/jiachen/  
 项目参考：https://github.com/teaconmc/FriendshipBracelet
