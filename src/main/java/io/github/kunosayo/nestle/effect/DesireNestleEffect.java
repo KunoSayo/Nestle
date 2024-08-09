@@ -1,6 +1,7 @@
 package io.github.kunosayo.nestle.effect;
 
 import io.github.kunosayo.nestle.config.NestleConfig;
+import io.github.kunosayo.nestle.util.NestleUtil;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +18,7 @@ public class DesireNestleEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
-        int radius = NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get() * (pAmplifier + 1);
+        double radius = (NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get() + 1.5) * (pAmplifier + 1);
         var level = pLivingEntity.level();
         var cond = TargetingConditions.forNonCombat()
                 .range(radius)
@@ -26,31 +27,11 @@ public class DesireNestleEffect extends MobEffect {
         var aabb = new AABB(pLivingEntity.position().subtract(rv), pLivingEntity.position().add(rv));
         List<LivingEntity> entities = level.getNearbyEntities(LivingEntity.class, cond, pLivingEntity, aabb);
 
-        // the nestle speed by default
-        // do not increase the speed for ... ?
-        int speed = 20;
+
 
         for (LivingEntity livingEntity : entities) {
-            // the target we nestle with
-            var toTargetVec = livingEntity.position().subtract(pLivingEntity.position());
-            double sizeSqr = toTargetVec.distanceToSqr(Vec3.ZERO);
-            var normal = toTargetVec.normalize();
-            double pushVel = Math.max(Math.sqrt(Math.min(speed, sizeSqr)) - 1.5, 0.0) * (pAmplifier * 0.0625 + 1);
-
-            var curVel = livingEntity.getKnownMovement();
-            var targetVel = new Vec3(-pushVel * normal.x, -pushVel * normal.y, -pushVel * normal.z);
-
-            var pendingVel = targetVel.subtract(curVel);
-            if (pendingVel.equals(Vec3.ZERO)) {
-                continue;
-            }
-            double curSpeed = pendingVel.distanceTo(Vec3.ZERO);
-            double fac = Math.min(curSpeed, speed) / speed;
-            var finalImpulse = pendingVel.multiply(fac, fac, fac);
-            livingEntity.push(finalImpulse);
-
+            NestleUtil.nestleEntityTo(livingEntity, pLivingEntity.position(), 4.5 * (pAmplifier * 0.0625 + 1), 1.5, 4.5 * (pAmplifier * 0.0625 + 1));
         }
-
 
         return true;
     }

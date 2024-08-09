@@ -1,39 +1,41 @@
 package io.github.kunosayo.nestle.entity.data;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.HashSet;
 import java.util.UUID;
 
-public class NestleLeadData implements INBTSerializable<CompoundTag> {
-    public static final AttachmentType<NestleLeadData> ATTACHMENT_TYPE = AttachmentType.serializable(NestleLeadData::new)
-            .copyOnDeath()
-            .build();
+public class NestleLeadData {
+    public static final AttachmentType<NestleLeadData> ATTACHMENT_TYPE = AttachmentType.builder(NestleLeadData::new).build();
 
-    public UUID target;
+    public HashSet<UUID> targets = new HashSet<>();
 
-    public NestleLeadData() {
+
+    public static void nestleTwo(Player a, Player b) {
+        var da = a.getData(ATTACHMENT_TYPE);
+        var db = b.getData(ATTACHMENT_TYPE);
+        da.targets.add(b.getUUID());
+        db.targets.add(a.getUUID());
     }
 
+    public static void removeTwo(Player a, Player b) {
+        var da = a.getData(ATTACHMENT_TYPE);
+        var db = b.getData(ATTACHMENT_TYPE);
+        da.targets.remove(b.getUUID());
+        db.targets.remove(a.getUUID());
 
-    @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        var tag = new CompoundTag();
-        if (target != null) {
-            tag.putUUID("target", target);
+        if (da.targets.isEmpty()) {
+            a.removeData(ATTACHMENT_TYPE);
         }
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        target = null;
-        if (nbt.contains("target")) {
-            target = nbt.getUUID("target");
+        if (db.targets.isEmpty()) {
+            b.removeData(ATTACHMENT_TYPE);
         }
     }
 
+    public static boolean isNestle(Player a, Player b) {
+        return a.hasData(ATTACHMENT_TYPE) && b.hasData(ATTACHMENT_TYPE)
+                && a.getData(ATTACHMENT_TYPE).targets.contains(b.getUUID())
+                && b.getData(ATTACHMENT_TYPE).targets.contains(a.getUUID());
+    }
 }

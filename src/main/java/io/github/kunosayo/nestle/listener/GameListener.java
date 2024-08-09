@@ -17,16 +17,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 @EventBusSubscriber(modid = Nestle.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class GameListener {
-
-    public static final HashMap<UUID, Vec3> pendingVel = new HashMap<>();
     private static final HashSet<UUID> damaging = new HashSet<>();
     private static final Vec3 ALL_FIVE = new Vec3(5.0, 5.0, 5.0);
     private static boolean isRoot = true;
@@ -107,38 +103,23 @@ public class GameListener {
         }
         if (ModItems.NESTLE_LEAD.is(event.getItemStack().getItemHolder())) {
             var entity = event.getTarget();
-            if (entity instanceof Player) {
-                NestleLeadData data;
-                if (player.hasData(NestleLeadData.ATTACHMENT_TYPE)) {
-                    data = player.getData(NestleLeadData.ATTACHMENT_TYPE);
-                    if (data.target == entity.getUUID()) {
-                        // Cancel nestle
-                        player.removeData(NestleLeadData.ATTACHMENT_TYPE);
-                        return;
-                    }
-                } else {
-                    data = player.getData(NestleLeadData.ATTACHMENT_TYPE);
+            if (entity instanceof Player target) {
+
+                if (NestleLeadData.isNestle(player, target)) {
+                    NestleLeadData.removeTwo(player, target);
+                    return;
                 }
+                NestleLeadData.nestleTwo(player, target);
 
                 // Set target and spawn entity.
                 NestleLeadEntity.inParamFrom = player.getUUID();
                 NestleLeadEntity.inParamTarget = entity.getUUID();
 
 
-                data.target = entity.getUUID();
                 NestleLeadEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
 
             }
         }
     }
 
-    @SubscribeEvent
-    public static void onTickEntity(EntityTickEvent.Pre event) {
-        if (event.getEntity() instanceof Player player) {
-            var vel = pendingVel.remove(player.getUUID());
-            if (vel != null) {
-                player.push(vel);
-            }
-        }
-    }
 }
