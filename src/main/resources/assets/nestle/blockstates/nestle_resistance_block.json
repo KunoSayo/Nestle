@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nestle:block/nestle_resistance_block"
+    }
+  }
+}

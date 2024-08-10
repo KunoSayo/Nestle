@@ -3,6 +3,7 @@
   "key.nestle.desc": "Nestle",
   "item_group.nestle.name": "Nestle",
   "item.nestle.nestle_block": "Nestle Block",
+  "item.nestle.nestle_resistance_block": "Nestle Resistance Block",
   "item.nestle.nestle": "Nestle",
   "item.nestle.nestle_lead": "Nestle Lead",
   "item.nestle.nestle_compass": "Nestle Compass",
@@ -25,5 +26,6 @@
   "effect.nestle.desire_nestle": "Desire Nestle",
   "effect.nestle.nestle": "Nestle",
   "effect.nestle.nestle_resistance": "Nestle Resistance",
-  "block.nestle.nestle_block": "Nestle Block"
+  "block.nestle.nestle_block": "Nestle Block",
+  "block.nestle.nestle_resistance_block": "Nestle Resistance Block"
 }

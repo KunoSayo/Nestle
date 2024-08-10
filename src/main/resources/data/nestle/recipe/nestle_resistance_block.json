@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nestle",
+  "key": {
+    "C": {
+      "item": "minecraft:cactus"
+    },
+    "I": {
+      "item": "nestle:nestle_block"
+    }
+  },
+  "pattern": [
+    " I",
+    "C "
+  ],
+  "result": {
+    "id": "nestle:nestle_resistance_block",
+    "count": 1
+  }
+}

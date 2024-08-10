@@ -2,6 +2,7 @@ package io.github.kunosayo.nestle.init;
 
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.block.NestleBlock;
+import io.github.kunosayo.nestle.block.NestleResistanceBlock;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -14,5 +15,10 @@ public class ModBlocks {
             .registerBlock("nestle_block", NestleBlock::new,
                     BlockBehaviour.Properties.of()
                             .mapColor(DyeColor.RED)
+            );
+
+    public static DeferredBlock<NestleResistanceBlock> NESTLE_RESISTANCE_BLOCK = BLOCKS
+            .registerBlock("nestle_resistance_block", NestleResistanceBlock::new,
+                    BlockBehaviour.Properties.of().mapColor(DyeColor.RED)
             );
 }
