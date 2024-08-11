@@ -1,18 +1,14 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "group": "nestle",
-  "key": {
-    "C": {
+  "ingredients": [
+    {
       "item": "minecraft:lead"
     },
-    "I": {
+    {
       "item": "nestle:nestle"
     }
-  },
-  "pattern": [
-    " I",
-    "C "
   ],
   "result": {
     "id": "nestle:nestle_lead",
