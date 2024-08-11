@@ -1,5 +1,6 @@
 package io.github.kunosayo.nestle.util;
 
+import io.github.kunosayo.nestle.init.ModEffects;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -30,6 +31,10 @@ public class NestleUtil {
      * @param sendPacket    if true, will send packet to client if entity is player
      */
     public static void nestleEntityTo(LivingEntity livingEntity, Vec3 target, double maxSpeed, double radius, double maxDeltaSpeed, boolean sendPacket) {
+        if (livingEntity == null || livingEntity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT)) {
+            return;
+        }
+
         var toTargetVec = target.subtract(livingEntity.position());
         double size = toTargetVec.distanceTo(Vec3.ZERO);
         var normal = toTargetVec.normalize();
