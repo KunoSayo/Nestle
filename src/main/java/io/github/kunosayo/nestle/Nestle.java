@@ -1,10 +1,14 @@
 package io.github.kunosayo.nestle;
 
 import io.github.kunosayo.nestle.config.NestleConfig;
+import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.github.kunosayo.nestle.init.*;
+import io.github.kunosayo.nestle.network.SyncNestleDataPacket;
+import io.github.kunosayo.nestle.network.UpdateNestleValuePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.bus.api.IEventBus;
@@ -14,7 +18,9 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -59,6 +65,7 @@ public class Nestle {
         for (int i = 0; i < players.size(); ++i) {
             var a = players.get(i);
             var com = a.getData(NestleData.ATTACHMENT_TYPE);
+            var updatePacket = new UpdateNestleValuePacket();
             for (int j = 0; j < players.size(); ++j) {
                 if (i == j) {
                     continue;
@@ -68,11 +75,18 @@ public class Nestle {
                 int delta;
                 if (a.level() != b.level()) {
                     delta = NestleConfig.NESTLE_CONFIG.getLeft().farAwayNestleValue.get();
+                    com.addDifValue(b.getUUID(), delta);
+                    updatePacket.getDifferentWorld().add(new UpdateNestleValuePacket.DifferentWorldUpdate(b.getUUID(), delta));
                 } else {
-                    delta = NestleConfig.NESTLE_CONFIG.getLeft().getValueFromDistance((long) Math.ceil(a.position().distanceToSqr(b.position())));
+                    double disSqr = a.position().distanceToSqr(b.position());
+                    delta = NestleConfig.NESTLE_CONFIG.getLeft().getValueFromDistance((long) Math.ceil(disSqr));
+                    int idx = NestleValue.getIndex(disSqr);
+                    com.addValue(b.getUUID(), delta, idx);
+                    updatePacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(b.getUUID(), delta, idx));
                 }
-
-                com.addValue(b.getUUID(), delta);
+            }
+            if (!updatePacket.getSameWorld().isEmpty() || !updatePacket.getDifferentWorld().isEmpty()) {
+                PacketDistributor.sendToPlayer(a, updatePacket);
             }
         }
 
@@ -94,5 +108,11 @@ public class Nestle {
         }
     }
 
+    @SubscribeEvent
+    public void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer sp) {
+            PacketDistributor.sendToPlayer(sp, new SyncNestleDataPacket(sp.getData(NestleData.ATTACHMENT_TYPE)));
+        }
+    }
 
 }

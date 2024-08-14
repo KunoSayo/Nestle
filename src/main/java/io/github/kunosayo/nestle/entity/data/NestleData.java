@@ -1,24 +1,42 @@
 package io.github.kunosayo.nestle.entity.data;
 
 import io.github.kunosayo.nestle.data.NestleValue;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class NestleData implements INBTSerializable<CompoundTag> {
-    public static final AttachmentType<NestleData> ATTACHMENT_TYPE = AttachmentType.serializable(NestleData::new)
+    public static final AttachmentType<NestleData> ATTACHMENT_TYPE = AttachmentType.serializable(() -> new NestleData())
             .copyOnDeath()
             .build();
 
-    public final HashMap<UUID, NestleValue> values = new HashMap<>();
+    public static final StreamCodec<ByteBuf, NestleData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.map(HashMap::new, UUIDUtil.STREAM_CODEC, NestleValue.STREAM_CODEC),
+            nestleData -> nestleData.values,
+            NestleData::new
+    );
+
+    public final HashMap<UUID, NestleValue> values;
 
     public NestleData() {
+        values = new HashMap<>();
     }
+
+    public NestleData(Map<UUID, NestleValue> values) {
+        this.values = new HashMap<>(values);
+    }
+
+
 
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
@@ -41,7 +59,12 @@ public class NestleData implements INBTSerializable<CompoundTag> {
         return values.computeIfAbsent(uuid, _u -> new NestleValue());
     }
 
-    public void addValue(UUID uuid, int delta) {
-        getValue(uuid).addValue(delta);
+    public void addValue(UUID uuid, int delta, int idx) {
+        getValue(uuid).addValue(delta, idx);
+    }
+
+    public void addDifValue(UUID uuid, int delta) {
+        getValue(uuid).addDifValue(delta);
+
     }
 }
