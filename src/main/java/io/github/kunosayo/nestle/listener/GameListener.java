@@ -5,6 +5,7 @@ import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.entity.NestleLeadEntity;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.github.kunosayo.nestle.entity.data.NestleLeadData;
+import io.github.kunosayo.nestle.init.ModEffects;
 import io.github.kunosayo.nestle.init.ModItems;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +30,8 @@ public class GameListener {
 
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent.Pre event) {
-        if (event.getEntity().level().isClientSide) {
+        var entity = event.getEntity();
+        if (entity.level().isClientSide || entity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT)) {
             return;
         }
         boolean currentRoot = false;
@@ -39,7 +41,6 @@ public class GameListener {
             damaging.clear();
         }
         try {
-            var entity = event.getEntity();
             var uuid = entity.getUUID();
             damaging.add(uuid);
 
@@ -56,23 +57,31 @@ public class GameListener {
             var aabb = new AABB(entityPos.subtract(ALL_FIVE), entityPos.add(ALL_FIVE));
 
             boolean isPlayer = entity instanceof Player;
-
+            final boolean selfNestle = entity.hasEffect(ModEffects.NESTLE_EFFECT);
             var otherEntityToGetDamage = entity.level()
                     .getNearbyEntities(
-                            entity.getClass(), TargetingConditions
+                            LivingEntity.class, TargetingConditions
                                     .forNonCombat()
                                     .ignoreLineOfSight()
-                                    .range(5.0),
+                                    .range(NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get()),
                             entity, aabb)
                     .stream()
                     .filter(livingEntity -> {
-                        if (isPlayer && livingEntity instanceof Player player) {
-                            return livingEntity.position().distanceToSqr(entityPos) <= 1.0
-                                    || player.getData(NestleData.ATTACHMENT_TYPE)
-                                    .getValue(entity.getUUID()).getValue() >= NestleConfig.NESTLE_CONFIG.getLeft().damageApportionRequire.get();
-                        } else {
-                            return livingEntity.position().distanceToSqr(entityPos) <= 1.0;
+
+                        if (livingEntity.getType() == entity.getType()) {
+                            if (livingEntity.position().distanceToSqr(entityPos) <= 1.0) {
+                                return true;
+                            }
+                            if (isPlayer && livingEntity instanceof Player player) {
+                                // both player
+                                boolean playerPass = player.getData(NestleData.ATTACHMENT_TYPE)
+                                        .getValue(entity.getUUID()).getValue() >= NestleConfig.NESTLE_CONFIG.getLeft().damageApportionRequire.get();
+                                if (playerPass) {
+                                    return true;
+                                }
+                            }
                         }
+                        return selfNestle || livingEntity.hasEffect(ModEffects.DESIRE_NESTLE_EFFECT);
                     })
                     // not in the damage chain.
                     .filter(livingEntity -> damaging.add(livingEntity.getUUID()))
