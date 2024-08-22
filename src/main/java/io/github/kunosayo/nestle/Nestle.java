@@ -6,6 +6,7 @@ import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.github.kunosayo.nestle.init.*;
 import io.github.kunosayo.nestle.network.SyncNestleDataPacket;
 import io.github.kunosayo.nestle.network.UpdateNestleValuePacket;
+import net.minecraft.client.main.GameConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,32 +63,56 @@ public class Nestle {
 
     private void calcNestleValue(MinecraftServer server) {
         var players = server.getPlayerList().getPlayers();
+        final int n = players.size();
+        if (n <= 1) {
+            return;
+        }
+        var packets = new UpdateNestleValuePacket[n];
+        var datas = new NestleData[n];
+        for (int i = 0; i < n; i++) {
+            packets[i] = new UpdateNestleValuePacket();
+            datas[i] = players.get(i).getData(NestleData.ATTACHMENT_TYPE);
+        }
+        final int farDelta = NestleConfig.NESTLE_CONFIG.getLeft().farAwayNestleValue.get();
         for (int i = 0; i < players.size(); ++i) {
             var a = players.get(i);
-            var com = a.getData(NestleData.ATTACHMENT_TYPE);
-            var updatePacket = new UpdateNestleValuePacket();
-            for (int j = 0; j < players.size(); ++j) {
-                if (i == j) {
-                    continue;
-                }
+            var aData = datas[i];
+            var aPacket = packets[i];
+            for (int j = i + 1; j < players.size(); ++j) {
+
                 var b = players.get(j);
+                var bData = datas[j];
+                var bPacket = packets[j];
 
                 int delta;
                 if (a.level() != b.level()) {
-                    delta = NestleConfig.NESTLE_CONFIG.getLeft().farAwayNestleValue.get();
-                    com.addDifValue(b.getUUID(), delta);
-                    updatePacket.getDifferentWorld().add(new UpdateNestleValuePacket.DifferentWorldUpdate(b.getUUID(), delta));
+                    delta = farDelta;
+
+                    aData.addDifValue(b.getUUID(), delta);
+                    bData.addDifValue(a.getUUID(), delta);
+
+                    aPacket.getDifferentWorld().add(new UpdateNestleValuePacket.DifferentWorldUpdate(b.getUUID(), delta));
+                    bPacket.getDifferentWorld().add(new UpdateNestleValuePacket.DifferentWorldUpdate(a.getUUID(), delta));
                 } else {
                     double disSqr = a.position().distanceToSqr(b.position());
                     delta = NestleConfig.NESTLE_CONFIG.getLeft().getValueFromDistance((long) Math.ceil(disSqr));
                     int idx = NestleValue.getIndex(disSqr);
-                    com.addValue(b.getUUID(), delta, idx);
-                    updatePacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(b.getUUID(), delta, idx));
+
+                    aData.addValue(b.getUUID(), delta, idx);
+                    bData.addValue(a.getUUID(), delta, idx);
+
+                    aPacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(b.getUUID(), delta, idx));
+                    bPacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(a.getUUID(), delta, idx));
                 }
             }
-            if (!updatePacket.getSameWorld().isEmpty() || !updatePacket.getDifferentWorld().isEmpty()) {
-                PacketDistributor.sendToPlayer(a, updatePacket);
-            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            var a = players.get(i);
+            var updatePacket = packets[i];
+            // always valid packet for n >= 2
+            PacketDistributor.sendToPlayer(a, updatePacket);
+
         }
 
     }
