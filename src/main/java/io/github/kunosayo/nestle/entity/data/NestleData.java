@@ -27,6 +27,7 @@ public class NestleData implements INBTSerializable<CompoundTag> {
     );
 
     public final HashMap<UUID, NestleValue> values;
+    public boolean givenStartItem;
 
     public NestleData() {
         values = new HashMap<>();
@@ -42,6 +43,7 @@ public class NestleData implements INBTSerializable<CompoundTag> {
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         values.forEach((uuid, nestleValue) -> tag.put(uuid.toString(), nestleValue.serializeNBT(provider)));
+        tag.putBoolean("givenStartItem", givenStartItem);
         return tag;
     }
 
@@ -53,6 +55,7 @@ public class NestleData implements INBTSerializable<CompoundTag> {
             var tag = nbt.getCompound(key);
             values.put(UUID.fromString(key), new NestleValue().chainedDeserializeNBT(provider, tag));
         }
+        givenStartItem = nbt.getBoolean("givenStartItem");
     }
 
     public NestleValue getValue(UUID uuid) {

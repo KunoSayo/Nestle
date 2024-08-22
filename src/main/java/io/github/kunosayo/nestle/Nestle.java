@@ -6,10 +6,10 @@ import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.github.kunosayo.nestle.init.*;
 import io.github.kunosayo.nestle.network.SyncNestleDataPacket;
 import io.github.kunosayo.nestle.network.UpdateNestleValuePacket;
-import net.minecraft.client.main.GameConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.bus.api.IEventBus;
@@ -137,6 +137,12 @@ public class Nestle {
     public void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer sp) {
             PacketDistributor.sendToPlayer(sp, new SyncNestleDataPacket(sp.getData(NestleData.ATTACHMENT_TYPE)));
+
+            var nestleData = sp.getData(NestleData.ATTACHMENT_TYPE);
+            if (!nestleData.givenStartItem) {
+                nestleData.givenStartItem = true;
+                sp.getInventory().add(new ItemStack(ModItems.NESTLE_COMPASS.value(), 1));
+            }
         }
     }
 
