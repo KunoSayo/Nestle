@@ -143,16 +143,17 @@ public class PlayerListScrollPanel extends ScrollPanel {
         // button height is 26
         // total range is 48
 
-        if ((offset % 48) >= 25) {
+        final int ButtonInterval = 48 + PLAYER_MARGIN_Y;
+        if ((offset % ButtonInterval) >= 25) {
             return null;
         }
 
 
-        if ((offset % 48) < 1) {
+        if ((offset % ButtonInterval) < 1) {
             return null;
         }
 
-        int idx = (int) (offset / 48);
+        int idx = (int) (offset / ButtonInterval);
 
         // button is 20 * 20 inner
         // 24 * 26 in total
