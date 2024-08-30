@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -28,7 +29,7 @@ public class GameListener {
     private static final Vec3 ALL_FIVE = new Vec3(5.0, 5.0, 5.0);
     private static boolean isRoot = true;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent.Pre event) {
         var entity = event.getEntity();
         if (entity.level().isClientSide || entity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT)) {
