@@ -94,8 +94,6 @@ public class PlayerNestleInfoList {
 
         nestleValue.values.forEach(PlayerNestleInfoList::updatePlayer);
 
-        updatePlayer(player.getGameProfile().getId(), new NestleValue());
-
 
         checkDirty();
 

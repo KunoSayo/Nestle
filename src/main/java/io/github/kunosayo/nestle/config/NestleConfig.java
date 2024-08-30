@@ -62,7 +62,7 @@ public class NestleConfig {
         while (left < right) {
             int mid = ((right - left) >> 1) + left;
             var value = closeNestleValues.get(mid);
-            if ((long) value.distance() * distanceSquared <= distanceSquared) {
+            if ((long) value.distance() * value.distance() <= distanceSquared) {
                 // current is smaller
                 left = mid + 1;
                 ret = closeNestleValues.get(mid).value();
