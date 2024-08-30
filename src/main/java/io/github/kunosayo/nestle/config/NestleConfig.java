@@ -62,13 +62,13 @@ public class NestleConfig {
         while (left < right) {
             int mid = ((right - left) >> 1) + left;
             var value = closeNestleValues.get(mid);
-            if ((long) value.distance() * value.distance() <= distanceSquared) {
-                // current is smaller
+            if ((long) value.distance() * value.distance() < distanceSquared) {
+                // we are not in this cfg range.
                 left = mid + 1;
-                ret = closeNestleValues.get(mid).value();
             } else {
-                // current is great
+                // We are in the range
                 right = mid;
+                ret = closeNestleValues.get(mid).value();
             }
         }
         return ret;
