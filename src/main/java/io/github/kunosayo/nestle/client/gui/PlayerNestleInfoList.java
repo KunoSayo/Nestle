@@ -55,7 +55,7 @@ public class PlayerNestleInfoList {
     }
 
     public static void setFilter(String filter) {
-
+        filter = filter.toLowerCase();
         if (!filter.equals(PlayerNestleInfoList.filter)) {
             PlayerNestleInfoList.filter = filter;
             for (PlayerNestleInfo playerNestleInfo : profileList) {
@@ -78,6 +78,7 @@ public class PlayerNestleInfoList {
         profileList.clear();
         indexMap.clear();
         displayOrder.clear();
+        remainIndex.clear();
         filteredCount = 0;
     }
 
