@@ -69,7 +69,7 @@ public class GameListener {
                     .filter(livingEntity -> {
 
                         if (livingEntity.getType() == entity.getType()) {
-                            if (livingEntity.position().distanceToSqr(entityPos) <= 1.0) {
+                            if (livingEntity.position().distanceToSqr(entityPos) <= 1.5 * 1.5) {
                                 return true;
                             }
                             if (isPlayer && livingEntity instanceof Player player) {
