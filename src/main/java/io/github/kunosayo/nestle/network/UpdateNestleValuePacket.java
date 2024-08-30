@@ -1,9 +1,7 @@
 package io.github.kunosayo.nestle.network;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.codecs.PairCodec;
 import io.github.kunosayo.nestle.Nestle;
-import io.github.kunosayo.nestle.data.NestleValue;
+import io.github.kunosayo.nestle.client.gui.PlayerNestleInfoList;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -50,10 +48,12 @@ public class UpdateNestleValuePacket implements CustomPacketPayload {
             if (player != null) {
                 var nestleData = player.getData(NestleData.ATTACHMENT_TYPE);
                 for (var dif : updatePacket.differentWorld) {
-                    nestleData.addDifValue(dif.target, dif.added);
+                    var v = nestleData.addDifValue(dif.target, dif.added);
+                    PlayerNestleInfoList.updatePlayer(dif.target, v);
                 }
                 for (var sameWorld : updatePacket.sameWorld) {
-                    nestleData.addValue(sameWorld.target, sameWorld.added, sameWorld.timesIndex);
+                    var v = nestleData.addValue(sameWorld.target, sameWorld.added, sameWorld.timesIndex);
+                    PlayerNestleInfoList.updatePlayer(sameWorld.target, v);
                 }
             }
         });

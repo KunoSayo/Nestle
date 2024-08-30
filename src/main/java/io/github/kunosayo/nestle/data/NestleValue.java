@@ -11,7 +11,7 @@ import org.jetbrains.annotations.UnknownNullability;
 
 public class NestleValue implements INBTSerializable<CompoundTag> {
     private long value;
-    // 2^0 ... 2^15, different world
+    // 2^0 ... 2^15,  far away.., different world
     private int[] times = new int[18];
 
     public static final StreamCodec<ByteBuf, NestleValue> STREAM_CODEC = StreamCodec.composite(
@@ -48,14 +48,20 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
         this.times = times;
     }
 
+    /**
+     * Get the index for times array from the player squared distance
+     *
+     * @param disSqr the player squared distance
+     * @return 0 ~ 15 for 2^i (1 2 4 8 16 ..) and 16 for else.
+     */
     public static int getIndex(double disSqr) {
-        for (int i = 0; i <= 15; i++) {
-            long dis = 1L << (i << 1);
-            if (disSqr <= dis) {
-                return i;
-            }
+        if (disSqr > 1073741824) {
+            return 16;
         }
-        return 16;
+        int dis = (int) (disSqr + 0.99999);
+        int high = 32 - Integer.numberOfLeadingZeros(dis);
+        int extra = (dis ^ (1 << (high - 1))) != 0 ? 1 : 0;
+        return (high >>> 1) + (extra & high);
     }
 
     @Override
@@ -86,13 +92,15 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
     }
 
 
-    public void addValue(int delta, int idx) {
+    public NestleValue addValue(int delta, int idx) {
         this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
         ++times[idx];
+        return this;
     }
 
-    public void addDifValue(int delta) {
+    public NestleValue addDifValue(int delta) {
         this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
         ++times[17];
+        return this;
     }
 }

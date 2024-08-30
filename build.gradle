@@ -88,6 +88,13 @@ configurations {
 dependencies {
     // 目前仅以 neoforge 作为前置
     implementation "net.neoforged:neoforge:${neo_version}"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 // 用于 neoforge.mods 里替换那一堆 ${xxxx}

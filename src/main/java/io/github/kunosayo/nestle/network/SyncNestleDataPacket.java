@@ -1,21 +1,14 @@
 package io.github.kunosayo.nestle.network;
 
 import io.github.kunosayo.nestle.Nestle;
+import io.github.kunosayo.nestle.client.gui.PlayerNestleInfoList;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 
 public class SyncNestleDataPacket implements CustomPacketPayload {
@@ -37,6 +30,7 @@ public class SyncNestleDataPacket implements CustomPacketPayload {
             var player = Minecraft.getInstance().player;
             if (player != null) {
                 player.setData(NestleData.ATTACHMENT_TYPE, updatePacket.nestleData);
+                PlayerNestleInfoList.syncNew();
             }
         });
     }

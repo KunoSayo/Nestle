@@ -63,12 +63,12 @@ public class NestleData implements INBTSerializable<CompoundTag> {
         return values.computeIfAbsent(uuid, _u -> new NestleValue());
     }
 
-    public void addValue(UUID uuid, int delta, int idx) {
-        getValue(uuid).addValue(delta, idx);
+    public NestleValue addValue(UUID uuid, int delta, int idx) {
+        return getValue(uuid).addValue(delta, idx);
     }
 
-    public void addDifValue(UUID uuid, int delta) {
-        getValue(uuid).addDifValue(delta);
+    public NestleValue addDifValue(UUID uuid, int delta) {
+        return getValue(uuid).addDifValue(delta);
 
     }
 }

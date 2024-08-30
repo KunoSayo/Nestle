@@ -30,12 +30,14 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void onRegisterClientExt(RegisterClientExtensionsEvent event) {
-        // here ?
         ItemProperties.register(ModItems.NESTLE_COMPASS.get(), ResourceLocation.withDefaultNamespace("angle"), new CompassItemPropertyFunction((level, item, entity) -> {
             if (Nestle.clientNearestEntityVec == null) {
                 return null;
             }
             return new GlobalPos(level.dimension(), Nestle.clientNearestEntityVec);
         }));
+
     }
+
+
 }

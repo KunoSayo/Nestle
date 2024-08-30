@@ -1,6 +1,5 @@
 package io.github.kunosayo.nestle.item;
 
-import io.github.kunosayo.nestle.init.ModItems;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
