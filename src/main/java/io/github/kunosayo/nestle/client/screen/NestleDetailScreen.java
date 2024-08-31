@@ -72,7 +72,7 @@ public final class NestleDetailScreen extends Screen {
                     if (i < 16) {
                         msg = Component.translatable("tooltip.nestle.stat.normal", info.getNestleValue().times[i], percent, String.valueOf(1 << i));
                     } else if (i == 16) {
-                        msg = Component.translatable("tooltip.nestle.stat.far", info.getNestleValue().times[i], percent, String.valueOf(1 << i));
+                        msg = Component.translatable("tooltip.nestle.stat.far", info.getNestleValue().times[i], percent, String.valueOf(1 << 15));
                     } else {
                         // i is 17, different world.
                         msg = Component.translatable("tooltip.nestle.stat.different", info.getNestleValue().times[i], percent);
