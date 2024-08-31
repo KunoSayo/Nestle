@@ -61,11 +61,15 @@ public class PlayerNestleInfoList {
             for (PlayerNestleInfo playerNestleInfo : profileList) {
                 playerNestleInfo.checkFilter();
             }
-            remainIndex.clear();
-            for (int i = 0; i < profileList.size(); i++) {
-                if (!profileList.get(i).filtered) {
-                    remainIndex.add(i);
-                }
+            checkRemainIndex();
+        }
+    }
+
+    private static void checkRemainIndex() {
+        remainIndex.clear();
+        for (int i = 0; i < profileList.size(); i++) {
+            if (!profileList.get(i).filtered) {
+                remainIndex.add(i);
             }
         }
     }
@@ -147,6 +151,8 @@ public class PlayerNestleInfoList {
 
             return Long.compare(b.nestleValue.getValue(), a.nestleValue.getValue());
         });
+
+        checkRemainIndex();
 
     }
 
