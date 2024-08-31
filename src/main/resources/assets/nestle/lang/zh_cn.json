@@ -29,5 +29,8 @@
   "effect.nestle.nestle": "贴贴",
   "effect.nestle.nestle_resistance": "贴贴抗性",
   "block.nestle.nestle_block": "贴贴方块",
-  "block.nestle.nestle_resistance_block": "贴贴抗性方块"
+  "block.nestle.nestle_resistance_block": "贴贴抗性方块",
+  "tooltip.nestle.stat.normal": "%1$s 秒 %3$s 格内 (%2$s%%)",
+  "tooltip.nestle.stat.far": "%1$s 秒 %3$s 格外 (%2$s%%)",
+  "tooltip.nestle.stat.different": "%1$s 秒 异世界 (%2$s%%)"
 }
