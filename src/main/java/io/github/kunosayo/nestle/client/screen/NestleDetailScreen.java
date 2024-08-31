@@ -69,7 +69,7 @@ public final class NestleDetailScreen extends Screen {
                     // show tooltip
 
                     guiGraphics.renderTooltip(this.font, List.of(
-                                    Component.literal(String.format("%d (%.2f%)", info.getNestleValue().times[i], info.percents[i] * 100))
+                                    Component.literal(String.format("%d (%.2f%%)", info.getNestleValue().times[i], info.percents[i] * 100))
                             ),
                             Optional.empty(), mouseX, mouseY);
                 }
