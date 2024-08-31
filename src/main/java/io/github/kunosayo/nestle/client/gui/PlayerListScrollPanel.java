@@ -3,10 +3,12 @@ package io.github.kunosayo.nestle.client.gui;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import io.github.kunosayo.nestle.client.screen.NestleDetailScreen;
 import io.github.kunosayo.nestle.client.screen.NestleScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -36,10 +38,10 @@ public final class PlayerListScrollPanel extends ScrollPanel {
     }
 
 
-    private void renderPlayerAvatar(GameProfile profile, int x, int y, GuiGraphics graphics) {
+    public static void renderPlayerAvatar(GameProfile profile, int x, int y, GuiGraphics graphics) {
         ResourceLocation skin;
         skin = Minecraft.getInstance().getSkinManager().getInsecureSkin(profile).texture();
-        graphics.blit(skin, x, y, 32, 32, 32, 32, 256, 256);
+        PlayerFaceRenderer.draw(graphics, skin, x, y, 32);
     }
 
     @Override
@@ -99,11 +101,12 @@ public final class PlayerListScrollPanel extends ScrollPanel {
                         right - BORDER_WIDTH - 24 - BUTTON_MARGIN_RIGHT, relativeY + BG_BUTTON_Y_OFFSET, 24, 26);
             }
 
+            // render button icon
             guiGraphics.blitSprite(NestleScreen.ICON_SPRITE,
                     96, 16, 32, 0,
                     right - BORDER_WIDTH - 16 - BUTTON_MARGIN_RIGHT - ICON_MARGIN_X, relativeY + 16, 16, 16);
 
-            var nestleText = String.valueOf(info.nestleValue.getValue());
+            var nestleText = String.valueOf(info.getNestleValue().getValue());
             final int textWidth = font.width(nestleText);
             final int textY = (PLAYER_BACKGROUND_HEIGHT - font.lineHeight) / 2 + relativeY;
 
@@ -112,6 +115,7 @@ public final class PlayerListScrollPanel extends ScrollPanel {
             guiGraphics.drawString(font, nestleText,
                     textX, textY, 0xffffffff);
 
+            // render :heart:
             guiGraphics.blitSprite(NestleScreen.ICON_SPRITE, 96, 16, 16, 0,
                     textX - 16 - 2, relativeY + 16, 16, 16);
 
@@ -126,7 +130,11 @@ public final class PlayerListScrollPanel extends ScrollPanel {
 
         var info = getSelectedButton(mouseX + left, mouseY + this.top - (int) this.scrollDistance + border);
 
-        return info != null;
+        if (info != null) {
+            Minecraft.getInstance().setScreen(new NestleDetailScreen(info));
+            return true;
+        }
+        return false;
     }
 
 

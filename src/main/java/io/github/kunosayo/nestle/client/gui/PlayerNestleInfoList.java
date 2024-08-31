@@ -43,7 +43,7 @@ public final class PlayerNestleInfoList {
             return info;
         });
 
-        playerNestleInfo.nestleValue = nestleValue;
+        playerNestleInfo.setNestleValue(nestleValue);
         dirty = true;
     }
 
@@ -159,8 +159,10 @@ public final class PlayerNestleInfoList {
 
     public static class PlayerNestleInfo {
         public GameProfile gameProfile;
-        public NestleValue nestleValue;
+        public double[] percents = new double[18];
         public boolean filtered = false;
+        private NestleValue nestleValue;
+        private boolean dirty = true;
 
         public PlayerNestleInfo(GameProfile gameProfile, NestleValue nestleValue) {
             this.gameProfile = gameProfile;
@@ -185,6 +187,33 @@ public final class PlayerNestleInfoList {
                 return true;
             }
             return false;
+        }
+
+        public void checkRenderDirty() {
+            if (!dirty) {
+                return;
+            }
+            dirty = false;
+
+            long total = 0;
+
+            for (int i = 0; i < 18; i++) {
+                total += this.nestleValue.times[i];
+            }
+
+            for (int i = 0; i < 18; i++) {
+                percents[i] = this.nestleValue.times[i] * 1.0 / total;
+            }
+
+        }
+
+        public NestleValue getNestleValue() {
+            return nestleValue;
+        }
+
+        public void setNestleValue(NestleValue nestleValue) {
+            this.nestleValue = nestleValue;
+            this.dirty = true;
         }
     }
 }

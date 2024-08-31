@@ -12,7 +12,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public class NestleValue implements INBTSerializable<CompoundTag> {
     private long value;
     // 2^0 ... 2^15,  far away.., different world
-    private int[] times = new int[18];
+    public int[] times = new int[18];
 
     public static final StreamCodec<ByteBuf, NestleValue> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_LONG, nestleValue -> nestleValue.value,

@@ -46,7 +46,7 @@ public final class NestleScreen extends Screen {
 
         searchBox.setResponder(PlayerNestleInfoList::setFilter);
 
-        this.addRenderableWidget(new StringWidget(startX + 8, startY + 8, font.width(TITLE.getVisualOrderText()), 9, TITLE, this.font));
+        this.addRenderableWidget(new StringWidget(startX + 8, startY + 6, font.width(TITLE.getVisualOrderText()), 9, TITLE, this.font));
         this.addRenderableWidget(searchBox);
         this.addRenderableWidget(scrollPanel);
 
