@@ -51,7 +51,7 @@ public final class NestleDetailScreen extends Screen {
         info.checkRenderDirty();
 
         final int bottomY = startY + 181;
-        final int highSize = 181 - 48;
+        final int highSize = 181 - 48 - 1;
         final int barWidth = 12;
         final int barInterval = barWidth + 2;
 
@@ -59,7 +59,7 @@ public final class NestleDetailScreen extends Screen {
 
         for (int i = 0; i < 18; i++) {
 
-            int highY = bottomY - (int) Math.round(highSize * info.percents[i]);
+            int highY = bottomY - (int) Math.round(highSize * info.percents[i]) - 1;
 
             guiGraphics.fill(leftX, highY, leftX + barWidth, bottomY, 0xff9c2c2c);
 
