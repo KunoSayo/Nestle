@@ -29,7 +29,7 @@ public class SyncNestleDataPacket implements CustomPacketPayload {
         context.enqueueWork(() -> {
             var player = Minecraft.getInstance().player;
             if (player != null) {
-                player.setData(NestleData.ATTACHMENT_TYPE, updatePacket.nestleData);
+                PlayerNestleInfoList.clientNestleData = updatePacket.nestleData;
                 PlayerNestleInfoList.syncNew();
             }
         });

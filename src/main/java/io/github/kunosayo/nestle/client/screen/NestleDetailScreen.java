@@ -61,7 +61,7 @@ public final class NestleDetailScreen extends Screen {
 
             int highY = bottomY - (int) Math.round(highSize * info.percents[i]);
 
-            guiGraphics.fill(leftX, highY, leftX + barWidth, bottomY, 0xffff0000);
+            guiGraphics.fill(leftX, highY, leftX + barWidth, bottomY, 0xff9c2c2c);
 
 
             if (leftX <= mouseX && mouseX <= leftX + barWidth) {

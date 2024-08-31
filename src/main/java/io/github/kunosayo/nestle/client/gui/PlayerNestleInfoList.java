@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import java.util.*;
 
 public final class PlayerNestleInfoList {
+    public static NestleData clientNestleData = new NestleData();
     public static final HashMap<UUID, PlayerNestleInfo> infoMap = new HashMap<>();
     public static List<PlayerNestleInfo> profileList = new ArrayList<>();
 
@@ -91,7 +92,7 @@ public final class PlayerNestleInfoList {
             return;
         }
 
-        var nestleValue = player.getData(NestleData.ATTACHMENT_TYPE);
+        var nestleValue = clientNestleData;
 
 
         nestleValue.values.forEach(PlayerNestleInfoList::updatePlayer);

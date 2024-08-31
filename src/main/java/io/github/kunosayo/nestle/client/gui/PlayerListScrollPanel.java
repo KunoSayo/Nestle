@@ -8,10 +8,13 @@ import io.github.kunosayo.nestle.client.screen.NestleScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.neoforged.neoforge.client.gui.widget.ScrollPanel;
 
 import javax.annotation.Nullable;
@@ -131,6 +134,7 @@ public final class PlayerListScrollPanel extends ScrollPanel {
         var info = getSelectedButton(mouseX + left, mouseY + this.top - (int) this.scrollDistance + border);
 
         if (info != null) {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             Minecraft.getInstance().setScreen(new NestleDetailScreen(info));
             return true;
         }

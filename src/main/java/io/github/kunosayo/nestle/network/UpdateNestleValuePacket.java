@@ -44,17 +44,14 @@ public class UpdateNestleValuePacket implements CustomPacketPayload {
 
     public static void clientHandler(final UpdateNestleValuePacket updatePacket, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            var player = Minecraft.getInstance().player;
-            if (player != null) {
-                var nestleData = player.getData(NestleData.ATTACHMENT_TYPE);
-                for (var dif : updatePacket.differentWorld) {
-                    var v = nestleData.addDifValue(dif.target, dif.added);
-                    PlayerNestleInfoList.updatePlayer(dif.target, v);
-                }
-                for (var sameWorld : updatePacket.sameWorld) {
-                    var v = nestleData.addValue(sameWorld.target, sameWorld.added, sameWorld.timesIndex);
-                    PlayerNestleInfoList.updatePlayer(sameWorld.target, v);
-                }
+            var nestleData = PlayerNestleInfoList.clientNestleData;
+            for (var dif : updatePacket.differentWorld) {
+                var v = nestleData.addDifValue(dif.target, dif.added);
+                PlayerNestleInfoList.updatePlayer(dif.target, v);
+            }
+            for (var sameWorld : updatePacket.sameWorld) {
+                var v = nestleData.addValue(sameWorld.target, sameWorld.added, sameWorld.timesIndex);
+                PlayerNestleInfoList.updatePlayer(sameWorld.target, v);
             }
         });
     }
