@@ -26,7 +26,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 
 @Mod(Nestle.MOD_ID)
-public class Nestle {
+public final class Nestle {
     public static final String MOD_ID = "nestle";
     @Nullable
     public static BlockPos clientNearestEntityVec;

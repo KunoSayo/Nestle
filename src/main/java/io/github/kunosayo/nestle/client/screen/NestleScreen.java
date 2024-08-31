@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class NestleScreen extends Screen {
+public final class NestleScreen extends Screen {
     public static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "playerlist");
     public static final ResourceLocation ICON_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "icons");
     private static final Component TITLE = Component.translatable("gui.nestle.title");

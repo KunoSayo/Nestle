@@ -9,14 +9,10 @@ import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 import java.util.*;
 
-public class PlayerNestleInfoList {
-    public static final HashMap<UUID, Integer> indexMap = new HashMap<>();
+public final class PlayerNestleInfoList {
+    public static final HashMap<UUID, PlayerNestleInfo> infoMap = new HashMap<>();
     public static List<PlayerNestleInfo> profileList = new ArrayList<>();
-    public static List<Integer> displayOrder = new ArrayList<>();
-    /**
-     * The the filtered index not be included in this list.
-     */
-    public static List<Integer> remainIndex = new ArrayList<>();
+
 
     private static int filteredCount = 0;
     private static String filter = "";
@@ -28,12 +24,10 @@ public class PlayerNestleInfoList {
     }
 
     public static void updatePlayer(UUID playerUUID, NestleValue nestleValue) {
-        int idx = indexMap.computeIfAbsent(playerUUID, uuid -> {
+        var playerNestleInfo = infoMap.computeIfAbsent(playerUUID, uuid -> {
 
             var info = new PlayerNestleInfo(new GameProfile(playerUUID, playerUUID.toString()), nestleValue);
             profileList.add(info);
-            displayOrder.add(profileList.size() - 1);
-            remainIndex.add(profileList.size() - 1);
 
             Optional.ofNullable(Minecraft.getInstance().player)
                     .flatMap(localPlayer -> localPlayer.connection.getOnlinePlayers().stream()
@@ -46,11 +40,10 @@ public class PlayerNestleInfoList {
                                     .thenAcceptAsync(gameProfile -> gameProfile.ifPresent(info::setGameProfile)));
 
 
-            return profileList.size() - 1;
+            return info;
         });
 
-        var info = profileList.get(idx);
-        info.nestleValue = nestleValue;
+        playerNestleInfo.nestleValue = nestleValue;
         dirty = true;
     }
 
@@ -58,21 +51,27 @@ public class PlayerNestleInfoList {
         filter = filter.toLowerCase();
         if (!filter.equals(PlayerNestleInfoList.filter)) {
             PlayerNestleInfoList.filter = filter;
-            for (PlayerNestleInfo playerNestleInfo : profileList) {
-                playerNestleInfo.checkFilter();
+            int lastFilteredIndex = -1;
+            for (int i = 0; i < profileList.size(); i++) {
+                var info = profileList.get(i);
+                dirty |= info.checkFilter();
+                if (info.filtered) {
+                    // this is filtered, record
+                    if (lastFilteredIndex == -1) {
+                        lastFilteredIndex = i;
+                    }
+                } else if (lastFilteredIndex != -1) {
+                    // have filtered info before this
+                    // swap the two to here
+                    Collections.swap(profileList, lastFilteredIndex, i);
+                    lastFilteredIndex = i;
+                }
             }
-            checkRemainIndex();
+
         }
     }
 
-    private static void checkRemainIndex() {
-        remainIndex.clear();
-        for (int i = 0; i < profileList.size(); i++) {
-            if (!profileList.get(i).filtered) {
-                remainIndex.add(i);
-            }
-        }
-    }
+
 
     public static int getFilteredCount() {
         return filteredCount;
@@ -80,9 +79,7 @@ public class PlayerNestleInfoList {
 
     public static void clear() {
         profileList.clear();
-        indexMap.clear();
-        displayOrder.clear();
-        remainIndex.clear();
+        infoMap.clear();
         filteredCount = 0;
     }
 
@@ -99,10 +96,11 @@ public class PlayerNestleInfoList {
 
         nestleValue.values.forEach(PlayerNestleInfoList::updatePlayer);
 
+        if (Minecraft.getInstance().isSingleplayer()) {
+            updatePlayer(player.getUUID(), new NestleValue());
+        }
 
         checkDirty();
-
-
     }
 
 
@@ -125,9 +123,8 @@ public class PlayerNestleInfoList {
             onlines.add(playerInfo.getProfile().getId());
         });
 
-        displayOrder.sort((o1, o2) -> {
-            var a = profileList.get(o1);
-            var b = profileList.get(o2);
+
+        profileList.subList(0, profileList.size() - filteredCount).sort((a, b) -> {
 
 
             final boolean aSame = level.getPlayerByUUID(a.gameProfile.getId()) != null;
@@ -152,8 +149,11 @@ public class PlayerNestleInfoList {
             return Long.compare(b.nestleValue.getValue(), a.nestleValue.getValue());
         });
 
-        checkRemainIndex();
 
+    }
+
+    public static int getRemainCount() {
+        return profileList.size() - filteredCount;
     }
 
 
@@ -173,7 +173,7 @@ public class PlayerNestleInfoList {
             checkFilter();
         }
 
-        public void checkFilter() {
+        public boolean checkFilter() {
             boolean newFilter = !filter.isEmpty() && !gameProfile.getName().toLowerCase().contains(filter);
             if (newFilter != filtered) {
                 filtered = newFilter;
@@ -182,7 +182,9 @@ public class PlayerNestleInfoList {
                 } else {
                     --filteredCount;
                 }
+                return true;
             }
+            return false;
         }
     }
 }

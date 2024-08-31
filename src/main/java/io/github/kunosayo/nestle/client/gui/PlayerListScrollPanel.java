@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.gui.widget.ScrollPanel;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 
-public class PlayerListScrollPanel extends ScrollPanel {
+public final class PlayerListScrollPanel extends ScrollPanel {
     private static final int BG_BUTTON_Y_OFFSET = (48 - 20) / 2 - 2;
     private static final int PLAYER_BACKGROUND_HEIGHT = 48;
     private static final int PLAYER_MARGIN_Y = 5;
@@ -53,8 +53,10 @@ public class PlayerListScrollPanel extends ScrollPanel {
         });
 
         var selected = getSelectedButton(mouseX, mouseY);
-        for (Integer idx : PlayerNestleInfoList.remainIndex) {
-            var info = PlayerNestleInfoList.profileList.get(PlayerNestleInfoList.displayOrder.get(idx));
+        for (var info : PlayerNestleInfoList.profileList) {
+            if (info.filtered) {
+                break;
+            }
 
             var gameProfile = info.gameProfile;
 
@@ -165,11 +167,13 @@ public class PlayerListScrollPanel extends ScrollPanel {
             return null;
         }
 
-        if (PlayerNestleInfoList.remainIndex.size() <= idx || idx < 0) {
+        int left = PlayerNestleInfoList.getRemainCount();
+
+        if (left <= idx || idx < 0) {
             return null;
         }
 
-        return PlayerNestleInfoList.profileList.get(PlayerNestleInfoList.displayOrder.get(PlayerNestleInfoList.remainIndex.get(idx)));
+        return PlayerNestleInfoList.profileList.get(idx);
 
     }
 

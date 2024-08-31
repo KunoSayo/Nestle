@@ -5,7 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class NestleUtil {
+public final class NestleUtil {
 
     /**
      * Nestle entity to target position with distance <= radius
