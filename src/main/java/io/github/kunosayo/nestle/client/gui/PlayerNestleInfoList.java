@@ -196,14 +196,14 @@ public final class PlayerNestleInfoList {
             }
             dirty = false;
 
-            long total = 0;
+            long max = 1;
 
             for (int i = 0; i < 18; i++) {
-                total += this.nestleValue.times[i];
+                max = Math.max(this.nestleValue.times[i], max);
             }
 
             for (int i = 0; i < 18; i++) {
-                percents[i] = this.nestleValue.times[i] * 1.0 / total;
+                percents[i] = this.nestleValue.times[i] * 1.0 / max;
             }
 
         }
