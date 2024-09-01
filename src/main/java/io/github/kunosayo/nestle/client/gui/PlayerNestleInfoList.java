@@ -161,6 +161,7 @@ public final class PlayerNestleInfoList {
     public static class PlayerNestleInfo {
         public GameProfile gameProfile;
         public double[] percents = new double[18];
+        public double[] totalPercents = new double[18];
         public boolean filtered = false;
         private NestleValue nestleValue;
         private boolean dirty = true;
@@ -197,13 +198,17 @@ public final class PlayerNestleInfoList {
             dirty = false;
 
             long max = 1;
+            long total = 0;
 
             for (int i = 0; i < 18; i++) {
                 max = Math.max(this.nestleValue.times[i], max);
+                total += this.nestleValue.times[i];
             }
 
+            total = Math.max(total, 1);
             for (int i = 0; i < 18; i++) {
                 percents[i] = this.nestleValue.times[i] * 1.0 / max;
+                totalPercents[i] = this.nestleValue.times[i] * 1.0 / total;
             }
 
         }

@@ -67,7 +67,7 @@ public final class NestleDetailScreen extends Screen {
             if (leftX <= mouseX && mouseX <= leftX + barWidth) {
                 if (highY <= mouseY && mouseY <= bottomY + 10) {
                     // show tooltip
-                    String percent = String.format("%.2f", info.percents[i] * 100);
+                    String percent = String.format("%.2f", info.totalPercents[i] * 100);
                     Component msg;
                     if (i < 16) {
                         msg = Component.translatable("tooltip.nestle.stat.normal", info.getNestleValue().times[i], percent, String.valueOf(1 << i));
