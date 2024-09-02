@@ -18,13 +18,11 @@ public class CompassModelProvider extends ItemModelProvider {
             if (i == 16) {
                 continue;
             }
-            var tex = String.format("minecraft:item/compass_%02d", i);
+            var tex = String.format("nestle:item/nestle_compass_%02d", i);
             var name = String.format("nestle:compass_%02d", i);
             getBuilder(name)
                     .parent(getExistingFile(mcLoc("item/generated")))
-                    .texture("layer0", tex)
-                    .texture("layer1", "nestle:item/nestle_icon")
-                    .customLoader(ItemLayerModelBuilder::begin);
+                    .texture("layer0", tex);
         }
     }
 
