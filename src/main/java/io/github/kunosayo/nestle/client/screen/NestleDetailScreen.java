@@ -114,7 +114,7 @@ public final class NestleDetailScreen extends Screen {
 
                 guiGraphics.drawString(font, percent, startX + 8, mouseY - font.lineHeight / 2, 0xffffffff);
 
-                guiGraphics.hLine(startX + 23, startX + 300 - 16, mouseY, 0x7f333333);
+                guiGraphics.hLine(startX + 23, startX + 300 - 8, mouseY, 0x7f333333);
             }
         }
 
