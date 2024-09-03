@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import java.util.*;
 
 public final class PlayerNestleInfoList {
-    public static NestleData clientNestleData = new NestleData();
     public static final HashMap<UUID, PlayerNestleInfo> infoMap = new HashMap<>();
+    public static NestleData clientNestleData = new NestleData();
     public static List<PlayerNestleInfo> profileList = new ArrayList<>();
 
 
@@ -71,7 +71,6 @@ public final class PlayerNestleInfoList {
 
         }
     }
-
 
 
     public static int getFilteredCount() {
@@ -155,6 +154,10 @@ public final class PlayerNestleInfoList {
 
     public static int getRemainCount() {
         return profileList.size() - filteredCount;
+    }
+
+    public static void setDirty() {
+        dirty = true;
     }
 
 

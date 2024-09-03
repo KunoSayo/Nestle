@@ -1,14 +1,18 @@
 package io.github.kunosayo.nestle.entity.data;
 
 import io.github.kunosayo.nestle.data.NestleValue;
+import io.github.kunosayo.nestle.network.SyncNestleValuePacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -35,6 +39,16 @@ public class NestleData implements INBTSerializable<CompoundTag> {
 
     public NestleData(Map<UUID, NestleValue> values) {
         this.values = new HashMap<>(values);
+    }
+
+    public static void addValue(Player who, Player target, int delta) {
+        var data = who.getData(ATTACHMENT_TYPE);
+        long result = data.getValue(target.getUUID()).addValue(delta);
+
+        if (who instanceof ServerPlayer sp) {
+            PacketDistributor.sendToPlayer(sp, new SyncNestleValuePacket(target.getUUID(), result));
+        }
+
     }
 
     @Override
@@ -69,6 +83,5 @@ public class NestleData implements INBTSerializable<CompoundTag> {
 
     public NestleValue addDifValue(UUID uuid, int delta) {
         return getValue(uuid).addDifValue(delta);
-
     }
 }

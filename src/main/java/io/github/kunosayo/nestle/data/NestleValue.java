@@ -10,10 +10,6 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class NestleValue implements INBTSerializable<CompoundTag> {
-    private long value;
-    // 2^0 ... 2^15,  far away.., different world
-    public int[] times = new int[18];
-
     public static final StreamCodec<ByteBuf, NestleValue> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_LONG, nestleValue -> nestleValue.value,
             new StreamCodec<>() {
@@ -34,6 +30,9 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
                 }
             }, nestleValue -> nestleValue.times, NestleValue::new
     );
+    // 2^0 ... 2^15,  far away.., different world
+    public int[] times = new int[18];
+    private long value;
 
     public NestleValue() {
         value = 0;
@@ -91,6 +90,9 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
         return this.value;
     }
 
+    public void setValue(long value) {
+        this.value = value;
+    }
 
     public NestleValue addValue(int delta, int idx) {
         this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
@@ -102,5 +104,9 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
         this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
         ++times[17];
         return this;
+    }
+
+    public long addValue(int delta) {
+        return this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
     }
 }

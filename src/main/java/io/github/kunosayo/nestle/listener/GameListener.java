@@ -1,12 +1,16 @@
 package io.github.kunosayo.nestle.listener;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.config.NestleConfig;
+import io.github.kunosayo.nestle.data.NestleValue;
+import io.github.kunosayo.nestle.effect.NestleEffect;
 import io.github.kunosayo.nestle.entity.NestleLeadEntity;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.github.kunosayo.nestle.entity.data.NestleLeadData;
 import io.github.kunosayo.nestle.init.ModEffects;
 import io.github.kunosayo.nestle.init.ModItems;
+import io.github.kunosayo.nestle.util.NestleUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
@@ -19,20 +23,33 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 @EventBusSubscriber(modid = Nestle.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class GameListener {
     private static final HashSet<UUID> damaging = new HashSet<>();
     private static final Vec3 ALL_FIVE = new Vec3(5.0, 5.0, 5.0);
+    public static HashMap<Pair<UUID, UUID>, Integer> playerNestlePlayerMap = new HashMap<>();
     private static boolean isRoot = true;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent.Pre event) {
         var entity = event.getEntity();
-        if (entity.level().isClientSide || entity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT)) {
+        if (entity.level().isClientSide) {
+            return;
+        }
+        if (isRoot) {
+            if (entity instanceof Player a) {
+                if (event.getSource().getDirectEntity() instanceof Player b) {
+                    // b attacked a
+                    NestleData.addValue(a, b, -NestleConfig.NESTLE_CONFIG.getLeft().damagePlayerValueReduce.get());
+                }
+            }
+        }
+        if (entity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT)) {
             return;
         }
         boolean currentRoot = false;
@@ -132,4 +149,31 @@ public class GameListener {
         }
     }
 
+    @SubscribeEvent
+    public static void onTickPlayer(ServerTickEvent.Pre event) {
+        if (playerNestlePlayerMap.isEmpty()) {
+            return;
+        }
+
+
+        var it = playerNestlePlayerMap.entrySet().iterator();
+
+        var players = event.getServer().getPlayerList();
+
+        while (it.hasNext()) {
+            var entry = it.next();
+
+            var src = players.getPlayer(entry.getKey().getFirst());
+            var dst = players.getPlayer(entry.getKey().getSecond());
+            if (src == null || dst == null) {
+                it.remove();
+                continue;
+            }
+
+            NestleUtil.nestleEntityTo(src, dst.position(), NestleEffect.SPEED, 0.5, 1.0, true, 1.0);
+            if (entry.setValue(entry.getValue() - 1) <= 0) {
+                it.remove();
+            }
+        }
+    }
 }

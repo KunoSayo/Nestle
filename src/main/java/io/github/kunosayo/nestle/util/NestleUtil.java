@@ -31,6 +31,21 @@ public final class NestleUtil {
      * @param sendPacket    if true, will send packet to client if entity is player
      */
     public static void nestleEntityTo(LivingEntity livingEntity, Vec3 target, double maxSpeed, double radius, double maxDeltaSpeed, boolean sendPacket) {
+        nestleEntityTo(livingEntity, target, maxSpeed, radius, maxDeltaSpeed, sendPacket, 20.0);
+    }
+
+    /**
+     * Nestle entity to target position with distance <= radius
+     *
+     * @param livingEntity  the entity to push
+     * @param target        the target position
+     * @param maxSpeed      the max speed
+     * @param radius        the target position radius
+     * @param maxDeltaSpeed max delta speed or 0 to push directly
+     * @param sendPacket    if true, will send packet to client if entity is player
+     * @param div           The final speed will div this
+     */
+    public static void nestleEntityTo(LivingEntity livingEntity, Vec3 target, double maxSpeed, double radius, double maxDeltaSpeed, boolean sendPacket, double div) {
         if (livingEntity == null || livingEntity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT)) {
             return;
         }
@@ -68,7 +83,7 @@ public final class NestleUtil {
         }
         double curSpeed = pendingVel.distanceTo(Vec3.ZERO);
         maxDeltaSpeed = Math.min(maxDeltaSpeed, pushVel);
-        double fac = Math.min(curSpeed, maxDeltaSpeed) / curSpeed / 20.0;
+        double fac = Math.min(curSpeed, maxDeltaSpeed) / curSpeed / div;
         var finalImpulse = pendingVel.multiply(fac, fac, fac);
         livingEntity.push(finalImpulse);
         if (sendPacket && livingEntity instanceof ServerPlayer player) {

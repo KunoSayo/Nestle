@@ -28,7 +28,6 @@ public class DesireNestleEffect extends MobEffect {
         List<LivingEntity> entities = level.getNearbyEntities(LivingEntity.class, cond, pLivingEntity, aabb);
 
 
-
         for (LivingEntity livingEntity : entities) {
             NestleUtil.nestleEntityTo(livingEntity, pLivingEntity.position(), 4.5 * (pAmplifier * 0.0625 + 1), 1.5, 4.5 * (pAmplifier * 0.0625 + 1));
         }

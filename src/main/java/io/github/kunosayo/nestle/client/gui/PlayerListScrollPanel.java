@@ -34,17 +34,16 @@ public final class PlayerListScrollPanel extends ScrollPanel {
         this.font = font;
     }
 
-    @Override
-    protected int getContentHeight() {
-        int displayCount = PlayerNestleInfoList.profileList.size() - PlayerNestleInfoList.getFilteredCount();
-        return Math.max(displayCount * PLAYER_BACKGROUND_HEIGHT + (displayCount - 1) * PLAYER_MARGIN_Y, this.bottom - top);
-    }
-
-
     public static void renderPlayerAvatar(GameProfile profile, int x, int y, GuiGraphics graphics) {
         ResourceLocation skin;
         skin = Minecraft.getInstance().getSkinManager().getInsecureSkin(profile).texture();
         PlayerFaceRenderer.draw(graphics, skin, x, y, 32);
+    }
+
+    @Override
+    protected int getContentHeight() {
+        int displayCount = PlayerNestleInfoList.profileList.size() - PlayerNestleInfoList.getFilteredCount();
+        return Math.max(displayCount * PLAYER_BACKGROUND_HEIGHT + (displayCount - 1) * PLAYER_MARGIN_Y, this.bottom - top);
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class NestleEffect extends MobEffect {
-    private static final double SPEED = Math.sqrt(5.0);
+    public static final double SPEED = Math.sqrt(5.0);
 
     public NestleEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
@@ -36,7 +36,7 @@ public class NestleEffect extends MobEffect {
                 .min(Comparator.comparingDouble(o -> o.position().distanceToSqr(pLivingEntity.position())))
                 .ifPresent(livingEntity -> {
 
-                    NestleUtil.nestleEntityTo(pLivingEntity, livingEntity.position(), SPEED, 0.5, 0.0);
+                    NestleUtil.nestleEntityTo(pLivingEntity, livingEntity.position(), SPEED, 0.5, 1.0, true, 1.0);
                 });
 
         return true;

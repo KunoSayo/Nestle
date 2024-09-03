@@ -81,8 +81,8 @@ public class NestleLeadEntity extends Entity implements IEntityWithComplexSpawn 
         }
 
 
-        NestleUtil.nestleEntityTo(fromPlayer, mid, 3.5, 3.0, 3.5, false);
-        NestleUtil.nestleEntityTo(targetPlayer, mid, 3.5, 3.0, 3.5, false);
+        NestleUtil.nestleEntityTo(fromPlayer, mid, 999, 3.0, 3.5, false);
+        NestleUtil.nestleEntityTo(targetPlayer, mid, 999, 3.0, 3.5, false);
     }
 
     @Override
