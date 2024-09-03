@@ -57,11 +57,16 @@ public final class NestleDetailScreen extends Screen {
 
         int leftX = startX + 25;
 
+        long totalTimes = 0;
         for (int i = 0; i < 18; i++) {
 
             int highY = bottomY - (int) Math.round(highSize * info.percents[i]) - 1;
 
-            guiGraphics.fill(leftX, highY, leftX + barWidth, bottomY, 0xff9c2c2c);
+            if (info.percents[i] == 0.0) {
+                guiGraphics.fill(leftX, highY, leftX + barWidth, bottomY, 0xff333333);
+            } else {
+                guiGraphics.fill(leftX, highY, leftX + barWidth, bottomY, 0xff9c2c2c);
+            }
 
 
             if (leftX <= mouseX && mouseX <= leftX + barWidth) {
@@ -80,17 +85,38 @@ public final class NestleDetailScreen extends Screen {
                     guiGraphics.renderTooltip(this.font, msg, mouseX, mouseY);
                 }
             }
+            totalTimes += info.getNestleValue().times[i];
 
             leftX += barInterval;
         }
 
+        // draw nestle value text
         var nestleText = String.valueOf(info.getNestleValue().getValue());
         final int textWidth = font.width(nestleText);
-
         final int nestleTextX = startX + 300 - 16 - textWidth;
-
         guiGraphics.drawString(font, nestleText,
                 nestleTextX, textY, 0xffffffff);
+
+        // draw seconds text
+        var secText = totalTimes + "s";
+        final int secTextWidth = font.width(secText);
+        guiGraphics.drawString(font, secText, startX + 300 - 8 - secTextWidth, startY + 42, 0xffffffff);
+
+
+        {
+            // draw Y-axis value
+            final int highY = bottomY - highSize - 1;
+            if (highY <= mouseY && mouseY <= bottomY) {
+                // show tooltip
+                int delta = mouseY - highY;
+                final String percent = String.format("%d%%", Math.round(Math.max(100.0 - delta * 100.0 / highSize, 0.0)));
+
+
+                guiGraphics.drawString(font, percent, startX + 8, mouseY - font.lineHeight / 2, 0xffffffff);
+
+                guiGraphics.hLine(startX + 23, startX + 300 - 16, mouseY, 0x7f333333);
+            }
+        }
 
         // render :heart:
         guiGraphics.blitSprite(NestleScreen.ICON_SPRITE, 96, 16, 16, 0,
