@@ -15,7 +15,7 @@ import java.util.UUID;
 
 
 public class SyncNestleValuePacket implements CustomPacketPayload {
-    public static final Type<SyncNestleValuePacket> NETWORK_TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Nestle.MOD_ID, "sync_nestle"));
+    public static final Type<SyncNestleValuePacket> NETWORK_TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Nestle.MOD_ID, "sync_nestle_value"));
 
 
     public static final StreamCodec<ByteBuf, SyncNestleValuePacket> STREAM_CODEC = StreamCodec
