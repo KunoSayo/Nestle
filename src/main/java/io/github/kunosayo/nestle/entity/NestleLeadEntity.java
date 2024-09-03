@@ -56,7 +56,7 @@ public class NestleLeadEntity extends Entity implements IEntityWithComplexSpawn 
         var level = level();
         var fromPlayer = level.getPlayerByUUID(from);
         var targetPlayer = level.getPlayerByUUID(target);
-        if (fromPlayer == null || targetPlayer == null) {
+        if (fromPlayer == null || fromPlayer.isSpectator() || targetPlayer == null || targetPlayer.isSpectator()) {
             if (!level.isClientSide) {
                 kill();
             }
