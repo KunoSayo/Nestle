@@ -1,5 +1,6 @@
 {
   "gui.nestle.title": "Nestle list",
+  "gui.nestle.empty": "Nobody is willing to nestle you",
   "gui.nestle_detailed.title": "Detailed Nestle",
   "key.category.nestle": "Nestle",
   "key.nestle.desc": "Nestle",

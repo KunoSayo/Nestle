@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.github.kunosayo.nestle.client.screen.NestleDetailScreen;
 import io.github.kunosayo.nestle.client.screen.NestleScreen;
+import io.github.kunosayo.nestle.data.NestleValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -32,6 +33,12 @@ public final class PlayerListScrollPanel extends ScrollPanel {
         super(client, width, height, top, left, 0);
         PlayerNestleInfoList.setFilter("");
         this.font = font;
+
+        if (Minecraft.getInstance().isSingleplayer()) {
+            PlayerNestleInfoList.updatePlayer(Minecraft.getInstance().player.getUUID(), new NestleValue());
+        } else {
+            PlayerNestleInfoList.removePlayer(Minecraft.getInstance().player.getUUID());
+        }
     }
 
     public static void renderPlayerAvatar(GameProfile profile, int x, int y, GuiGraphics graphics) {

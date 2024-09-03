@@ -14,7 +14,6 @@ public final class PlayerNestleInfoList {
     public static NestleData clientNestleData = new NestleData();
     public static List<PlayerNestleInfo> profileList = new ArrayList<>();
 
-
     private static int filteredCount = 0;
     private static String filter = "";
 
@@ -96,9 +95,6 @@ public final class PlayerNestleInfoList {
 
         nestleValue.values.forEach(PlayerNestleInfoList::updatePlayer);
 
-        if (Minecraft.getInstance().isSingleplayer()) {
-            updatePlayer(player.getUUID(), new NestleValue());
-        }
 
         checkDirty();
     }
@@ -158,6 +154,19 @@ public final class PlayerNestleInfoList {
 
     public static void setDirty() {
         dirty = true;
+    }
+
+    public static void removePlayer(UUID uuid) {
+        dirty |= profileList.removeIf(playerNestleInfo -> {
+            if (playerNestleInfo.gameProfile.getId().equals(uuid)) {
+                if (playerNestleInfo.filtered) {
+                    --filteredCount;
+                }
+                return true;
+            }
+            return false;
+        });
+        dirty |= infoMap.remove(uuid) != null;
     }
 
 

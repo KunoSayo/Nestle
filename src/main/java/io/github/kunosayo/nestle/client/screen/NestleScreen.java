@@ -15,6 +15,8 @@ public final class NestleScreen extends Screen {
     public static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "playerlist");
     public static final ResourceLocation ICON_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "icons");
     private static final Component TITLE = Component.translatable("gui.nestle.title");
+    private static final Component EMPTY_TIP = Component.translatable("gui.nestle.empty");
+
     private static final int SEARCH_BOX_MARGIN_X = 16;
     private static final Component SEARCH_HINT = Component.translatable("gui.socialInteractions.search_hint")
             .withStyle(ChatFormatting.ITALIC)
@@ -22,7 +24,7 @@ public final class NestleScreen extends Screen {
 
     private EditBox searchBox;
     private PlayerListScrollPanel scrollPanel;
-
+    private StringWidget emptyWidget;
     private int startX;
     private int startY;
 
@@ -50,11 +52,19 @@ public final class NestleScreen extends Screen {
         this.addRenderableWidget(searchBox);
         this.addRenderableWidget(scrollPanel);
 
+        final int emptyTextWidth = font.width(EMPTY_TIP.getVisualOrderText());
+        emptyWidget = new StringWidget(startX + (250 - emptyTextWidth) / 2,
+                startY + 125 - font.lineHeight / 2,
+                emptyTextWidth, font.lineHeight,
+                EMPTY_TIP, font);
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        if (PlayerNestleInfoList.profileList.isEmpty()) {
+            emptyWidget.render(guiGraphics, mouseX, mouseY, partialTick);
+        }
     }
 
     @Override
