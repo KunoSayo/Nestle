@@ -6,18 +6,22 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class NestleResistanceBlock extends Block {
+public class NestleResistanceBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<NestleResistanceBlock> CODEC = simpleCodec(NestleResistanceBlock::new);
 
     public NestleResistanceBlock(Properties properties) {
         super(properties);
+
     }
 
     @Override
@@ -33,5 +37,15 @@ public class NestleResistanceBlock extends Block {
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.addEffect(new MobEffectInstance(ModEffects.NESTLE_RESISTANCE_EFFECT, 100));
         }
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
     }
 }

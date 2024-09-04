@@ -23,5 +23,8 @@ public class DataGen {
                 event.includeClient(),
                 new CompassModelProvider(output, existingFileHelper)
         );
+        generator.addProvider(event.includeClient(),
+                new NestleBlocksModelProvider(output, existingFileHelper));
     }
+
 }
