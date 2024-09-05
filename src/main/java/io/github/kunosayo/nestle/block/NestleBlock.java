@@ -11,6 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -21,13 +22,13 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class NestleBlock extends Block {
-    public static BooleanProperty INVERTED = BlockStateProperties.INVERTED;
+public class NestleBlock extends HorizontalDirectionalBlock {
+    public static BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final MapCodec<NestleBlock> CODEC = simpleCodec(NestleBlock::new);
 
     public NestleBlock(BlockBehaviour.Properties properties) {
         super(properties);
-        this.registerDefaultState(this.defaultBlockState().setValue(INVERTED, Boolean.FALSE));
+        this.registerDefaultState(this.defaultBlockState().setValue(POWERED, Boolean.FALSE));
     }
 
     @Override
@@ -41,7 +42,7 @@ public class NestleBlock extends Block {
             return;
         }
         if (entity instanceof LivingEntity livingEntity) {
-            if (state.getValue(INVERTED)) {
+            if (state.getValue(POWERED)) {
                 livingEntity.addEffect(new MobEffectInstance(ModEffects.DESIRE_NESTLE_EFFECT, 100));
             } else {
                 livingEntity.addEffect(new MobEffectInstance(ModEffects.NESTLE_EFFECT, 100));
@@ -53,18 +54,20 @@ public class NestleBlock extends Block {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(INVERTED, Boolean.valueOf(context.getLevel().hasNeighborSignal(context.getClickedPos())));
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection())
+                .setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
 
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         if (!level.isClientSide) {
-            boolean flag = state.getValue(INVERTED);
+            boolean flag = state.getValue(POWERED);
             if (flag != level.hasNeighborSignal(pos)) {
                 if (flag) {
                     level.scheduleTick(pos, this, 4);
                 } else {
-                    level.setBlock(pos, state.cycle(INVERTED), UPDATE_CLIENTS);
+                    level.setBlock(pos, state.cycle(POWERED), UPDATE_CLIENTS);
                 }
             }
         }
@@ -72,13 +75,15 @@ public class NestleBlock extends Block {
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (state.getValue(INVERTED) && !level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, state.cycle(INVERTED), UPDATE_CLIENTS);
+        if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
+            level.setBlock(pos, state.cycle(POWERED), UPDATE_CLIENTS);
         }
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(INVERTED);
+        builder.add(POWERED);
+        builder.add(FACING);
     }
+
 }

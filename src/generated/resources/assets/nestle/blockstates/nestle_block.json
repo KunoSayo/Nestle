@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,powered=false": {
+      "model": "nestle:block/nestle_block",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "nestle:block/nestle_block_powered",
+      "y": 90
+    },
+    "facing=north,powered=false": {
+      "model": "nestle:block/nestle_block"
+    },
+    "facing=north,powered=true": {
+      "model": "nestle:block/nestle_block_powered"
+    },
+    "facing=south,powered=false": {
+      "model": "nestle:block/nestle_block",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "nestle:block/nestle_block_powered",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "nestle:block/nestle_block",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "nestle:block/nestle_block_powered",
+      "y": 270
+    }
+  }
+}
