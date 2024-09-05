@@ -22,6 +22,7 @@ import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nullable;
 
@@ -48,6 +49,8 @@ public final class Nestle {
         NeoForge.EVENT_BUS.register(this);
 
         modContainer.registerConfig(ModConfig.Type.SERVER, NestleConfig.NESTLE_CONFIG.getRight());
+
+        LogManager.getLogger().info("Ciallo～(∠・ω< )⌒★");
     }
 
 
