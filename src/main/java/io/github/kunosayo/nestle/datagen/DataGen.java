@@ -16,15 +16,19 @@ public class DataGen {
         var generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-
+        var provider = event.getLookupProvider();
 
         // other providers here
         generator.addProvider(
                 event.includeClient(),
                 new CompassModelProvider(output, existingFileHelper)
         );
-        generator.addProvider(event.includeClient(),
-                new NestleBlocksModelProvider(output, existingFileHelper));
+
+        generator.addProvider(event.includeClient(), new NestleBlocksModelProvider(output, existingFileHelper));
+
+        generator.addProvider(event.includeServer(), new GenLootTable(output, provider));
+
+        generator.addProvider(event.includeServer(), new NestleBlockTagsProvider(output, provider, existingFileHelper));
     }
 
 }

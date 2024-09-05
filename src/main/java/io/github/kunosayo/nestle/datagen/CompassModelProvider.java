@@ -3,7 +3,6 @@ package io.github.kunosayo.nestle.datagen;
 import io.github.kunosayo.nestle.Nestle;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.client.model.generators.loaders.ItemLayerModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class CompassModelProvider extends ItemModelProvider {

@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -31,6 +32,7 @@ public class NestleBlock extends HorizontalDirectionalBlock {
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, Boolean.FALSE));
     }
 
+
     @Override
     public MapCodec<NestleBlock> codec() {
         return CODEC;
@@ -49,7 +51,6 @@ public class NestleBlock extends HorizontalDirectionalBlock {
             }
         }
     }
-
 
     @Nullable
     @Override
@@ -74,6 +75,11 @@ public class NestleBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
+        super.spawnDestroyParticles(level, player, pos, state);
+    }
+
+    @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
             level.setBlock(pos, state.cycle(POWERED), UPDATE_CLIENTS);
@@ -85,5 +91,6 @@ public class NestleBlock extends HorizontalDirectionalBlock {
         builder.add(POWERED);
         builder.add(FACING);
     }
+
 
 }

@@ -2,9 +2,7 @@ package io.github.kunosayo.nestle.network;
 
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.client.gui.PlayerNestleInfoList;
-import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

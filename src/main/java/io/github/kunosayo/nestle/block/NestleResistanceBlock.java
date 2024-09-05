@@ -48,4 +48,5 @@ public class NestleResistanceBlock extends HorizontalDirectionalBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
     }
+
 }

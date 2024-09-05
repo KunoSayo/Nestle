@@ -9,10 +9,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 public final class NestleDetailScreen extends Screen {
     private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "detail_chart");
     private static final Component TITLE = Component.translatable("gui.nestle_detailed.title");

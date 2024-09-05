@@ -3,7 +3,6 @@ package io.github.kunosayo.nestle.listener;
 import com.mojang.datafixers.util.Pair;
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.config.NestleConfig;
-import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.effect.NestleEffect;
 import io.github.kunosayo.nestle.entity.NestleLeadEntity;
 import io.github.kunosayo.nestle.entity.data.NestleData;
@@ -23,10 +22,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
 
 @EventBusSubscriber(modid = Nestle.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class GameListener {
