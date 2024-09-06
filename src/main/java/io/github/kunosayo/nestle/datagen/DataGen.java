@@ -29,6 +29,8 @@ public class DataGen {
         generator.addProvider(event.includeServer(), new GenLootTable(output, provider));
 
         generator.addProvider(event.includeServer(), new NestleBlockTagsProvider(output, provider, existingFileHelper));
+
+        generator.addProvider(event.includeServer(), new NestleAdvancementProvider(output, provider, existingFileHelper));
     }
 
 }

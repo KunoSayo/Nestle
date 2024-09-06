@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "nestle_require": {
+      "conditions": {
+        "require": 1
+      },
+      "trigger": "nestle:nestle_value_require"
+    }
+  },
+  "display": {
+    "background": "nestle:textures/block/nestle_block_top_powered.png",
+    "description": {
+      "translate": "advancements.nestle.nestle_advancement.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "nestle:nestle"
+    },
+    "title": {
+      "translate": "advancements.nestle.nestle_advancement.title"
+    }
+  },
+  "requirements": [
+    [
+      "nestle_require"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

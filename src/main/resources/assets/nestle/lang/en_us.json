@@ -1,4 +1,6 @@
 {
+  "advancements.nestle.nestle_advancement.title": "Nestle",
+  "advancements.nestle.nestle_advancement.description": "At least has 1 nestle value to any player",
   "gui.nestle.title": "Nestle list",
   "gui.nestle.empty": "Nobody is willing to nestle you",
   "gui.nestle_detailed.title": "Detailed Nestle",

@@ -1,4 +1,6 @@
 {
+  "advancements.nestle.nestle_advancement.title": "帖帖",
+  "advancements.nestle.nestle_advancement.description": "和任意玩家贴贴值至少为 1",
   "gui.nestle.title": "贴贴列表",
   "gui.nestle.empty": "没有人愿意和你贴贴",
   "gui.nestle_detailed.title": "贴贴详细",

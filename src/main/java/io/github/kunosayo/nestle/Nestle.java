@@ -46,6 +46,7 @@ public final class Nestle {
         ModBlocks.BLOCKS.register(modEventBus);
         ModCreativeTab.TABS.register(modEventBus);
         ModData.ATTACHMENT_TYPES.register(modEventBus);
+        ModAdvancements.TRIGGER_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.register(this);
 
         modContainer.registerConfig(ModConfig.Type.SERVER, NestleConfig.NESTLE_CONFIG.getRight());
@@ -72,9 +73,11 @@ public final class Nestle {
         }
         var packets = new UpdateNestleValuePacket[n];
         var datas = new NestleData[n];
+        var maxValues = new long[n];
         for (int i = 0; i < n; i++) {
             packets[i] = new UpdateNestleValuePacket();
             datas[i] = players.get(i).getData(NestleData.ATTACHMENT_TYPE);
+            maxValues[i] = Long.MIN_VALUE;
         }
         final int farDelta = NestleConfig.NESTLE_CONFIG.getLeft().farAwayNestleValue.get();
         for (int i = 0; i < players.size(); ++i) {
@@ -88,11 +91,13 @@ public final class Nestle {
                 var bPacket = packets[j];
 
                 int delta;
+                long aValue;
+                long bValue;
                 if (a.level() != b.level()) {
                     delta = farDelta;
 
-                    aData.addDifValue(b.getUUID(), delta);
-                    bData.addDifValue(a.getUUID(), delta);
+                    aValue = aData.addDifValue(b.getUUID(), delta).getValue();
+                    bValue = bData.addDifValue(a.getUUID(), delta).getValue();
 
                     aPacket.getDifferentWorld().add(new UpdateNestleValuePacket.DifferentWorldUpdate(b.getUUID(), delta));
                     bPacket.getDifferentWorld().add(new UpdateNestleValuePacket.DifferentWorldUpdate(a.getUUID(), delta));
@@ -101,12 +106,15 @@ public final class Nestle {
                     delta = NestleConfig.NESTLE_CONFIG.getLeft().getValueFromDistance((long) Math.ceil(disSqr));
                     int idx = NestleValue.getIndex(disSqr);
 
-                    aData.addValue(b.getUUID(), delta, idx);
-                    bData.addValue(a.getUUID(), delta, idx);
+                    aValue = aData.addValue(b.getUUID(), delta, idx).getValue();
+                    bValue = bData.addValue(a.getUUID(), delta, idx).getValue();
 
                     aPacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(b.getUUID(), delta, idx));
                     bPacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(a.getUUID(), delta, idx));
                 }
+
+                maxValues[i] = Math.max(maxValues[i], aValue);
+                maxValues[j] = Math.max(maxValues[j], bValue);
             }
         }
 
@@ -115,6 +123,8 @@ public final class Nestle {
             var updatePacket = packets[i];
             // always valid packet for n >= 2
             PacketDistributor.sendToPlayer(a, updatePacket);
+
+            ModAdvancements.NESTLE_TRIGGER.get().trigger(a, maxValues[i]);
 
         }
 
