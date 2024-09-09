@@ -2,6 +2,7 @@ package io.github.kunosayo.nestle.listener;
 
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.config.NestleConfig;
+import io.github.kunosayo.nestle.network.NestlePacket;
 import io.github.kunosayo.nestle.network.SyncNestleDataPacket;
 import io.github.kunosayo.nestle.network.SyncNestleValuePacket;
 import io.github.kunosayo.nestle.network.UpdateNestleValuePacket;
@@ -35,6 +36,7 @@ public class ModListener {
         registrar.playToClient(SyncNestleDataPacket.NETWORK_TYPE, SyncNestleDataPacket.STREAM_CODEC, SyncNestleDataPacket::clientHandler);
         registrar.playToClient(UpdateNestleValuePacket.NETWORK_TYPE, UpdateNestleValuePacket.STREAM_CODEC, UpdateNestleValuePacket::clientHandler);
         registrar.playToClient(SyncNestleValuePacket.NETWORK_TYPE, SyncNestleValuePacket.STREAM_CODEC, SyncNestleValuePacket::clientValueHandler);
+        registrar.playToServer(NestlePacket.NETWORK_TYPE, NestlePacket.STREAM_CODEC, NestlePacket::serverHandler);
     }
 
 }

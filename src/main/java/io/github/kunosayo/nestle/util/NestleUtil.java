@@ -1,10 +1,14 @@
 package io.github.kunosayo.nestle.util;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.kunosayo.nestle.init.ModEffects;
+import io.github.kunosayo.nestle.listener.GameListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.UUID;
 
 public final class NestleUtil {
 
@@ -95,5 +99,10 @@ public final class NestleUtil {
         if (sendPacket && livingEntity instanceof ServerPlayer player) {
             player.hurtMarked = true;
         }
+    }
+
+    public static void playerNestlePlayer(UUID src, UUID dst, int ticks) {
+        GameListener.playerNestlePlayerMap.put(new Pair<>(src, dst), 10);
+
     }
 }

@@ -15,6 +15,7 @@ public class NestleConfig {
     public final ModConfigSpec.ConfigValue<Integer> damageApportionRequire;
     public final ModConfigSpec.ConfigValue<Integer> damagePlayerValueReduce;
     public final ModConfigSpec.ConfigValue<Integer> nestleRadius;
+    public final ModConfigSpec.ConfigValue<Integer> nestleFreeRequire;
     public final ModConfigSpec.ConfigValue<List<? extends String>> nestleValues;
     /**
      * Distance - Value
@@ -27,6 +28,8 @@ public class NestleConfig {
                 .define("far_away_nestle_value", 1);
         damageApportionRequire = builder.comment("The nestle value to apportion the damage")
                 .define("damage_apportion_require", 720000);
+        nestleFreeRequire = builder.comment("The nestle value to nestle freely")
+                .define("nestle_free_require", 720000);
         // about half hour when 5m
         damagePlayerValueReduce = builder.comment("The nestle value to minus if damage player and the value to add if nestle player")
                 .define("damage_apportion_require", 360000);

@@ -1,9 +1,8 @@
 package io.github.kunosayo.nestle.item;
 
-import com.mojang.datafixers.util.Pair;
 import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.entity.data.NestleData;
-import io.github.kunosayo.nestle.listener.GameListener;
+import io.github.kunosayo.nestle.util.NestleUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +33,8 @@ public class NestleItem extends Item {
         itemStack.consume(1, player);
 
         if (!level.isClientSide) {
-            GameListener.playerNestlePlayerMap.put(new Pair<>(player.getUUID(), targetPlayer.getUUID()), 10);
+
+            NestleUtil.playerNestlePlayer(player.getUUID(), targetPlayer.getUUID(), 10);
             NestleData.addValue(player, targetPlayer, NestleConfig.NESTLE_CONFIG.getLeft().damagePlayerValueReduce.get());
 
         }
@@ -42,7 +42,7 @@ public class NestleItem extends Item {
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
     }
 
-    public Player getPlayerPointingAt(Player player, Level level) {
+    public static Player getPlayerPointingAt(Player player, Level level) {
         double distance = NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get();
 
         Vec3 startVec = player.getEyePosition();
