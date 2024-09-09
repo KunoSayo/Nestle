@@ -24,7 +24,7 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
             .canSpawnFarFromPlayer()
             .build("nestle_lead_normal_entity");
     /**
-     * The entity used nestle lead
+     * The player entity used nestle lead
      */
     public UUID from;
     /**
@@ -68,7 +68,7 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
         super.tick();
 
         var level = level();
-        var fromPlayer = level.getPlayerByUUID(uuid);
+        var fromPlayer = level.getPlayerByUUID(from);
 
         if (target == null && level.isClientSide) {
             if (level.getEntity(targetID) instanceof LivingEntity l) {

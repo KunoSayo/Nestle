@@ -159,8 +159,10 @@ public class GameListener {
                 NestleLeadNormalEntity.inParamFrom = player;
                 NestleLeadNormalEntity.inParamTarget = target;
 
-
                 NestleLeadNormalEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
+
+                NestleLeadNormalEntity.inParamFrom = null;
+                NestleLeadNormalEntity.inParamTarget = null;
             }
         }
     }
