@@ -4,7 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.effect.NestleEffect;
-import io.github.kunosayo.nestle.entity.NestleLeadEntity;
+import io.github.kunosayo.nestle.entity.NestleLeadNormalEntity;
+import io.github.kunosayo.nestle.entity.NestleLeadPlayerEntity;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.github.kunosayo.nestle.entity.data.NestleLeadData;
 import io.github.kunosayo.nestle.init.ModEffects;
@@ -139,12 +140,24 @@ public class GameListener {
                 NestleLeadData.nestleTwo(player, target);
 
                 // Set target and spawn entity.
-                NestleLeadEntity.inParamFrom = player.getUUID();
-                NestleLeadEntity.inParamTarget = entity.getUUID();
+                NestleLeadPlayerEntity.inParamFrom = player.getUUID();
+                NestleLeadPlayerEntity.inParamTarget = entity.getUUID();
 
 
-                NestleLeadEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
+                NestleLeadPlayerEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
+            } else if (entity instanceof LivingEntity target) {
+                if (NestleLeadData.isNestle(player, target)) {
+                    NestleLeadData.removeTwo(player, target);
+                    return;
+                }
+                NestleLeadData.nestleTwo(player, target);
 
+                // Set target and spawn entity.
+                NestleLeadNormalEntity.inParamFrom = player;
+                NestleLeadNormalEntity.inParamTarget = target;
+
+
+                NestleLeadNormalEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
             }
         }
     }

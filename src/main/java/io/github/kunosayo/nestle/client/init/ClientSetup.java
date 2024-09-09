@@ -3,7 +3,8 @@ package io.github.kunosayo.nestle.client.init;
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.client.input.NestleKey;
 import io.github.kunosayo.nestle.client.render.NestleLeadEntityRenderer;
-import io.github.kunosayo.nestle.entity.NestleLeadEntity;
+import io.github.kunosayo.nestle.entity.NestleLeadNormalEntity;
+import io.github.kunosayo.nestle.entity.NestleLeadPlayerEntity;
 import io.github.kunosayo.nestle.init.ModItems;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -25,7 +26,8 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void onRegisterRenderer(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(NestleLeadEntity.ENTITY_TYPE, NestleLeadEntityRenderer::new);
+        event.registerEntityRenderer(NestleLeadPlayerEntity.ENTITY_TYPE, NestleLeadEntityRenderer::new);
+        event.registerEntityRenderer(NestleLeadNormalEntity.ENTITY_TYPE, NestleLeadEntityRenderer::new);
     }
 
     @SubscribeEvent

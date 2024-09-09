@@ -21,6 +21,22 @@ public class NestleItem extends Item {
         super(new Properties().stacksTo(64));
     }
 
+    public static Player getPlayerPointingAt(Player player, Level level) {
+        double distance = NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get();
+
+        Vec3 startVec = player.getEyePosition();
+        Vec3 lookVec = player.getLookAngle();
+        Vec3 endVec = startVec.add(lookVec.scale(distance));
+
+        EntityHitResult result = ProjectileUtil.getEntityHitResult(level, player, startVec, endVec, player.getBoundingBox().expandTowards(lookVec.scale(distance)), entity -> entity != player);
+        if (result != null && result.getType() == HitResult.Type.ENTITY && result.getEntity() instanceof Player targetPlayer && player.hasLineOfSight(targetPlayer)) {
+
+            return targetPlayer;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack itemStack = player.getItemInHand(usedHand);
@@ -40,22 +56,6 @@ public class NestleItem extends Item {
         }
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
-    }
-
-    public static Player getPlayerPointingAt(Player player, Level level) {
-        double distance = NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get();
-
-        Vec3 startVec = player.getEyePosition();
-        Vec3 lookVec = player.getLookAngle();
-        Vec3 endVec = startVec.add(lookVec.scale(distance));
-
-        EntityHitResult result = ProjectileUtil.getEntityHitResult(level, player, startVec, endVec, player.getBoundingBox().expandTowards(lookVec.scale(distance)), entity -> entity != player);
-        if (result != null && result.getType() == HitResult.Type.ENTITY && result.getEntity() instanceof Player targetPlayer && player.hasLineOfSight(targetPlayer)) {
-
-            return targetPlayer;
-        } else {
-            return null;
-        }
     }
 }
 

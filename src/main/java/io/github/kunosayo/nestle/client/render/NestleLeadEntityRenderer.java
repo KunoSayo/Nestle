@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -56,22 +56,22 @@ public class NestleLeadEntityRenderer extends EntityRenderer<NestleLeadEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(NestleLeadEntity pEntity) {
+    public ResourceLocation getTextureLocation(NestleLeadEntity entity) {
         return null;
     }
 
+
     @Override
     public void render(NestleLeadEntity pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight) {
-        var level = pEntity.level();
-        var fromPlayer = level.getPlayerByUUID(pEntity.from);
-        var targetPlayer = level.getPlayerByUUID(pEntity.target);
+        var fromPlayer = pEntity.getSrc();
+        var targetPlayer = pEntity.getDst();
         if (fromPlayer == null || targetPlayer == null) {
             return;
         }
         renderLeash(pEntity, fromPlayer, pPartialTick, pPoseStack, pBufferSource, targetPlayer);
     }
 
-    private void renderLeash(Entity self, Player pEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, Player pLeashHolder) {
+    private void renderLeash(Entity self, LivingEntity pEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, LivingEntity pLeashHolder) {
         pPoseStack.pushPose();
 
 
