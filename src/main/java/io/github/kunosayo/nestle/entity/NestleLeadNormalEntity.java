@@ -35,7 +35,9 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
 
     public NestleLeadNormalEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.from = inParamFrom.getUUID();
+        if (inParamFrom != null) {
+            this.from = inParamFrom.getUUID();
+        }
         this.target = inParamTarget;
         this.noCulling = true;
     }
