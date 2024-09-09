@@ -137,7 +137,6 @@ public class GameListener {
                 event.setCancellationResult(InteractionResult.SUCCESS);
                 if (NestleLeadData.isNestle(player, target)) {
                     NestleLeadData.removeTwo(player, target);
-
                     return;
                 }
                 NestleLeadData.nestleTwo(player, target);
