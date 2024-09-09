@@ -68,6 +68,12 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
         super.tick();
 
         var level = level();
+        if (from == null) {
+            if (!level.isClientSide) {
+                kill();
+            }
+            return;
+        }
         var fromPlayer = level.getPlayerByUUID(from);
 
         if (target == null && level.isClientSide) {
