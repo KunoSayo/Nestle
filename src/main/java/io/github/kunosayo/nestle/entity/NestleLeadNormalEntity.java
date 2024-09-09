@@ -11,6 +11,8 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.UUID;
+
 public class NestleLeadNormalEntity extends NestleLeadEntity {
     public static Player inParamFrom;
     public static LivingEntity inParamTarget;
@@ -24,22 +26,23 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
     /**
      * The entity used nestle lead
      */
-    public Player from;
+    public UUID from;
     /**
      * The entity
      */
     public LivingEntity target;
+    private int targetID;
 
     public NestleLeadNormalEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.from = inParamFrom;
+        this.from = inParamFrom.getUUID();
         this.target = inParamTarget;
         this.noCulling = true;
     }
 
     @Override
     public LivingEntity getSrc() {
-        return from;
+        return this.level().getPlayerByUUID(from);
     }
 
     @Override
@@ -63,14 +66,21 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
         super.tick();
 
         var level = level();
-        if (this.from == null || this.target == null || !this.from.isAlive() || !this.target.isAlive() || from.isSpectator()) {
+        var fromPlayer = level.getPlayerByUUID(uuid);
+
+        if (target == null && level.isClientSide) {
+            if (level.getEntity(targetID) instanceof LivingEntity l) {
+                target = l;
+            }
+        }
+
+        if (fromPlayer == null || this.target == null || !fromPlayer.isAlive() || !this.target.isAlive() || fromPlayer.isSpectator()) {
             if (!level.isClientSide) {
                 kill();
             }
             return;
         }
 
-        var fromPlayer = from;
 
         var mid = fromPlayer.position().add(target.position()).multiply(0.5, 0.5, 0.5);
         if (fromPlayer.distanceToSqr(target) > 225.0) {
@@ -111,17 +121,16 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
 
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
-        buffer.writeInt(from.getId());
+        buffer.writeUUID(from);
         buffer.writeInt(target.getId());
     }
 
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
-        int fromID = additionalData.readInt();
+        var fromID = additionalData.readUUID();
         int targetID = additionalData.readInt();
-        if (this.level().getEntity(fromID) instanceof Player p) {
-            this.from = p;
-        }
+        this.from = fromID;
+        this.targetID = targetID;
         if (this.level().getEntity(targetID) instanceof LivingEntity l) {
             this.target = l;
         }
