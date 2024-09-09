@@ -12,6 +12,7 @@ import io.github.kunosayo.nestle.init.ModEffects;
 import io.github.kunosayo.nestle.init.ModItems;
 import io.github.kunosayo.nestle.util.NestleUtil;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -129,12 +130,14 @@ public class GameListener {
         if (player.level().isClientSide) {
             return;
         }
+
         if (ModItems.NESTLE_LEAD.is(event.getItemStack().getItemHolder())) {
             var entity = event.getTarget();
             if (entity instanceof Player target) {
-
+                event.setCancellationResult(InteractionResult.SUCCESS);
                 if (NestleLeadData.isNestle(player, target)) {
                     NestleLeadData.removeTwo(player, target);
+
                     return;
                 }
                 NestleLeadData.nestleTwo(player, target);
@@ -146,6 +149,7 @@ public class GameListener {
 
                 NestleLeadPlayerEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
             } else if (entity instanceof LivingEntity target) {
+                event.setCancellationResult(InteractionResult.SUCCESS);
                 if (NestleLeadData.isNestle(player, target)) {
                     NestleLeadData.removeTwo(player, target);
                     return;
