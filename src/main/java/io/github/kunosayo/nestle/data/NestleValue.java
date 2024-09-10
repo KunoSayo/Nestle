@@ -30,6 +30,7 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
                 }
             }, nestleValue -> nestleValue.times, NestleValue::new
     );
+    public static final int DIFFERENT_INDEX = 17;
     // 2^0 ... 2^15,  far away.., different world
     public int[] times = new int[18];
     private long value;

@@ -73,11 +73,9 @@ public final class Nestle {
         }
         var packets = new UpdateNestleValuePacket[n];
         var datas = new NestleData[n];
-        var maxValues = new long[n];
         for (int i = 0; i < n; i++) {
             packets[i] = new UpdateNestleValuePacket();
             datas[i] = players.get(i).getData(NestleData.ATTACHMENT_TYPE);
-            maxValues[i] = Long.MIN_VALUE;
         }
         final int farDelta = NestleConfig.NESTLE_CONFIG.getLeft().farAwayNestleValue.get();
         for (int i = 0; i < players.size(); ++i) {
@@ -91,13 +89,13 @@ public final class Nestle {
                 var bPacket = packets[j];
 
                 int delta;
-                long aValue;
-                long bValue;
+                NestleValue aValue;
+                NestleValue bValue;
                 if (a.level() != b.level()) {
                     delta = farDelta;
 
-                    aValue = aData.addDifValue(b.getUUID(), delta).getValue();
-                    bValue = bData.addDifValue(a.getUUID(), delta).getValue();
+                    aValue = aData.addDifValue(b.getUUID(), delta);
+                    bValue = bData.addDifValue(a.getUUID(), delta);
 
                     aPacket.getDifferentWorld().add(new UpdateNestleValuePacket.DifferentWorldUpdate(b.getUUID(), delta));
                     bPacket.getDifferentWorld().add(new UpdateNestleValuePacket.DifferentWorldUpdate(a.getUUID(), delta));
@@ -106,15 +104,17 @@ public final class Nestle {
                     delta = NestleConfig.NESTLE_CONFIG.getLeft().getValueFromDistance((long) Math.ceil(disSqr));
                     int idx = NestleValue.getIndex(disSqr);
 
-                    aValue = aData.addValue(b.getUUID(), delta, idx).getValue();
-                    bValue = bData.addValue(a.getUUID(), delta, idx).getValue();
+                    aValue = aData.addValue(b.getUUID(), delta, idx);
+                    bValue = bData.addValue(a.getUUID(), delta, idx);
 
                     aPacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(b.getUUID(), delta, idx));
                     bPacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(a.getUUID(), delta, idx));
                 }
 
-                maxValues[i] = Math.max(maxValues[i], aValue);
-                maxValues[j] = Math.max(maxValues[j], bValue);
+
+                ModAdvancements.NESTLE_TRIGGER.get().trigger(a, aValue);
+                ModAdvancements.NESTLE_TRIGGER.get().trigger(b, bValue);
+
             }
         }
 
@@ -124,7 +124,6 @@ public final class Nestle {
             // always valid packet for n >= 2
             PacketDistributor.sendToPlayer(a, updatePacket);
 
-            ModAdvancements.NESTLE_TRIGGER.get().trigger(a, maxValues[i]);
 
         }
 

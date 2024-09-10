@@ -1,26 +1,25 @@
 {
+  "parent": "nestle:nestle_close_advancement",
   "criteria": {
     "nestle_require": {
       "conditions": {
         "require": {
-          "require": 1
+          "require": 0
         }
       },
       "trigger": "nestle:nestle_value_require"
     }
   },
   "display": {
-    "background": "nestle:textures/block/nestle_block_top_powered.png",
     "description": {
-      "translate": "advancements.nestle.nestle_advancement.description"
+      "translate": "advancements.nestle.nestle_free_advancement.description"
     },
-    "hidden": true,
     "icon": {
       "count": 1,
-      "id": "nestle:nestle"
+      "id": "minecraft:pink_wool"
     },
     "title": {
-      "translate": "advancements.nestle.nestle_advancement.title"
+      "translate": "advancements.nestle.nestle_free_advancement.title"
     }
   },
   "requirements": [

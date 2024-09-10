@@ -2,6 +2,7 @@ package io.github.kunosayo.nestle.advancements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.kunosayo.nestle.data.NestleValue;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,8 +11,14 @@ public class NestleValueRequireCriterionTrigger extends SimpleCriterionTrigger<N
 
     public static final Codec<NestleValueRequireTriggerInstance> CODEC = RecordCodecBuilder
             .create(instance ->
-                    instance.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(NestleValueRequireTriggerInstance::player),
-                                    Codec.LONG.fieldOf("require").forGetter(NestleValueRequireTriggerInstance::require))
+                    instance.group(
+                                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(NestleValueRequireTriggerInstance::player),
+                                    Codec.either(
+                                            Codec.pair(Codec.INT.fieldOf("distance").codec(),
+                                                    Codec.INT.fieldOf("seconds").codec()),
+                                            Codec.LONG.fieldOf("require").codec()
+                                    ).fieldOf("require").forGetter(NestleValueRequireTriggerInstance::distanceOrValueRequire)
+                            )
                             .apply(instance, NestleValueRequireTriggerInstance::new)
             );
 
@@ -21,7 +28,7 @@ public class NestleValueRequireCriterionTrigger extends SimpleCriterionTrigger<N
     }
 
 
-    public void trigger(ServerPlayer player, long value) {
+    public void trigger(ServerPlayer player, NestleValue value) {
         this.trigger(player,
                 // The condition checker method within the SimpleCriterionTrigger.SimpleInstance subclass
                 triggerInstance -> triggerInstance.matches(value)

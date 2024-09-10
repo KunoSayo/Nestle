@@ -1,26 +1,26 @@
 {
+  "parent": "nestle:nestle_advancement",
   "criteria": {
     "nestle_require": {
       "conditions": {
         "require": {
-          "require": 1
+          "distance": 0,
+          "seconds": 1
         }
       },
       "trigger": "nestle:nestle_value_require"
     }
   },
   "display": {
-    "background": "nestle:textures/block/nestle_block_top_powered.png",
     "description": {
-      "translate": "advancements.nestle.nestle_advancement.description"
+      "translate": "advancements.nestle.nestle_close_advancement.description"
     },
-    "hidden": true,
     "icon": {
       "count": 1,
-      "id": "nestle:nestle"
+      "id": "minecraft:cobweb"
     },
     "title": {
-      "translate": "advancements.nestle.nestle_advancement.title"
+      "translate": "advancements.nestle.nestle_close_advancement.title"
     }
   },
   "requirements": [
