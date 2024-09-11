@@ -61,15 +61,9 @@ public final class Nestle {
     }
 
     @SubscribeEvent
-    public void onServerStaring(RegisterCommandsEvent event) {
+    public void onRegisterCommand(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(
-                Commands.literal(Nestle.MOD_ID).then(
-                        Commands.literal("hello")
-                                .requires((commandSourceStack -> commandSourceStack.hasPermission(2)))
-                                .executes(NestleCommand.INSTANCE)
-                )
-        );
+        NestleCommand.registerCommand(dispatcher);
     }
 
 
@@ -141,10 +135,7 @@ public final class Nestle {
             var updatePacket = packets[i];
             // always valid packet for n >= 2
             PacketDistributor.sendToPlayer(a, updatePacket);
-
-
         }
-
     }
 
 

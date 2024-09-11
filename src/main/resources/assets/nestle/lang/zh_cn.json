@@ -9,6 +9,7 @@
   "advancements.nestle.nestle_neg_advancement.description": "和任意玩家的贴贴值为负数",
   "advancements.nestle.nestle_free_advancement.title": "免费贴贴",
   "advancements.nestle.nestle_free_advancement.description": "和任意玩家的贴贴值到达免费贴贴标准",
+  "commands.nestle.unlink.success": "已断开 %s 个连接",
   "gui.nestle.title": "贴贴列表",
   "gui.nestle.empty": "没有人愿意和你贴贴",
   "gui.nestle_detailed.title": "贴贴详细",
