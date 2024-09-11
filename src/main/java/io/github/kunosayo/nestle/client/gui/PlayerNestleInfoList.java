@@ -185,8 +185,11 @@ public final class PlayerNestleInfoList {
 
 
         public void setGameProfile(GameProfile gameProfile) {
-            this.gameProfile = gameProfile;
-            checkFilter();
+            Minecraft.getInstance().execute(() -> {
+                this.gameProfile = gameProfile;
+                checkFilter();
+            });
+
         }
 
         public boolean checkFilter() {
