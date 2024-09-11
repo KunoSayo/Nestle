@@ -1,11 +1,16 @@
 package io.github.kunosayo.nestle;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.github.kunosayo.nestle.command.NestleCommand;
 import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import io.github.kunosayo.nestle.init.*;
 import io.github.kunosayo.nestle.network.SyncNestleDataPacket;
 import io.github.kunosayo.nestle.network.UpdateNestleValuePacket;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,9 +20,11 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -42,7 +49,6 @@ public final class Nestle {
         ModEffects.MOB_EFFECTS.register(modEventBus);
         ModEffects.POTIONS.register(modEventBus);
 
-
         ModBlocks.BLOCKS.register(modEventBus);
         ModCreativeTab.TABS.register(modEventBus);
         ModData.ATTACHMENT_TYPES.register(modEventBus);
@@ -52,6 +58,18 @@ public final class Nestle {
         modContainer.registerConfig(ModConfig.Type.SERVER, NestleConfig.NESTLE_CONFIG.getRight());
 
         LogManager.getLogger().info("Ciallo～(∠・ω< )⌒★");
+    }
+
+    @SubscribeEvent
+    public void onServerStaring(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(
+                Commands.literal(Nestle.MOD_ID).then(
+                        Commands.literal("hello")
+                                .requires((commandSourceStack -> commandSourceStack.hasPermission(2)))
+                                .executes(NestleCommand.INSTANCE)
+                )
+        );
     }
 
 
