@@ -44,5 +44,12 @@
   "block.nestle.nestle_resistance_block": "Nestle Resistance Block",
   "tooltip.nestle.stat.normal": "%1$ss in %3$s blocks (%2$s%%)",
   "tooltip.nestle.stat.far": "%1$ss farther than %3$s blocks (%2$s%%)",
-  "tooltip.nestle.stat.different": "%1$ss in different worlds (%2$s%%)"
+  "tooltip.nestle.stat.different": "%1$ss in different worlds (%2$s%%)",
+  "effect.nestle.disgust_nestle": "Disgust Nestle",
+  "item.minecraft.potion.effect.disgust_nestle_potion": "Potion of Disgust Nestle",
+  "item.minecraft.potion.effect.long_disgust_nestle_potion": "Potion of Disgust Nestle",
+  "item.minecraft.splash_potion.effect.disgust_nestle_potion": "Splash Potion of Disgust Nestle",
+  "item.minecraft.splash_potion.effect.long_disgust_nestle_potion": "Splash Potion of Disgust Nestle",
+  "item.minecraft.lingering_potion.effect.disgust_nestle_potion": "Lingering Potion of Disgust Nestle",
+  "item.minecraft.lingering_potion.effect.long_disgust_nestle_potion": "Lingering Potion of Disgust Nestle"
 }

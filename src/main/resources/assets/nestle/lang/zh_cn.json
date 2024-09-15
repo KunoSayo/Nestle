@@ -16,9 +16,9 @@
   "key.category.nestle": "贴贴",
   "key.nestle.desc": "贴贴",
   "item_group.nestle.name": "贴贴",
-  "item.nestle.nestle": "贴贴",
   "item.nestle.nestle_block": "贴贴方块",
   "item.nestle.nestle_resistance_block": "贴贴抗性方块",
+  "item.nestle.nestle": "贴贴",
   "item.nestle.nestle_lead": "贴贴拴绳",
   "item.nestle.nestle_compass": "贴贴指针",
   "item.minecraft.tipped_arrow.effect.nestle_potion": "贴贴之箭",
@@ -44,5 +44,12 @@
   "block.nestle.nestle_resistance_block": "贴贴抗性方块",
   "tooltip.nestle.stat.normal": "%1$s 秒 %3$s 格内 (%2$s%%)",
   "tooltip.nestle.stat.far": "%1$s 秒 %3$s 格外 (%2$s%%)",
-  "tooltip.nestle.stat.different": "%1$s 秒 异世界 (%2$s%%)"
+  "tooltip.nestle.stat.different": "%1$s 秒 异世界 (%2$s%%)",
+  "effect.nestle.disgust_nestle": "厌恶贴贴",
+  "item.minecraft.potion.effect.disgust_nestle_potion": "厌恶贴贴药水",
+  "item.minecraft.potion.effect.long_disgust_nestle_potion": "厌恶贴贴药水",
+  "item.minecraft.splash_potion.effect.disgust_nestle_potion": "喷溅型厌恶贴贴药水",
+  "item.minecraft.splash_potion.effect.long_disgust_nestle_potion": "喷溅型厌恶贴贴药水",
+  "item.minecraft.lingering_potion.effect.disgust_nestle_potion": "滞留型厌恶贴贴药水",
+  "item.minecraft.lingering_potion.effect.long_disgust_nestle_potion": "滞留型厌恶贴贴药水"
 }

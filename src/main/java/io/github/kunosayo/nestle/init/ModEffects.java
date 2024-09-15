@@ -33,6 +33,10 @@ public class ModEffects {
             0x85C1E9
     ));
 
+    public static final DeferredHolder<MobEffect, NestleResistanceEffect> DISGUST_NESTLE_EFFECT = MOB_EFFECTS.register("disgust_nestle", () -> new NestleResistanceEffect(
+            MobEffectCategory.NEUTRAL,
+            0x1e8449
+    ));
 
     public static DeferredRegister<Potion> POTIONS = DeferredRegister.create(Registries.POTION, Nestle.MOD_ID);
 
@@ -41,4 +45,6 @@ public class ModEffects {
     public static final DeferredHolder<Potion, Potion> DESIRE_NESTLE_POTION = POTIONS.register("desire_nestle_potion", () -> new Potion(new MobEffectInstance(DESIRE_NESTLE_EFFECT, 5 * 20)));
     public static final DeferredHolder<Potion, Potion> NESTLE_RESISTANCE_POTION = POTIONS.register("nestle_resistance_potion", () -> new Potion(new MobEffectInstance(NESTLE_RESISTANCE_EFFECT, 3 * 60 * 20)));
     public static final DeferredHolder<Potion, Potion> LONG_NESTLE_RESISTANCE_POTION = POTIONS.register("long_nestle_resistance_potion", () -> new Potion(new MobEffectInstance(NESTLE_RESISTANCE_EFFECT, 8 * 60 * 20)));
+    public static final DeferredHolder<Potion, Potion> DISGUST_NESTLE_POTION = POTIONS.register("disgust_nestle_potion", () -> new Potion(new MobEffectInstance(DISGUST_NESTLE_EFFECT, 3 * 60 * 20)));
+    public static final DeferredHolder<Potion, Potion> LONG_DISGUST_NESTLE_POTION = POTIONS.register("long_disgust_nestle_potion", () -> new Potion(new MobEffectInstance(DISGUST_NESTLE_EFFECT, 8 * 60 * 20)));
 }
