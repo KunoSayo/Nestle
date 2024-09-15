@@ -2,6 +2,7 @@ package io.github.kunosayo.nestle.init;
 
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.effect.DesireNestleEffect;
+import io.github.kunosayo.nestle.effect.DisgustNestleEffect;
 import io.github.kunosayo.nestle.effect.NestleEffect;
 import io.github.kunosayo.nestle.effect.NestleResistanceEffect;
 import net.minecraft.core.registries.Registries;
@@ -33,7 +34,7 @@ public class ModEffects {
             0x85C1E9
     ));
 
-    public static final DeferredHolder<MobEffect, NestleResistanceEffect> DISGUST_NESTLE_EFFECT = MOB_EFFECTS.register("disgust_nestle", () -> new NestleResistanceEffect(
+    public static final DeferredHolder<MobEffect, DisgustNestleEffect> DISGUST_NESTLE_EFFECT = MOB_EFFECTS.register("disgust_nestle", () -> new DisgustNestleEffect(
             MobEffectCategory.NEUTRAL,
             0x1e8449
     ));

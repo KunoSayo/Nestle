@@ -75,11 +75,6 @@ public class NestleBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
-        super.spawnDestroyParticles(level, player, pos, state);
-    }
-
-    @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
             level.setBlock(pos, state.cycle(POWERED), UPDATE_CLIENTS);
