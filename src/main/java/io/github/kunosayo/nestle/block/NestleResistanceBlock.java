@@ -42,7 +42,7 @@ public class NestleResistanceBlock extends HorizontalDirectionalBlock {
         }
         if (entity instanceof LivingEntity livingEntity) {
             if (state.getValue(POWERED)) {
-                livingEntity.addEffect(new MobEffectInstance(ModEffects.DISGUST_NESTLE_EFFECT, 100));
+                livingEntity.addEffect(new MobEffectInstance(ModEffects.DISGUST_NESTLE_EFFECT, 20));
             } else {
                 livingEntity.addEffect(new MobEffectInstance(ModEffects.NESTLE_RESISTANCE_EFFECT, 100));
             }
