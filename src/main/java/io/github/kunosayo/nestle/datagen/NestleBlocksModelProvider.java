@@ -21,32 +21,26 @@ public class NestleBlocksModelProvider extends BlockStateProvider {
         ResourceLocation frontTexture = modLoc("block/nestle_resistance_block_front");
         ResourceLocation backTexture = modLoc("block/nestle_resistance_block_back");
 
-        var model = models().withExistingParent("nestle_resistance_block", "minecraft:block/cube")
+        ResourceLocation bottomPoweredTexture = modLoc("block/nestle_resistance_block_bottom_powered");
+        ResourceLocation topPoweredTexture = modLoc("block/nestle_resistance_block_top_powered");
+        ResourceLocation sidePoweredTexture = modLoc("block/nestle_resistance_block_side_powered");
+        ResourceLocation frontPoweredTexture = modLoc("block/nestle_resistance_block_front");
+        ResourceLocation backPoweredTexture = modLoc("block/nestle_resistance_block_back");
+
+        var model = models().withExistingParent("nestle_resistance_block", "nestle:templated_nestle_block")
                 .texture("top", topTexture)
                 .texture("bottom", bottomTexture)
                 .texture("side", sideTexture)
                 .texture("front", frontTexture)
-                .texture("back", backTexture)
-                .texture("particle", topTexture)
-                .element()
-                .from(0.0f, 0.0f, 0.0f)
-                .to(16.0f, 16.0f, 16.0f)
-                .allFaces((direction, faceBuilder) -> {
-                    faceBuilder.cullface(direction);
-                    switch (direction) {
-                        case DOWN -> faceBuilder.texture("#bottom");
-                        case UP -> faceBuilder.texture("#top");
-                        case NORTH -> faceBuilder.texture("#back");
-                        case SOUTH -> faceBuilder.texture("#front");
-                        case WEST, EAST -> faceBuilder.texture("#side");
-                    }
-                    switch (direction) {
-                        case DOWN, UP, NORTH, SOUTH, WEST -> faceBuilder.uvs(0.0f, 0.0f, 16.0f, 16.0f);
-                        case EAST -> faceBuilder.uvs(16.0f, 0.0f, 0.0f, 16.0f);
-                    }
-                })
-                .end();
-        horizontalBlock(ModBlocks.NESTLE_RESISTANCE_BLOCK.get(), model);
+                .texture("back", backTexture);
+
+        var poweredModel = models().withExistingParent("nestle_resistance_block_powered", "nestle:templated_nestle_block")
+                .texture("top", topPoweredTexture)
+                .texture("bottom", bottomPoweredTexture)
+                .texture("side", sidePoweredTexture)
+                .texture("front", frontPoweredTexture)
+                .texture("back", backPoweredTexture);
+        horizontalBlock(ModBlocks.NESTLE_RESISTANCE_BLOCK.get(), state -> state.getValue(NestleBlock.POWERED) ? poweredModel : model);
     }
 
     private void registerNestleBlock() {
@@ -63,63 +57,46 @@ public class NestleBlocksModelProvider extends BlockStateProvider {
         ResourceLocation backPoweredTexture = modLoc("block/nestle_block_back");
 
 
-        var model = models().withExistingParent("nestle_block", "minecraft:block/cube")
+        var model = models().withExistingParent("nestle_block", "nestle:templated_nestle_block")
                 .texture("top", topTexture)
                 .texture("bottom", bottomTexture)
                 .texture("side", sideTexture)
                 .texture("front", frontTexture)
-                .texture("back", backTexture)
-                .texture("particle", topTexture)
-                .element()
-                .from(0.0f, 0.0f, 0.0f)
-                .to(16.0f, 16.0f, 16.0f)
-                .allFaces((direction, faceBuilder) -> {
-                    faceBuilder.cullface(direction);
-                    switch (direction) {
-                        case DOWN -> faceBuilder.texture("#bottom");
-                        case UP -> faceBuilder.texture("#top");
-                        case NORTH -> faceBuilder.texture("#back");
-                        case SOUTH -> faceBuilder.texture("#front");
-                        case WEST, EAST -> faceBuilder.texture("#side");
-                    }
-                    switch (direction) {
-                        case DOWN, UP, NORTH, SOUTH, WEST -> faceBuilder.uvs(0.0f, 0.0f, 16.0f, 16.0f);
-                        case EAST -> faceBuilder.uvs(16.0f, 0.0f, 0.0f, 16.0f);
-                    }
-                })
-                .end();
+                .texture("back", backTexture);
 
-        var poweredModel = models().withExistingParent("nestle_block_powered", "minecraft:block/cube")
+        var poweredModel = models().withExistingParent("nestle_block_powered", "nestle:templated_nestle_block")
                 .texture("top", topPoweredTexture)
                 .texture("bottom", bottomPoweredTexture)
                 .texture("side", sidePoweredTexture)
                 .texture("front", frontPoweredTexture)
-                .texture("back", backPoweredTexture)
-                .texture("particle", topPoweredTexture)
-                .element()
-                .from(0.0f, 0.0f, 0.0f)
-                .to(16.0f, 16.0f, 16.0f)
-                .allFaces((direction, faceBuilder) -> {
-                    faceBuilder.cullface(direction);
-                    switch (direction) {
-                        case DOWN -> faceBuilder.texture("#bottom");
-                        case UP -> faceBuilder.texture("#top");
-                        case NORTH -> faceBuilder.texture("#back");
-                        case SOUTH -> faceBuilder.texture("#front");
-                        case WEST, EAST -> faceBuilder.texture("#side");
-                    }
-                    switch (direction) {
-                        case DOWN, UP, NORTH, SOUTH, WEST -> faceBuilder.uvs(0.0f, 0.0f, 16.0f, 16.0f);
-                        case EAST -> faceBuilder.uvs(16.0f, 0.0f, 0.0f, 16.0f);
-                    }
-                })
-                .end();
+                .texture("back", backPoweredTexture);
 
         horizontalBlock(ModBlocks.NESTLE_BLOCK.get(), state -> state.getValue(NestleBlock.POWERED) ? poweredModel : model);
     }
 
     @Override
     protected void registerStatesAndModels() {
+        models().withExistingParent("templated_nestle_block", "minecraft:block/cube")
+                .texture("particle", "#top")
+                .element()
+                .from(0.0f, 0.0f, 0.0f)
+                .to(16.0f, 16.0f, 16.0f)
+                .allFaces((direction, faceBuilder) -> {
+                    faceBuilder.cullface(direction);
+                    switch (direction) {
+                        case DOWN -> faceBuilder.texture("#bottom");
+                        case UP -> faceBuilder.texture("#top");
+                        case NORTH -> faceBuilder.texture("#back");
+                        case SOUTH -> faceBuilder.texture("#front");
+                        case WEST, EAST -> faceBuilder.texture("#side");
+                    }
+                    switch (direction) {
+                        case DOWN, UP, NORTH, SOUTH, WEST -> faceBuilder.uvs(0.0f, 0.0f, 16.0f, 16.0f);
+                        case EAST -> faceBuilder.uvs(16.0f, 0.0f, 0.0f, 16.0f);
+                    }
+                })
+                .end();
+
         registerNestleResistanceBlock();
         registerNestleBlock();
     }

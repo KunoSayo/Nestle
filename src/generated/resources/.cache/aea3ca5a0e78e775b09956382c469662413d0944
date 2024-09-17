@@ -1,6 +1,8 @@
-// 1.21	2024-09-05T19:06:29.2755662	Block States: nestle
+// 1.21	2024-09-17T23:18:41.5723444	Block States: nestle
 65258723186fce8d2fefc72d2726a200d7e6ccd1 assets/nestle/blockstates/nestle_block.json
-74b207d116338dffa90e7fe30acccba0551c2c73 assets/nestle/blockstates/nestle_resistance_block.json
-1f76ff87fcceba8f255df6384aa256899ce44cac assets/nestle/models/block/nestle_block.json
-493a751c3855f167784900ce6bb525ecbf3645e8 assets/nestle/models/block/nestle_block_powered.json
-142ad0bb45bc01339925988ba2d97e79528dfb4d assets/nestle/models/block/nestle_resistance_block.json
+884c37abdac68d1ce6120427d710e834abf2b31b assets/nestle/blockstates/nestle_resistance_block.json
+57df9cc95af4f37ac30d0642cd394b8c7123a797 assets/nestle/models/block/nestle_block.json
+155cc798f635f0e85995a2fb330e2c93c6a910ba assets/nestle/models/block/nestle_block_powered.json
+6e511c195f0979b914b22edee90bbe239ad41901 assets/nestle/models/block/nestle_resistance_block.json
+58caece1be34e10bff774b26e41dd7085cc41752 assets/nestle/models/block/nestle_resistance_block_powered.json
+81a0e8110730fcfdbb13cad2011c53bfe97666e4 assets/nestle/models/block/templated_nestle_block.json

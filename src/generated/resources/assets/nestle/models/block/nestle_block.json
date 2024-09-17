@@ -1,56 +1,9 @@
 {
-  "parent": "minecraft:block/cube",
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#bottom"
-        },
-        "east": {
-          "cullface": "east",
-          "texture": "#side",
-          "uv": [
-            16.0,
-            0.0,
-            0.0,
-            16.0
-          ]
-        },
-        "north": {
-          "cullface": "north",
-          "texture": "#back"
-        },
-        "south": {
-          "cullface": "south",
-          "texture": "#front"
-        },
-        "up": {
-          "cullface": "up",
-          "texture": "#top"
-        },
-        "west": {
-          "cullface": "west",
-          "texture": "#side"
-        }
-      },
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ]
-    }
-  ],
+  "parent": "nestle:block/templated_nestle_block",
   "textures": {
     "back": "nestle:block/nestle_block_back",
     "bottom": "nestle:block/nestle_block_bottom",
     "front": "nestle:block/nestle_resistance_block_front",
-    "particle": "nestle:block/nestle_block_top",
     "side": "nestle:block/nestle_block_side",
     "top": "nestle:block/nestle_block_top"
   }

@@ -1,0 +1,10 @@
+{
+  "parent": "nestle:block/templated_nestle_block",
+  "textures": {
+    "back": "nestle:block/nestle_resistance_block_back",
+    "bottom": "nestle:block/nestle_resistance_block_bottom_powered",
+    "front": "nestle:block/nestle_resistance_block_front",
+    "side": "nestle:block/nestle_resistance_block_side_powered",
+    "top": "nestle:block/nestle_resistance_block_top_powered"
+  }
+}
