@@ -96,7 +96,7 @@ public final class NestleDetailScreen extends Screen {
         // draw seconds text
         var secText = totalTimes + "s";
         final int secTextWidth = font.width(secText);
-        guiGraphics.drawString(font, secText, startX + 300 - 8 - secTextWidth, startY + 42, 0xffffffff);
+        guiGraphics.drawString(font, secText, startX + 300 - 8 - secTextWidth - 1, startY + 43, 0xffffffff);
 
 
         {
