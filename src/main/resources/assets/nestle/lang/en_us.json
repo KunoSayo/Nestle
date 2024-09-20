@@ -51,5 +51,7 @@
   "item.minecraft.splash_potion.effect.disgust_nestle_potion": "Splash Potion of Disgust Nestle",
   "item.minecraft.splash_potion.effect.long_disgust_nestle_potion": "Splash Potion of Disgust Nestle",
   "item.minecraft.lingering_potion.effect.disgust_nestle_potion": "Lingering Potion of Disgust Nestle",
-  "item.minecraft.lingering_potion.effect.long_disgust_nestle_potion": "Lingering Potion of Disgust Nestle"
+  "item.minecraft.lingering_potion.effect.long_disgust_nestle_potion": "Lingering Potion of Disgust Nestle",
+  "item.minecraft.tipped_arrow.effect.disgust_nestle_potion": "Arrow of Disgust Nestle",
+  "item.minecraft.tipped_arrow.effect.long_disgust_nestle_potion": "Arrow of Disgust Nestle"
 }

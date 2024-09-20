@@ -1,5 +1,5 @@
 {
-  "advancements.nestle.nestle_advancement.title": "帖帖",
+  "advancements.nestle.nestle_advancement.title": "贴贴",
   "advancements.nestle.nestle_advancement.description": "和任意玩家贴贴值至少为 1",
   "advancements.nestle.nestle_close_advancement.title": "近距离贴贴",
   "advancements.nestle.nestle_close_advancement.description": "和任意玩家在 1 格以内待上一秒",
@@ -51,5 +51,7 @@
   "item.minecraft.splash_potion.effect.disgust_nestle_potion": "喷溅型厌恶贴贴药水",
   "item.minecraft.splash_potion.effect.long_disgust_nestle_potion": "喷溅型厌恶贴贴药水",
   "item.minecraft.lingering_potion.effect.disgust_nestle_potion": "滞留型厌恶贴贴药水",
-  "item.minecraft.lingering_potion.effect.long_disgust_nestle_potion": "滞留型厌恶贴贴药水"
+  "item.minecraft.lingering_potion.effect.long_disgust_nestle_potion": "滞留型厌恶贴贴药水",
+  "item.minecraft.tipped_arrow.effect.disgust_nestle_potion": "厌恶抗性之箭",
+  "item.minecraft.tipped_arrow.effect.long_disgust_nestle_potion": "厌恶抗性之箭"
 }
