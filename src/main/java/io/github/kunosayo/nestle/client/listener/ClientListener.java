@@ -29,7 +29,7 @@ public class ClientListener {
         if (player != null) {
             // found the nearest entity
             var entity = player.level().getNearestEntity(LivingEntity.class,
-                    TargetingConditions.forNonCombat().ignoreLineOfSight(),
+                    TargetingConditions.forNonCombat().selector(livingEntity -> !livingEntity.isDeadOrDying()).ignoreLineOfSight(),
                     player, player.getX(), player.getY(), player.getZ(),
                     new AABB(-500.0 + player.getX(), -256.0 + player.getY(), -500.0 + player.getZ(),
                             500.0 + player.getX(), 256.0 + player.getY(), 500.0 + player.getZ()));

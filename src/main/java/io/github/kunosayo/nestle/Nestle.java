@@ -1,7 +1,6 @@
 package io.github.kunosayo.nestle;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.kunosayo.nestle.command.NestleCommand;
 import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.data.NestleValue;
@@ -10,7 +9,6 @@ import io.github.kunosayo.nestle.init.*;
 import io.github.kunosayo.nestle.network.SyncNestleDataPacket;
 import io.github.kunosayo.nestle.network.UpdateNestleValuePacket;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +18,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
@@ -105,7 +102,7 @@ public final class Nestle {
                 int delta;
                 NestleValue aValue;
                 NestleValue bValue;
-                if (a.level() != b.level()) {
+                if (a.level() != b.level() || a.isDeadOrDying() || b.isDeadOrDying()) {
                     delta = farDelta;
 
                     aValue = aData.addDifValue(b.getUUID(), delta);
