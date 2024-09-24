@@ -63,7 +63,14 @@ public final class PlayerListScrollPanel extends ScrollPanel {
         });
 
         var selected = getSelectedButton(mouseX, mouseY);
-        for (var info : PlayerNestleInfoList.profileList) {
+
+        // well
+        // relativeY = i * (MARGIN_Y + BG_HEIGHT) + (start)
+        // relativeY >= top
+        // i * (...) + start >= top
+        // i >= (top - start) / (...)
+        for (int profileIndex = Math.max(0, this.top - relativeY) / (PLAYER_MARGIN_Y + PLAYER_BACKGROUND_HEIGHT); profileIndex < PlayerNestleInfoList.profileList.size(); ++profileIndex) {
+            var info = PlayerNestleInfoList.profileList.get(profileIndex);
             if (info.filtered) {
                 break;
             }
@@ -72,7 +79,11 @@ public final class PlayerListScrollPanel extends ScrollPanel {
 
             int color = (255 << 24) | (81 << 16) | (107 << 8) | 140;
             int bgBottom = relativeY + PLAYER_BACKGROUND_HEIGHT;
+
             int bgTop = relativeY;
+            if (bgTop > this.bottom) {
+                break;
+            }
 
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             BufferBuilder backgroundBuffer = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -110,22 +121,32 @@ public final class PlayerListScrollPanel extends ScrollPanel {
             }
 
             // render button icon
+            final int buttonY = relativeY + 16;
             guiGraphics.blitSprite(NestleScreen.ICON_SPRITE,
                     96, 16, 32, 0,
-                    right - BORDER_WIDTH - 16 - BUTTON_MARGIN_RIGHT - ICON_MARGIN_X, relativeY + 16, 16, 16);
+                    right - BORDER_WIDTH - 16 - BUTTON_MARGIN_RIGHT - ICON_MARGIN_X, buttonY, 16, 16);
 
             var nestleText = String.valueOf(info.getNestleValue().getValue());
+            var nestleSecondText = info.getNestleValue().getTotal() + "s";
             final int textWidth = font.width(nestleText);
+            final int secondTextWidth = font.width(nestleSecondText);
+
             final int textY = (PLAYER_BACKGROUND_HEIGHT - font.lineHeight) / 2 + relativeY;
 
+            final int newNestleValueTextY = buttonY;
             final int textX = right - BORDER_WIDTH - 24 - BUTTON_MARGIN_RIGHT - 8 - textWidth;
 
+            // render nestle value text and seconds.
             guiGraphics.drawString(font, nestleText,
-                    textX, textY, 0xffffffff);
+                    textX, newNestleValueTextY, 0xffffffff);
+            guiGraphics.drawString(font, nestleSecondText,
+                    right - BORDER_WIDTH - 24 - BUTTON_MARGIN_RIGHT - 8 - secondTextWidth, buttonY + 16 - (font.lineHeight / 2), 0xffffffff);
 
-            // render :heart:
+            // render text :heart:
+            // textY -> newTextY
+
             guiGraphics.blitSprite(NestleScreen.ICON_SPRITE, 96, 16, 16, 0,
-                    textX - 16 - 2, relativeY + 16, 16, 16);
+                    textX - 16 - 1, relativeY + 16 + newNestleValueTextY - textY, 16, 16);
 
 
             relativeY += PLAYER_MARGIN_Y + PLAYER_BACKGROUND_HEIGHT;

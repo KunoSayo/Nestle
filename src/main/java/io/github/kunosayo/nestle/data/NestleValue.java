@@ -33,6 +33,7 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
     public static final int DIFFERENT_INDEX = 17;
     // 2^0 ... 2^15,  far away.., different world
     public int[] times = new int[18];
+    public long totalTimes = 0;
     private long value;
 
     public NestleValue() {
@@ -46,6 +47,10 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
     public NestleValue(long value, int[] times) {
         this.value = value;
         this.times = times;
+        this.totalTimes = 0;
+        for (int i = 0; i < 18; i++) {
+            totalTimes += times[i];
+        }
     }
 
     /**
@@ -79,6 +84,10 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
         if (times.length != 18) {
             times = new int[18];
         }
+        totalTimes = 0;
+        for (int i = 0; i < 18; i++) {
+            this.totalTimes += times[i];
+        }
     }
 
 
@@ -98,16 +107,22 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
     public NestleValue addValue(int delta, int idx) {
         this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
         ++times[idx];
+        ++this.totalTimes;
         return this;
     }
 
     public NestleValue addDifValue(int delta) {
         this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
         ++times[17];
+        ++this.totalTimes;
         return this;
     }
 
     public long addValue(int delta) {
         return this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
+    }
+
+    public long getTotal() {
+        return this.totalTimes;
     }
 }
