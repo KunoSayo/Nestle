@@ -54,6 +54,8 @@ public final class NestleDetailScreen extends Screen {
         int leftX = startX + 25;
 
         long totalTimes = 0;
+
+        Runnable renderTooltip = null;
         for (int i = 0; i < 18; i++) {
 
             int highY = bottomY - (int) Math.round(highSize * info.percents[i]) - 1;
@@ -68,23 +70,28 @@ public final class NestleDetailScreen extends Screen {
             if (leftX <= mouseX && mouseX <= leftX + barWidth) {
                 if (highY <= mouseY && mouseY <= bottomY + 10) {
                     // show tooltip
-                    String percent = String.format("%.2f", info.totalPercents[i] * 100);
-                    Component msg;
-                    if (i < 16) {
-                        msg = Component.translatable("tooltip.nestle.stat.normal", info.getNestleValue().times[i], percent, String.valueOf(1 << i));
-                    } else if (i == 16) {
-                        msg = Component.translatable("tooltip.nestle.stat.far", info.getNestleValue().times[i], percent, String.valueOf(1 << 15));
-                    } else {
-                        // i is 17, different world.
-                        msg = Component.translatable("tooltip.nestle.stat.different", info.getNestleValue().times[i], percent);
-                    }
-                    guiGraphics.renderTooltip(this.font, msg, mouseX, mouseY);
+                    final int mi = i;
+                    renderTooltip = () -> {
+                        String percent = String.format("%.2f", info.totalPercents[mi] * 100);
+                        Component msg;
+                        if (mi < 16) {
+                            msg = Component.translatable("tooltip.nestle.stat.normal", info.getNestleValue().times[mi], percent, String.valueOf(1 << mi));
+                        } else if (mi == 16) {
+                            msg = Component.translatable("tooltip.nestle.stat.far", info.getNestleValue().times[mi], percent, String.valueOf(1 << 15));
+                        } else {
+                            // i is 17, different world.
+                            msg = Component.translatable("tooltip.nestle.stat.different", info.getNestleValue().times[mi], percent);
+                        }
+                        guiGraphics.renderTooltip(this.font, msg, mouseX, mouseY);
+                    };
+
                 }
             }
             totalTimes += info.getNestleValue().times[i];
 
             leftX += barInterval;
         }
+
 
         // draw nestle value text
         var nestleText = String.valueOf(info.getNestleValue().getValue());
@@ -117,6 +124,10 @@ public final class NestleDetailScreen extends Screen {
         // render :heart:
         guiGraphics.blitSprite(NestleScreen.ICON_SPRITE, 96, 16, 16, 0,
                 nestleTextX - 16 - 2, headY + 8, 16, 16);
+
+        if (renderTooltip != null) {
+            renderTooltip.run();
+        }
     }
 
     @Override
