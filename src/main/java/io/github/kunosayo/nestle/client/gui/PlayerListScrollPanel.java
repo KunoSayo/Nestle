@@ -69,7 +69,9 @@ public final class PlayerListScrollPanel extends ScrollPanel {
         // relativeY >= top
         // i * (...) + start >= top
         // i >= (top - start) / (...)
-        for (int profileIndex = Math.max(0, this.top - relativeY) / (PLAYER_MARGIN_Y + PLAYER_BACKGROUND_HEIGHT); profileIndex < PlayerNestleInfoList.profileList.size(); ++profileIndex) {
+        int startIdx = Math.max(0, this.top - relativeY) / (PLAYER_MARGIN_Y + PLAYER_BACKGROUND_HEIGHT);
+        relativeY += startIdx * (PLAYER_MARGIN_Y + PLAYER_BACKGROUND_HEIGHT);
+        for (int profileIndex = startIdx; profileIndex < PlayerNestleInfoList.profileList.size(); ++profileIndex) {
             var info = PlayerNestleInfoList.profileList.get(profileIndex);
             if (info.filtered) {
                 break;
