@@ -54,6 +54,7 @@ public class GameListener {
         if (entity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT)) {
             return;
         }
+
         boolean currentRoot = false;
         if (isRoot) {
             isRoot = false;
@@ -78,6 +79,8 @@ public class GameListener {
 
             boolean isPlayer = entity instanceof Player;
             final boolean selfNestle = entity.hasEffect(ModEffects.NESTLE_EFFECT);
+            final boolean requireDesireNestle = !selfNestle && NestleConfig.NESTLE_CONFIG.getLeft().entitiesNotSpreadDamageByDefaultSet.contains(entity.getType());
+
             var otherEntityToGetDamage = entity.level()
                     .getNearbyEntities(
                             LivingEntity.class, TargetingConditions
@@ -87,6 +90,11 @@ public class GameListener {
                             entity, aabb)
                     .stream()
                     .filter(livingEntity -> {
+
+                        final boolean hasDesire = livingEntity.hasEffect(ModEffects.DESIRE_NESTLE_EFFECT);
+                        if (requireDesireNestle && !hasDesire) {
+                            return false;
+                        }
 
                         if (livingEntity.getType() == entity.getType()) {
                             if (livingEntity.position().distanceToSqr(entityPos) <= 1.5 * 1.5) {
@@ -101,7 +109,8 @@ public class GameListener {
                                 }
                             }
                         }
-                        return selfNestle || livingEntity.hasEffect(ModEffects.DESIRE_NESTLE_EFFECT);
+
+                        return selfNestle || hasDesire;
                     })
                     // not in the damage chain.
                     .filter(livingEntity -> damaging.add(livingEntity.getUUID()))
@@ -110,6 +119,18 @@ public class GameListener {
             int totalCount = otherEntityToGetDamage.size() + 1;
 
             float damageToSpread = originDamage / totalCount;
+            boolean anyLive = entity.getHealth() > rawDamage / totalCount;
+            if (!anyLive) {
+                for (LivingEntity livingEntity : otherEntityToGetDamage) {
+                    if (livingEntity.getHealth() > damageToSpread) {
+                        anyLive = true;
+                        break;
+                    }
+                }
+            }
+            if (!anyLive) {
+                return;
+            }
             for (LivingEntity livingEntity : otherEntityToGetDamage) {
                 livingEntity.hurt(event.getSource(), damageToSpread);
             }

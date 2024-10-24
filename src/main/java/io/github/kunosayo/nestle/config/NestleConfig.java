@@ -1,12 +1,12 @@
 package io.github.kunosayo.nestle.config;
 
 import io.github.kunosayo.nestle.data.CloseNestleValue;
+import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class NestleConfig {
     public static final Pair<NestleConfig, ModConfigSpec> NESTLE_CONFIG = new ModConfigSpec.Builder()
@@ -16,11 +16,13 @@ public class NestleConfig {
     public final ModConfigSpec.ConfigValue<Integer> damagePlayerValueReduce;
     public final ModConfigSpec.ConfigValue<Integer> nestleRadius;
     public final ModConfigSpec.ConfigValue<Integer> nestleFreeRequire;
+    public final ModConfigSpec.ConfigValue<List<? extends String>> entitiesNotSpreadDamageByDefault;
     public final ModConfigSpec.ConfigValue<List<? extends String>> nestleValues;
     /**
      * Distance - Value
      */
     public final ArrayList<CloseNestleValue> closeNestleValues = new ArrayList<>();
+    public Set<EntityType<?>> entitiesNotSpreadDamageByDefaultSet = new HashSet<>();
 
     NestleConfig(ModConfigSpec.Builder builder) {
         farAwayNestleValue = builder
@@ -41,7 +43,7 @@ public class NestleConfig {
                     add("50:100");
                     add("500:50");
                     add("5000:10");
-                }}, o -> {
+                }}, () -> "", o -> {
                     if (o instanceof String s) {
                         String[] args = s.split(":", 2);
                         if (args.length == 2) {
@@ -56,6 +58,16 @@ public class NestleConfig {
                     }
                     return false;
                 });
+        entitiesNotSpreadDamageByDefault = builder.comment("The entities not to spread damage if no any buff")
+                .defineList("entities_not_spread_damage_by_default",
+                        new ArrayList<>(),
+                        () -> "",
+                        o -> {
+                            if (o instanceof String s) {
+                                return EntityType.byString(s).isPresent();
+                            }
+                            return false;
+                        });
     }
 
     public int getValueFromDistance(long distanceSquared) {
@@ -88,5 +100,11 @@ public class NestleConfig {
             }
         }
         closeNestleValues.sort(Comparator.comparingInt(CloseNestleValue::distance));
+
+        this.entitiesNotSpreadDamageByDefaultSet = this.entitiesNotSpreadDamageByDefault.get().stream()
+                .map(EntityType::byString)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
     }
 }
