@@ -90,16 +90,9 @@ public class GameListener {
                             entity, aabb)
                     .stream()
                     .filter(livingEntity -> {
-
                         final boolean hasDesire = livingEntity.hasEffect(ModEffects.DESIRE_NESTLE_EFFECT);
-                        if (requireDesireNestle && !hasDesire) {
-                            return false;
-                        }
 
                         if (livingEntity.getType() == entity.getType()) {
-                            if (livingEntity.position().distanceToSqr(entityPos) <= 1.5 * 1.5) {
-                                return true;
-                            }
                             if (isPlayer && livingEntity instanceof Player player) {
                                 // both player
                                 boolean playerPass = player.getData(NestleData.ATTACHMENT_TYPE)
@@ -107,6 +100,16 @@ public class GameListener {
                                 if (playerPass) {
                                     return true;
                                 }
+                            }
+                        }
+
+                        if (requireDesireNestle && !hasDesire) {
+                            return false;
+                        }
+
+                        if (livingEntity.getType() == entity.getType()) {
+                            if (livingEntity.position().distanceToSqr(entityPos) <= 1.5 * 1.5) {
+                                return true;
                             }
                         }
 
