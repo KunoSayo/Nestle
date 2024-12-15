@@ -20,6 +20,7 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
             .<NestleLeadNormalEntity>of(NestleLeadNormalEntity::new, MobCategory.MISC)
             .noSave()
             .noSummon()
+            .sized(0.0f, 0.0f)
             .fireImmune()
             .canSpawnFarFromPlayer()
             .build("nestle_lead_normal_entity");

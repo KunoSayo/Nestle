@@ -19,6 +19,7 @@ public class NestleLeadPlayerEntity extends NestleLeadEntity {
             .<NestleLeadPlayerEntity>of(NestleLeadPlayerEntity::new, MobCategory.MISC)
             .noSave()
             .noSummon()
+            .sized(0.0f, 0.0f)
             .fireImmune()
             .canSpawnFarFromPlayer()
             .build("nestle_lead_player_entity");
