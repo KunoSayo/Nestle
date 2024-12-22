@@ -38,11 +38,21 @@ public class NestleConfig {
         nestleRadius = builder.comment("The radius to nestle")
                 .define("nestle_radius", 5);
         nestleValues = builder.comment("The nestle value get if in the distance\nFormat: distance:nestle_value")
-                .defineList("nestle_values", new ArrayList<>() {{
-                    add("5:200");
-                    add("50:100");
-                    add("500:50");
-                    add("5000:10");
+                .defineList("nestle_value_by_distance", new ArrayList<>() {{
+                    // 2 hours
+                    add("1:100");
+                    // 4 hours
+                    add("2:50");
+                    add("5:45");
+                    add("10:40");
+                    add("17:35");
+                    add("65:30");
+                    // 8 hours
+                    add("129:25");
+                    add("513:20");
+                    add("1025:15");
+                    add("2049:10");
+                    add("4097:5");
                 }}, () -> "", o -> {
                     if (o instanceof String s) {
                         String[] args = s.split(":", 2);
