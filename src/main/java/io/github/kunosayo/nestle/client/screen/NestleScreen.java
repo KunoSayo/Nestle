@@ -57,6 +57,8 @@ public final class NestleScreen extends Screen {
                 startY + 125 - font.lineHeight / 2,
                 emptyTextWidth, font.lineHeight,
                 EMPTY_TIP, font);
+
+        PlayerNestleInfoList.setDirty();
     }
 
     @Override
