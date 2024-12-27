@@ -17,12 +17,14 @@ public class NestleConfig {
     public final ModConfigSpec.ConfigValue<Integer> nestleRadius;
     public final ModConfigSpec.ConfigValue<Integer> nestleFreeRequire;
     public final ModConfigSpec.ConfigValue<List<? extends String>> entitiesNotSpreadDamageByDefault;
+    public final ModConfigSpec.ConfigValue<List<? extends String>> nestleLeadAvoidEntities;
     public final ModConfigSpec.ConfigValue<List<? extends String>> nestleValues;
     /**
      * Distance - Value
      */
     public final ArrayList<CloseNestleValue> closeNestleValues = new ArrayList<>();
     public Set<EntityType<?>> entitiesNotSpreadDamageByDefaultSet = new HashSet<>();
+    public Set<EntityType<?>> nestleLeadAvoidEntitiesSet = new HashSet<>();
 
     NestleConfig(ModConfigSpec.Builder builder) {
         farAwayNestleValue = builder
@@ -78,6 +80,17 @@ public class NestleConfig {
                             }
                             return false;
                         });
+
+        nestleLeadAvoidEntities = builder.comment("The entities cannot be led by nestle lead")
+                .defineList("nestle_lead_avoid_entities",
+                        new ArrayList<>(),
+                        () -> "",
+                        o -> {
+                            if (o instanceof String s) {
+                                return EntityType.byString(s).isPresent();
+                            }
+                            return false;
+                        });
     }
 
     public int getValueFromDistance(long distanceSquared) {
@@ -112,6 +125,12 @@ public class NestleConfig {
         closeNestleValues.sort(Comparator.comparingInt(CloseNestleValue::distance));
 
         this.entitiesNotSpreadDamageByDefaultSet = this.entitiesNotSpreadDamageByDefault.get().stream()
+                .map(EntityType::byString)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+
+        this.nestleLeadAvoidEntitiesSet = this.nestleLeadAvoidEntities.get().stream()
                 .map(EntityType::byString)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

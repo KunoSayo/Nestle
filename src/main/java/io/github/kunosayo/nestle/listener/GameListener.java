@@ -156,6 +156,9 @@ public class GameListener {
         }
 
         if (ModItems.NESTLE_LEAD.is(event.getItemStack().getItemHolder())) {
+            if (NestleConfig.NESTLE_CONFIG.getLeft().nestleLeadAvoidEntitiesSet.contains(event.getEntity().getType())) {
+                return;
+            }
             var entity = event.getTarget();
             if (entity instanceof Player target) {
                 event.setCancellationResult(InteractionResult.SUCCESS);
