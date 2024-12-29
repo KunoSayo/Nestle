@@ -71,6 +71,7 @@ public final class PlayerListScrollPanel extends ScrollPanel {
         // i >= (top - start) / (...)
         int startIdx = Math.max(0, this.top - relativeY) / (PLAYER_MARGIN_Y + PLAYER_BACKGROUND_HEIGHT);
         relativeY += startIdx * (PLAYER_MARGIN_Y + PLAYER_BACKGROUND_HEIGHT);
+        RenderSystem.disableDepthTest();
         for (int profileIndex = startIdx; profileIndex < PlayerNestleInfoList.profileList.size(); ++profileIndex) {
             var info = PlayerNestleInfoList.profileList.get(profileIndex);
             if (info.filtered) {
@@ -94,7 +95,6 @@ public final class PlayerListScrollPanel extends ScrollPanel {
             backgroundBuffer.addVertex(entryRight, bgTop, 0.0F).setColor(color);
             backgroundBuffer.addVertex(left, bgTop, 0.0F).setColor(color);
             BufferUploader.drawWithShader(backgroundBuffer.buildOrThrow());
-
 
             renderPlayerAvatar(gameProfile, this.left + 8, relativeY + 8, guiGraphics);
 
@@ -153,7 +153,7 @@ public final class PlayerListScrollPanel extends ScrollPanel {
 
             relativeY += PLAYER_MARGIN_Y + PLAYER_BACKGROUND_HEIGHT;
         }
-
+        RenderSystem.enableDepthTest();
     }
 
     @Override
