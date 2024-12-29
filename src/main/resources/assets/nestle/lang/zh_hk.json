@@ -10,7 +10,7 @@
   "advancements.nestle.nestle_free_advancement.title": "免費貼貼",
   "advancements.nestle.nestle_free_advancement.description": "和任意玩家的貼貼值到達免費貼貼標準",
   "commands.nestle.unlink.success": "已斷開 %s 個連接",
-  "gui.nestle.title": "貼貼列表",
+  "gui.nestle.title": "貼貼列表 - %1$s",
   "gui.nestle.empty": "沒有人願意和你貼貼",
   "gui.nestle_detailed.title": "貼貼詳細",
   "key.category.nestle": "貼貼",

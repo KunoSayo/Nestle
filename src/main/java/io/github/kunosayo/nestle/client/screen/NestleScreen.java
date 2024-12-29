@@ -14,14 +14,16 @@ import net.minecraft.resources.ResourceLocation;
 public final class NestleScreen extends Screen {
     public static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "playerlist");
     public static final ResourceLocation ICON_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "icons");
-    private static final Component TITLE = Component.translatable("gui.nestle.title");
     private static final Component EMPTY_TIP = Component.translatable("gui.nestle.empty");
 
+    private int lastCount = -1;
     private static final int SEARCH_BOX_MARGIN_X = 16;
     private static final Component SEARCH_HINT = Component.translatable("gui.socialInteractions.search_hint")
             .withStyle(ChatFormatting.ITALIC)
             .withStyle(ChatFormatting.GRAY);
 
+    private Component titleComponent;
+    private StringWidget titleWidget;
     private EditBox searchBox;
     private PlayerListScrollPanel scrollPanel;
     private StringWidget emptyWidget;
@@ -29,7 +31,22 @@ public final class NestleScreen extends Screen {
     private int startY;
 
     public NestleScreen() {
-        super(TITLE);
+        super(Component.translatable("gui.nestle.title", PlayerNestleInfoList.profileList.size()));
+        this.titleComponent = this.getTitle();
+    }
+
+    private void checkCount() {
+        final int curCount = PlayerNestleInfoList.profileList.size();
+        if (curCount != lastCount) {
+            updateTitleWidget();
+        }
+    }
+
+    private void updateTitleWidget() {
+        lastCount = PlayerNestleInfoList.profileList.size();
+        titleComponent = Component.translatable("gui.nestle.title", lastCount);
+        titleWidget.setMessage(titleComponent);
+        titleWidget.setWidth(font.width(titleComponent.getVisualOrderText()));
     }
 
     @Override
@@ -39,16 +56,23 @@ public final class NestleScreen extends Screen {
         startX = (this.width - 250) >> 1;
         startY = (this.height - 250) >> 1;
         final int SEARCH_BOX_MARGIN_Y_TO_START = 24;
-        searchBox = new EditBox(this.font, startX + SEARCH_BOX_MARGIN_X, startY + SEARCH_BOX_MARGIN_Y_TO_START, 250 - (SEARCH_BOX_MARGIN_X << 1), 15, SEARCH_HINT);
         final int SCROLL_MARGIN_Y = 8;
-        scrollPanel = new PlayerListScrollPanel(Minecraft.getInstance(),
-                250 - 16,
-                250 - searchBox.getHeight() - SCROLL_MARGIN_Y - SEARCH_BOX_MARGIN_Y_TO_START - 6,
-                searchBox.getY() + searchBox.getHeight() + SCROLL_MARGIN_Y, startX + 8, this.font);
+        if (searchBox == null) {
+            searchBox = new EditBox(this.font, startX + SEARCH_BOX_MARGIN_X, startY + SEARCH_BOX_MARGIN_Y_TO_START, 250 - (SEARCH_BOX_MARGIN_X << 1), 15, SEARCH_HINT);
+            searchBox.setResponder(PlayerNestleInfoList::setFilter);
+        } else {
+            PlayerNestleInfoList.setFilter(this.searchBox.getValue());
+        }
+        if (scrollPanel == null) {
+            scrollPanel = new PlayerListScrollPanel(Minecraft.getInstance(),
+                    250 - 16,
+                    250 - searchBox.getHeight() - SCROLL_MARGIN_Y - SEARCH_BOX_MARGIN_Y_TO_START - 6,
+                    searchBox.getY() + searchBox.getHeight() + SCROLL_MARGIN_Y, startX + 8, this.font);
+        }
 
-        searchBox.setResponder(PlayerNestleInfoList::setFilter);
-
-        this.addRenderableWidget(new StringWidget(startX + 8, startY + 6, font.width(TITLE.getVisualOrderText()), 9, TITLE, this.font));
+        titleWidget = new StringWidget(startX + 8, startY + 6, 0, 9, Component.empty(), this.font);
+        updateTitleWidget();
+        this.addRenderableWidget(titleWidget);
         this.addRenderableWidget(searchBox);
         this.addRenderableWidget(scrollPanel);
 
@@ -63,6 +87,7 @@ public final class NestleScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        checkCount();
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (PlayerNestleInfoList.profileList.isEmpty()) {
             emptyWidget.render(guiGraphics, mouseX, mouseY, partialTick);
