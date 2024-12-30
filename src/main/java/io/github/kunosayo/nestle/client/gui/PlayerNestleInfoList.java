@@ -64,7 +64,8 @@ public final class PlayerNestleInfoList {
                     // have filtered info before this
                     // swap the two to here
                     Collections.swap(profileList, lastFilteredIndex, i);
-                    lastFilteredIndex = i;
+                    // The next must be filtered.
+                    ++lastFilteredIndex;
                 }
             }
 
