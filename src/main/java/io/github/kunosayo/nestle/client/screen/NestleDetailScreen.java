@@ -21,6 +21,7 @@ public final class NestleDetailScreen extends Screen {
     public NestleDetailScreen(PlayerNestleInfoList.PlayerNestleInfo info) {
         super(TITLE);
         this.info = info;
+        info.checkFetch();
         lastScreen = Minecraft.getInstance().screen;
     }
 

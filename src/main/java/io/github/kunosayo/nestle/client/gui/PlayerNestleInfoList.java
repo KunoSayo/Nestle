@@ -29,30 +29,7 @@ public final class PlayerNestleInfoList {
             var info = new PlayerNestleInfo(new GameProfile(playerUUID, playerUUID.toString()), nestleValue);
             profileList.add(info);
 
-            class RetryFetch implements Runnable {
-                int count = 0;
-                @Override
-                public void run() {
-                    if (++count > 3) {
-                        return;
-                    }
-                    SkullBlockEntity.fetchGameProfile(playerUUID)
-                            .thenAcceptAsync(gameProfile -> gameProfile
-                                    .filter(gp -> gp.getName().length() != 36)
-                                    .ifPresentOrElse(info::setGameProfile, this));
-                }
-            }
-
-            Optional.ofNullable(Minecraft.getInstance().player)
-                    .flatMap(localPlayer -> localPlayer.connection.getOnlinePlayers().stream()
-                            .filter(playerInfo -> playerInfo.getProfile().getId().equals(playerUUID))
-                            .findAny()
-                    )
-                    .filter(playerInfo -> playerInfo.getProfile().getName().length() != 36)
-                    .map(PlayerInfo::getProfile)
-                    .ifPresentOrElse(info::setGameProfile, new RetryFetch());
-
-
+            info.checkFetch();
             return info;
         });
 
@@ -249,6 +226,37 @@ public final class PlayerNestleInfoList {
         public void setNestleValue(NestleValue nestleValue) {
             this.nestleValue = nestleValue;
             this.dirty = true;
+        }
+
+        public void checkFetch() {
+            if (this.gameProfile.getName().equalsIgnoreCase(this.gameProfile.getId().toString())) {
+                class RetryFetch implements Runnable {
+                    int count = 0;
+
+                    @Override
+                    public void run() {
+                        if (++count > 3) {
+                            return;
+                        }
+                        SkullBlockEntity.fetchGameProfile(gameProfile.getId())
+                                .thenAcceptAsync(gameProfile -> gameProfile
+                                        // not uuid
+                                        .filter(playerInfo -> !playerInfo.getName().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.getId().toString()))
+                                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, this));
+                    }
+                }
+
+                Optional.ofNullable(Minecraft.getInstance().player)
+                        .flatMap(localPlayer -> localPlayer.connection.getOnlinePlayers().stream()
+                                .filter(playerInfo -> playerInfo.getProfile().getId().equals(this.gameProfile.getId()))
+                                .findAny()
+                        )
+                        // not uuid
+                        .filter(playerInfo -> !playerInfo.getProfile().getName().equalsIgnoreCase(gameProfile.getId().toString()))
+                        .map(PlayerInfo::getProfile)
+                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, new RetryFetch());
+            }
+
         }
     }
 }
