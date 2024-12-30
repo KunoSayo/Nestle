@@ -242,16 +242,14 @@ public final class PlayerNestleInfoList {
                                 .thenAcceptAsync(gameProfile -> gameProfile
                                         // not uuid
                                         .filter(playerInfo -> !playerInfo.getName().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.getId().toString()))
-                                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> {
-                                            Thread.startVirtualThread(() -> {
-                                                try {
-                                                    Thread.sleep((long) (5000 + Math.random() * 5000));
-                                                } catch (InterruptedException ignored) {
+                                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> Thread.startVirtualThread(() -> {
+                                            try {
+                                                Thread.sleep((long) (5000 + Math.random() * 5000));
+                                            } catch (InterruptedException ignored) {
 
-                                                }
-                                                this.run();
-                                            });
-                                        }));
+                                            }
+                                            this.run();
+                                        })));
                     }
                 }
 
@@ -260,9 +258,9 @@ public final class PlayerNestleInfoList {
                                 .filter(playerInfo -> playerInfo.getProfile().getId().equals(this.gameProfile.getId()))
                                 .findAny()
                         )
-                        // not uuid
-                        .filter(playerInfo -> !playerInfo.getProfile().getName().equalsIgnoreCase(gameProfile.getId().toString()))
                         .map(PlayerInfo::getProfile)
+                        // not uuid
+                        .filter(tgp -> !tgp.getName().equalsIgnoreCase(gameProfile.getId().toString()))
                         .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, new RetryFetch());
             }
 
