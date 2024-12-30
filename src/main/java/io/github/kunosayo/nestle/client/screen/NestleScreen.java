@@ -88,6 +88,7 @@ public final class NestleScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         checkCount();
+        this.scrollPanel.checkContent();
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (PlayerNestleInfoList.profileList.isEmpty()) {
             emptyWidget.render(guiGraphics, mouseX, mouseY, partialTick);

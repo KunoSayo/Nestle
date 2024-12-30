@@ -29,15 +29,28 @@ public final class PlayerNestleInfoList {
             var info = new PlayerNestleInfo(new GameProfile(playerUUID, playerUUID.toString()), nestleValue);
             profileList.add(info);
 
+            class RetryFetch implements Runnable {
+                int count = 0;
+                @Override
+                public void run() {
+                    if (++count > 3) {
+                        return;
+                    }
+                    SkullBlockEntity.fetchGameProfile(playerUUID)
+                            .thenAcceptAsync(gameProfile -> gameProfile
+                                    .filter(gp -> gp.getName().length() != 36)
+                                    .ifPresentOrElse(info::setGameProfile, this));
+                }
+            }
+
             Optional.ofNullable(Minecraft.getInstance().player)
                     .flatMap(localPlayer -> localPlayer.connection.getOnlinePlayers().stream()
                             .filter(playerInfo -> playerInfo.getProfile().getId().equals(playerUUID))
                             .findAny()
                     )
+                    .filter(playerInfo -> playerInfo.getProfile().getName().length() != 36)
                     .map(PlayerInfo::getProfile)
-                    .ifPresentOrElse(info::setGameProfile,
-                            () -> SkullBlockEntity.fetchGameProfile(playerUUID)
-                                    .thenAcceptAsync(gameProfile -> gameProfile.ifPresent(info::setGameProfile)));
+                    .ifPresentOrElse(info::setGameProfile, new RetryFetch());
 
 
             return info;

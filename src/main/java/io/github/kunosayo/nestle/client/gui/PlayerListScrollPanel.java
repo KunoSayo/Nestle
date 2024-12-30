@@ -54,8 +54,6 @@ public final class PlayerListScrollPanel extends ScrollPanel {
 
     @Override
     protected void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY) {
-        PlayerNestleInfoList.checkDirty();
-
         var onlines = new HashSet<>();
 
         Minecraft.getInstance().player.connection.getListedOnlinePlayers().forEach(playerInfo -> {
@@ -228,5 +226,15 @@ public final class PlayerListScrollPanel extends ScrollPanel {
 
     }
 
+    @Override
+    public int getScrollAmount() {
+        return super.getScrollAmount();
+    }
 
+    public void checkContent() {
+        PlayerNestleInfoList.checkDirty();
+        if (getContentHeight() < this.scrollDistance) {
+            this.scrollDistance = 0;
+        }
+    }
 }
