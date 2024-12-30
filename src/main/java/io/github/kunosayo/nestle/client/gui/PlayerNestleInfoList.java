@@ -242,7 +242,16 @@ public final class PlayerNestleInfoList {
                                 .thenAcceptAsync(gameProfile -> gameProfile
                                         // not uuid
                                         .filter(playerInfo -> !playerInfo.getName().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.getId().toString()))
-                                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, this));
+                                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> {
+                                            Thread.startVirtualThread(() -> {
+                                                try {
+                                                    Thread.sleep((long) (5000 + Math.random() * 5000));
+                                                } catch (InterruptedException ignored) {
+
+                                                }
+                                                this.run();
+                                            });
+                                        }));
                     }
                 }
 
