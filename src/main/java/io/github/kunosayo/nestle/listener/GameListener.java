@@ -148,12 +148,8 @@ public class GameListener {
     }
 
     @SubscribeEvent
-    public static void onUseItem(PlayerInteractEvent.EntityInteract event) {
-
+    public static void onUseItem(PlayerInteractEvent.EntityInteractSpecific event) {
         var player = event.getEntity();
-        if (player.level().isClientSide) {
-            return;
-        }
 
         if (ModItems.NESTLE_LEAD.is(event.getItemStack().getItemHolder())) {
             if (NestleConfig.NESTLE_CONFIG.getLeft().nestleLeadAvoidEntitiesSet.contains(event.getEntity().getType())) {
@@ -161,7 +157,11 @@ public class GameListener {
             }
             var entity = event.getTarget();
             if (entity instanceof Player target) {
+                event.setCanceled(true);
                 event.setCancellationResult(InteractionResult.SUCCESS);
+                if (player.level().isClientSide) {
+                    return;
+                }
                 if (NestleLeadData.isNestle(player, target)) {
                     NestleLeadData.removeTwo(player, target);
                     return;
@@ -175,7 +175,11 @@ public class GameListener {
 
                 NestleLeadPlayerEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
             } else if (entity instanceof LivingEntity target) {
+                event.setCanceled(true);
                 event.setCancellationResult(InteractionResult.SUCCESS);
+                if (player.level().isClientSide) {
+                    return;
+                }
                 if (NestleLeadData.isNestle(player, target)) {
                     NestleLeadData.removeTwo(player, target);
                     return;
