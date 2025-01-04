@@ -92,8 +92,14 @@ public class GameListener {
                     .filter(livingEntity -> {
                         final boolean hasDesire = livingEntity.hasEffect(ModEffects.DESIRE_NESTLE_EFFECT);
 
-                        if (livingEntity.getType() == entity.getType()) {
-                            if (isPlayer && livingEntity instanceof Player player) {
+                        if (livingEntity.isSpectator() || livingEntity.isInvulnerable()) {
+                            return false;
+                        }
+                        if (livingEntity instanceof Player player) {
+                            if (player.isCreative()) {
+                                return false;
+                            }
+                            if (isPlayer) {
                                 // both player
                                 boolean playerPass = player.getData(NestleData.ATTACHMENT_TYPE)
                                         .getValue(entity.getUUID()).getValue() >= NestleConfig.NESTLE_CONFIG.getLeft().damageApportionRequire.get();
