@@ -1,5 +1,7 @@
 package io.github.kunosayo.nestle.client.task;
 
+import org.apache.logging.log4j.core.util.ExecutorServices;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -12,12 +14,10 @@ public class SingleTask {
     private final ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>();
 
     public void submitTask(Runnable task) {
-
         tasks.add(task);
         if (!threadRunning.compareAndExchangeRelease(false, true)) {
             Thread.ofVirtual().name("Nestle fetch").start(() ->  {
-                do {
-                    threadRunning.set(true);
+                while (true) {
                     while (!tasks.isEmpty()) {
                         var r = tasks.poll();
                         if (r != null) {
@@ -42,7 +42,13 @@ public class SingleTask {
 
 
                     // if tasks is empty, no task add during the value true
-                } while (!tasks.isEmpty());
+                    if (tasks.isEmpty()) {
+                        break;
+                    }
+                    if (threadRunning.compareAndExchangeRelease(false, true)) {
+                        break;
+                    }
+                }
             });
         }
     }
