@@ -246,7 +246,7 @@ public final class PlayerNestleInfoList {
                                         .filter(playerInfo -> !playerInfo.getName().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.getId().toString()))
                                         .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> Thread.startVirtualThread(() -> {
                                             try {
-                                                Thread.sleep((long) (Math.random() * 1000));
+                                                Thread.sleep(50 + (long) (Math.random() * 1000));
                                             } catch (InterruptedException ignored) {
 
                                             }
