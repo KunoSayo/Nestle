@@ -1,6 +1,7 @@
 package io.github.kunosayo.nestle.client.gui;
 
 import com.mojang.authlib.GameProfile;
+import io.github.kunosayo.nestle.client.task.SingleTask;
 import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import net.minecraft.client.Minecraft;
@@ -235,16 +236,17 @@ public final class PlayerNestleInfoList {
 
                     @Override
                     public void run() {
-                        if (++count > 3) {
+
+                        if (++count > 3 || !PlayerNestleInfo.this.gameProfile.getName().equalsIgnoreCase(gameProfile.getId().toString())) {
                             return;
                         }
                         SkullBlockEntity.fetchGameProfile(gameProfile.getId())
-                                .thenAcceptAsync(gameProfile -> gameProfile
+                                .thenAccept(gameProfile -> gameProfile
                                         // not uuid
                                         .filter(playerInfo -> !playerInfo.getName().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.getId().toString()))
                                         .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> Thread.startVirtualThread(() -> {
                                             try {
-                                                Thread.sleep((long) (5000 + Math.random() * 5000));
+                                                Thread.sleep((long) (Math.random() * 1000));
                                             } catch (InterruptedException ignored) {
 
                                             }
@@ -253,7 +255,7 @@ public final class PlayerNestleInfoList {
                     }
                 }
 
-                Optional.ofNullable(Minecraft.getInstance().player)
+                SingleTask.INSTANCE.submitTask(() -> Optional.ofNullable(Minecraft.getInstance().player)
                         .flatMap(localPlayer -> localPlayer.connection.getOnlinePlayers().stream()
                                 .filter(playerInfo -> playerInfo.getProfile().getId().equals(this.gameProfile.getId()))
                                 .findAny()
@@ -261,7 +263,9 @@ public final class PlayerNestleInfoList {
                         .map(PlayerInfo::getProfile)
                         // not uuid
                         .filter(tgp -> !tgp.getName().equalsIgnoreCase(gameProfile.getId().toString()))
-                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, new RetryFetch());
+                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, new RetryFetch()));
+
+
             }
 
         }

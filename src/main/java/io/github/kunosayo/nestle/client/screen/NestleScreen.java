@@ -50,6 +50,13 @@ public final class NestleScreen extends Screen {
     }
 
     @Override
+    public void resize(Minecraft minecraft, int width, int height) {
+        this.searchBox = null;
+        this.scrollPanel = null;
+        super.resize(minecraft, width, height);
+    }
+
+    @Override
     protected void init() {
         super.init();
 
@@ -88,7 +95,9 @@ public final class NestleScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         checkCount();
-        this.scrollPanel.checkContent();
+        if (this.scrollPanel != null) {
+            this.scrollPanel.checkContent();
+        }
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (PlayerNestleInfoList.profileList.isEmpty()) {
             emptyWidget.render(guiGraphics, mouseX, mouseY, partialTick);
