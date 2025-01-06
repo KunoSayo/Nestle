@@ -9,6 +9,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public final class PlayerNestleInfoList {
     public static final HashMap<UUID, PlayerNestleInfo> infoMap = new HashMap<>();
@@ -240,18 +241,21 @@ public final class PlayerNestleInfoList {
                         if (++count > 3 || !PlayerNestleInfo.this.gameProfile.getName().equalsIgnoreCase(gameProfile.getId().toString())) {
                             return;
                         }
-                        SkullBlockEntity.fetchGameProfile(gameProfile.getId())
-                                .thenAccept(gameProfile -> gameProfile
-                                        // not uuid
-                                        .filter(playerInfo -> !playerInfo.getName().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.getId().toString()))
-                                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> Thread.startVirtualThread(() -> {
-                                            try {
-                                                Thread.sleep(50 + (long) (Math.random() * 1000));
-                                            } catch (InterruptedException ignored) {
+                        try {
+                            SkullBlockEntity.fetchGameProfile(gameProfile.getId())
+                                    .get()
+                                    .filter(playerInfo -> !playerInfo.getName().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.getId().toString()))
+                                    .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> {
+                                        try {
+                                            Thread.sleep(50 + (long) (Math.random() * 1000));
+                                        } catch (InterruptedException ignored) {
 
-                                            }
-                                            this.run();
-                                        })));
+                                        }
+                                        this.run();
+                                    });
+                        } catch (InterruptedException | ExecutionException ignored) {
+
+                        }
                     }
                 }
 
