@@ -259,7 +259,7 @@ public final class PlayerNestleInfoList {
                     }
                 }
 
-                SingleTask.INSTANCE.submitTask(() -> Optional.ofNullable(Minecraft.getInstance().player)
+                Optional.ofNullable(Minecraft.getInstance().player)
                         .flatMap(localPlayer -> localPlayer.connection.getOnlinePlayers().stream()
                                 .filter(playerInfo -> playerInfo.getProfile().getId().equals(this.gameProfile.getId()))
                                 .findAny()
@@ -267,8 +267,7 @@ public final class PlayerNestleInfoList {
                         .map(PlayerInfo::getProfile)
                         // not uuid
                         .filter(tgp -> !tgp.getName().equalsIgnoreCase(gameProfile.getId().toString()))
-                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, new RetryFetch()));
-
+                        .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> SingleTask.INSTANCE.submitTask(new RetryFetch()));
 
             }
 
