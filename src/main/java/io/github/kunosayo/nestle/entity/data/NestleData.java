@@ -3,9 +3,11 @@ package io.github.kunosayo.nestle.entity.data;
 import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.network.SyncNestleValuePacket;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.VarInt;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +32,8 @@ public class NestleData implements INBTSerializable<CompoundTag> {
             NestleData::new
     );
 
+
+
     public final HashMap<UUID, NestleValue> values;
     public boolean givenStartItem;
 
@@ -51,24 +55,44 @@ public class NestleData implements INBTSerializable<CompoundTag> {
 
     }
 
+    /**
+     * The codec to save player values in bytes.
+     */
+    private static final StreamCodec<ByteBuf, NestleData> SAVE_CODEC = StreamCodec.composite(
+            ByteBufCodecs.map(HashMap::new, UUIDUtil.STREAM_CODEC, NestleValue.STREAM_CODEC),
+            nestleData -> nestleData.values,
+            NestleData::new
+    );
+
     @Override
     public @NotNull CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        var tag = new CompoundTag();
         var root = new CompoundTag();
-        values.forEach((uuid, nestleValue) -> tag.put(uuid.toString(), nestleValue.serializeNBT(provider)));
+
+        var buffer = Unpooled.buffer();
+        SAVE_CODEC.encode(buffer, this);
+        var data = new byte[buffer.writerIndex()];
+        buffer.readBytes(data);
+        root.putByteArray("data", data);
         root.putBoolean("givenStartItem", givenStartItem);
-        root.put("players", tag);
+
         return root;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         values.clear();
-        var players = nbt.getCompound("players");
-        var keys = players.getAllKeys();
-        for (String key : keys) {
-            var tag = players.getCompound(key);
-            values.put(UUID.fromString(key), new NestleValue().chainedDeserializeNBT(provider, tag));
+        if (nbt.contains("players")) {
+            var players = nbt.getCompound("players");
+            var keys = players.getAllKeys();
+            for (String key : keys) {
+                var tag = players.getCompound(key);
+                values.put(UUID.fromString(key), new NestleValue().chainedDeserializeNBT(provider, tag));
+            }
+        } else {
+            var data = nbt.getByteArray("data");
+            var nestlePartData = SAVE_CODEC.decode(Unpooled.wrappedBuffer(data));
+            this.values.clear();
+            this.values.putAll(nestlePartData.values);
         }
         givenStartItem = nbt.getBoolean("givenStartItem");
     }

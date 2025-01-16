@@ -1,15 +1,21 @@
 package io.github.kunosayo.nestle.data;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledHeapByteBuf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.VarInt;
+import net.minecraft.network.VarLong;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
-public class NestleValue implements INBTSerializable<CompoundTag> {
+import java.io.ByteArrayOutputStream;
+
+public class NestleValue {
     public static final StreamCodec<ByteBuf, NestleValue> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_LONG, nestleValue -> nestleValue.value,
             new StreamCodec<>() {
@@ -69,15 +75,34 @@ public class NestleValue implements INBTSerializable<CompoundTag> {
         return (high >>> 1) + (extra & high);
     }
 
-    @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public byte[] serializeToBytes() {
         CompoundTag tag = new CompoundTag();
-        tag.putLong("value", value);
-        tag.putIntArray("times", times);
-        return tag;
+        var buffer = Unpooled.buffer();
+        VarLong.write(buffer, value);
+
+        // fast!
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < times.length; i++) {
+            VarInt.write(buffer, times[i]);
+        }
+
+        var data = new byte[buffer.writerIndex()];
+        buffer.readBytes(data);
+        return data;
     }
 
-    @Override
+    public void deserializeFromBytes(ByteBuf buffer) {
+        value = VarLong.read(buffer);
+        times = new int[18];
+        for (int i = 0; i < 18; i++) {
+            times[i] = VarInt.read(buffer);
+        }
+        totalTimes = 0;
+        for (int i = 0; i < 18; i++) {
+            this.totalTimes += times[i];
+        }
+    }
+
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         value = nbt.getLong("value");
         times = nbt.getIntArray("times");
