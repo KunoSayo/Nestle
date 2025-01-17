@@ -84,6 +84,7 @@ public final class Nestle {
         }
         var packets = new UpdateNestleValuePacket[n];
         var datas = new NestleData[n];
+        boolean[] sync = new boolean[n];
         for (int i = 0; i < n; i++) {
             packets[i] = new UpdateNestleValuePacket();
             datas[i] = players.get(i).getData(NestleData.ATTACHMENT_TYPE);
@@ -122,6 +123,11 @@ public final class Nestle {
                     bPacket.getSameWorld().add(new UpdateNestleValuePacket.SameWorldUpdate(a.getUUID(), delta, idx));
                 }
 
+                if (aValue.syncTo(bValue)) {
+                    sync[j] = true;
+                } else if (bValue.syncTo(aValue)) {
+                    sync[i] = true;
+                }
 
                 ModAdvancements.NESTLE_TRIGGER.get().trigger(a, aValue);
                 ModAdvancements.NESTLE_TRIGGER.get().trigger(b, bValue);
@@ -131,9 +137,13 @@ public final class Nestle {
 
         for (int i = 0; i < n; i++) {
             var a = players.get(i);
-            var updatePacket = packets[i];
-            // always valid packet for n >= 2
-            PacketDistributor.sendToPlayer(a, updatePacket);
+            if (sync[i]) {
+                PacketDistributor.sendToPlayer(a, new SyncNestleDataPacket(datas[i]));
+            } else {
+                var updatePacket = packets[i];
+                // always valid packet for n >= 2
+                PacketDistributor.sendToPlayer(a, updatePacket);
+            }
         }
     }
 

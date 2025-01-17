@@ -3,6 +3,7 @@ package io.github.kunosayo.nestle.client.listener;
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.client.gui.PlayerNestleInfoList;
 import io.github.kunosayo.nestle.client.screen.NestleScreen;
+import io.github.kunosayo.nestle.client.task.SingleTask;
 import io.github.kunosayo.nestle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,6 +22,7 @@ public class ClientListener {
     @SubscribeEvent
     public static void onClientLeave(ClientPlayerNetworkEvent.LoggingOut event) {
         PlayerNestleInfoList.clear();
+        SingleTask.INSTANCE.clearTasks();
     }
 
     @SubscribeEvent

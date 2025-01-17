@@ -15,6 +15,7 @@ public final class PlayerNestleInfoList {
     public static final HashMap<UUID, PlayerNestleInfo> infoMap = new HashMap<>();
     public static NestleData clientNestleData = new NestleData();
     public static List<PlayerNestleInfo> profileList = new ArrayList<>();
+    public static HashMap<UUID, GameProfile> profileCache = new HashMap<>();
 
     private static int filteredCount = 0;
     private static String filter = "";
@@ -70,6 +71,11 @@ public final class PlayerNestleInfoList {
     }
 
     public static void clear() {
+        for (PlayerNestleInfo playerNestleInfo : profileList) {
+            if (playerNestleInfo.isGameProfileValid()) {
+                profileCache.put(playerNestleInfo.gameProfile.getId(), playerNestleInfo.gameProfile);
+            }
+        }
         profileList.clear();
         infoMap.clear();
         filteredCount = 0;
@@ -88,7 +94,7 @@ public final class PlayerNestleInfoList {
 
         nestleValue.values.forEach(PlayerNestleInfoList::updatePlayer);
 
-
+        profileCache.clear();
         checkDirty();
     }
 
@@ -185,6 +191,10 @@ public final class PlayerNestleInfoList {
 
         }
 
+        public boolean isGameProfileValid() {
+            return !this.gameProfile.getName().equalsIgnoreCase(this.gameProfile.getId().toString());
+        }
+
         public boolean checkFilter() {
             boolean newFilter = !filter.isEmpty() && !gameProfile.getName().toLowerCase().contains(filter);
             if (newFilter != filtered) {
@@ -231,7 +241,7 @@ public final class PlayerNestleInfoList {
         }
 
         public void checkFetch() {
-            if (this.gameProfile.getName().equalsIgnoreCase(this.gameProfile.getId().toString())) {
+            if (!isGameProfileValid()) {
                 class RetryFetch implements Runnable {
                     int count = 0;
 
@@ -265,6 +275,7 @@ public final class PlayerNestleInfoList {
                                 .findAny()
                         )
                         .map(PlayerInfo::getProfile)
+                        .or(() -> Optional.ofNullable(profileCache.get(this.gameProfile.getId())))
                         // not uuid
                         .filter(tgp -> !tgp.getName().equalsIgnoreCase(gameProfile.getId().toString()))
                         .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> SingleTask.INSTANCE.submitTask(new RetryFetch()));

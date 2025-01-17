@@ -143,6 +143,16 @@ public class NestleValue {
         return this;
     }
 
+    public boolean syncTo(NestleValue other) {
+        if (other.totalTimes < this.totalTimes) {
+            other.totalTimes = this.totalTimes;
+            other.times = new int[this.times.length];
+            System.arraycopy(this.times, 0, other.times, 0, this.times.length);
+            return true;
+        }
+        return false;
+    }
+
     public long addValue(int delta) {
         return this.value = Math.min(Math.max(value + delta, -999), Long.MAX_VALUE >>> 1);
     }

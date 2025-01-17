@@ -14,7 +14,6 @@ public class NestleValueTest {
         Assertions.assertEquals(0, NestleValue.getIndex(0.5));
 
 
-
         // *  *      *               *               Last Mark
         // 1  2  3   4   5   6   7   8   9  10       Distance
         // 1  4  9  16  25  36  49  64  61 100       Squared Distance
@@ -45,6 +44,21 @@ public class NestleValueTest {
         Assertions.assertEquals(16, NestleValue.getIndex((1L << (17 << 1)) + 0.1));
         Assertions.assertEquals(16, NestleValue.getIndex((1L << (18 << 1)) + 0.1));
         Assertions.assertEquals(16, NestleValue.getIndex((1L << (19 << 1)) + 0.1));
+
+    }
+
+    @Test
+    public void testSync() {
+        var a = new NestleValue(1, new int[18]);
+        var b = new NestleValue(2, new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+        Assertions.assertEquals(b.times.length, a.times.length);
+
+        Assertions.assertFalse(a.syncTo(b));
+        Assertions.assertTrue(b.syncTo(a));
+
+        Assertions.assertNotSame(a.times, b.times);
+        Assertions.assertArrayEquals(a.times, b.times);
+        Assertions.assertNotEquals(a.getValue(), b.getValue());
 
     }
 }

@@ -16,17 +16,21 @@ public class SingleTask {
         if (!threadRunning.compareAndExchangeRelease(false, true)) {
             Thread.ofVirtual().name("Nestle fetch").start(() ->  {
                 while (true) {
-                    while (!tasks.isEmpty()) {
-                        var r = tasks.poll();
-                        if (r != null) {
-                            r.run();
-                        }
+                    try {
+                        while (!tasks.isEmpty()) {
+                            var r = tasks.poll();
+                            if (r != null) {
+                                r.run();
+                            }
 
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException e) {
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException ignored) {
 
+                            }
                         }
+                    } catch (Throwable t) {
+                        t.printStackTrace();
                     }
 
                     threadRunning.compareAndExchangeAcquire(true, false);
@@ -49,5 +53,9 @@ public class SingleTask {
                 }
             });
         }
+    }
+
+    public void clearTasks() {
+        this.tasks.clear();
     }
 }
