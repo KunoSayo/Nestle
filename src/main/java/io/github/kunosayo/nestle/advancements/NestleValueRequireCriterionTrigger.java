@@ -3,8 +3,8 @@ package io.github.kunosayo.nestle.advancements;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.kunosayo.nestle.data.NestleValue;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 
 public class NestleValueRequireCriterionTrigger extends SimpleCriterionTrigger<NestleValueRequireTriggerInstance> {

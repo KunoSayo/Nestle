@@ -4,24 +4,25 @@ import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.network.SyncNestleValuePacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.VarInt;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class NestleData implements INBTSerializable<CompoundTag> {
+public class NestleData implements ValueIOSerializable {
     public static final AttachmentType<NestleData> ATTACHMENT_TYPE = AttachmentType.serializable(() -> new NestleData())
             .copyOnDeath()
             .build();
@@ -31,7 +32,6 @@ public class NestleData implements INBTSerializable<CompoundTag> {
             nestleData -> nestleData.values,
             NestleData::new
     );
-
 
 
     public final HashMap<UUID, NestleValue> values;
@@ -64,39 +64,6 @@ public class NestleData implements INBTSerializable<CompoundTag> {
             NestleData::new
     );
 
-    @Override
-    public @NotNull CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        var root = new CompoundTag();
-
-        var buffer = Unpooled.buffer();
-        SAVE_CODEC.encode(buffer, this);
-        var data = new byte[buffer.writerIndex()];
-        buffer.readBytes(data);
-        root.putByteArray("data", data);
-        root.putBoolean("givenStartItem", givenStartItem);
-
-        return root;
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        values.clear();
-        if (nbt.contains("players")) {
-            var players = nbt.getCompound("players");
-            var keys = players.getAllKeys();
-            for (String key : keys) {
-                var tag = players.getCompound(key);
-                values.put(UUID.fromString(key), new NestleValue().chainedDeserializeNBT(provider, tag));
-            }
-        } else {
-            var data = nbt.getByteArray("data");
-            var nestlePartData = SAVE_CODEC.decode(Unpooled.wrappedBuffer(data));
-            this.values.clear();
-            this.values.putAll(nestlePartData.values);
-        }
-        givenStartItem = nbt.getBoolean("givenStartItem");
-    }
-
     public NestleValue getValue(UUID uuid) {
         return values.computeIfAbsent(uuid, _u -> new NestleValue());
     }
@@ -107,5 +74,32 @@ public class NestleData implements INBTSerializable<CompoundTag> {
 
     public NestleValue addDifValue(UUID uuid, int delta) {
         return getValue(uuid).addDifValue(delta);
+    }
+
+    @Override
+    public void serialize(ValueOutput output) {
+        var root = new CompoundTag();
+
+        var buffer = Unpooled.buffer();
+        SAVE_CODEC.encode(buffer, this);
+        var data = new byte[buffer.writerIndex()];
+        buffer.readBytes(data);
+        root.putByteArray("data", data);
+        root.putBoolean("givenStartItem", givenStartItem);
+
+        output.store(root);
+    }
+
+    @Override
+    public void deserialize(ValueInput input) {
+        input.read("data", ExtraCodecs.NBT)
+                .flatMap(Tag::asByteArray).ifPresent(data -> {
+                    var nestlePartData = SAVE_CODEC.decode(Unpooled.wrappedBuffer(data));
+                    this.values.clear();
+                    this.values.putAll(nestlePartData.values);
+                });
+        input.read("givenStartItem", ExtraCodecs.NBT)
+                .flatMap(Tag::asBoolean)
+                .ifPresent(aBoolean -> givenStartItem = aBoolean);
     }
 }

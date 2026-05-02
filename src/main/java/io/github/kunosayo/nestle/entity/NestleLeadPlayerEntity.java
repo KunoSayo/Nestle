@@ -1,10 +1,14 @@
 package io.github.kunosayo.nestle.entity;
 
+import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.entity.data.NestleLeadData;
 import io.github.kunosayo.nestle.util.NestleUtil;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -22,7 +26,8 @@ public class NestleLeadPlayerEntity extends NestleLeadEntity {
             .sized(0.0f, 0.0f)
             .fireImmune()
             .canSpawnFarFromPlayer()
-            .build("nestle_lead_player_entity");
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_lead_player_entity")));
+
     /**
      * The entity used nestle lead
      */
@@ -36,7 +41,6 @@ public class NestleLeadPlayerEntity extends NestleLeadEntity {
         super(pEntityType, pLevel);
         this.from = inParamFrom;
         this.target = inParamTarget;
-        this.noCulling = true;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class NestleLeadPlayerEntity extends NestleLeadEntity {
         var fromPlayer = level.getPlayerByUUID(from);
         var targetPlayer = level.getPlayerByUUID(target);
         if (fromPlayer == null || fromPlayer.isSpectator() || targetPlayer == null || targetPlayer.isSpectator()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 kill();
             }
             return;
@@ -75,13 +79,13 @@ public class NestleLeadPlayerEntity extends NestleLeadEntity {
 
         var mid = fromPlayer.position().add(targetPlayer.position()).multiply(0.5, 0.5, 0.5);
         if (fromPlayer.distanceToSqr(targetPlayer) > 225.0) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 NestleLeadData.removeTwo(fromPlayer, targetPlayer);
                 kill();
             }
             return;
         }
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             // Check valid.
             teleportTo(mid.x, mid.y, mid.z);
             if (!NestleLeadData.isNestle(fromPlayer, targetPlayer)) {
@@ -100,15 +104,6 @@ public class NestleLeadPlayerEntity extends NestleLeadEntity {
 
     }
 
-    @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-
-    }
 
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {

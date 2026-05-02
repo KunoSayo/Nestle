@@ -8,12 +8,13 @@ import io.github.kunosayo.nestle.network.SyncNestleValuePacket;
 import io.github.kunosayo.nestle.network.UpdateNestleValuePacket;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@EventBusSubscriber(modid = Nestle.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-public class ModListener {
+@EventBusSubscriber(modid = Nestle.MOD_ID)
+public class ModListener implements IModBusEvent {
     public static final String NETWORK_VERSION = "1.0.0";
 
     @SubscribeEvent

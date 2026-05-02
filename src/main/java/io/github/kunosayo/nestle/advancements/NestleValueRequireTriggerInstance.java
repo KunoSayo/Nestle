@@ -6,8 +6,8 @@ import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.init.ModAdvancements;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.criterion.ContextAwarePredicate;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 
 import java.util.Optional;
 

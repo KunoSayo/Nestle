@@ -8,14 +8,14 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
 
 
 public class NestlePacket implements CustomPacketPayload {
-    public static final Type<NestlePacket> NETWORK_TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Nestle.MOD_ID, "nestle"));
+    public static final Type<NestlePacket> NETWORK_TYPE = new Type<>(Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "nestle"));
 
 
     public static final StreamCodec<ByteBuf, NestlePacket> STREAM_CODEC = StreamCodec

@@ -13,14 +13,14 @@ public class ModBlocks {
 
     public static DeferredBlock<NestleBlock> NESTLE_BLOCK = BLOCKS
             .registerBlock("nestle_block", NestleBlock::new,
-                    BlockBehaviour.Properties.of()
+                    () -> BlockBehaviour.Properties.of()
                             .mapColor(DyeColor.RED)
                             .strength(1.0F, 3.0F)
             );
 
     public static DeferredBlock<NestleResistanceBlock> NESTLE_RESISTANCE_BLOCK = BLOCKS
             .registerBlock("nestle_resistance_block", NestleResistanceBlock::new,
-                    BlockBehaviour.Properties.of()
+                    () -> BlockBehaviour.Properties.of()
                             .mapColor(DyeColor.LIGHT_BLUE)
                             .strength(1.0F, 3.0F)
             );

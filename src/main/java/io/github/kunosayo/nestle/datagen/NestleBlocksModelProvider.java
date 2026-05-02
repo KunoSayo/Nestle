@@ -3,101 +3,137 @@ package io.github.kunosayo.nestle.datagen;
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.block.NestleBlock;
 import io.github.kunosayo.nestle.init.ModBlocks;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.model.*;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.model.generators.template.FaceBuilder;
 
-public class NestleBlocksModelProvider extends BlockStateProvider {
-    public NestleBlocksModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, Nestle.MOD_ID, exFileHelper);
+import java.util.Optional;
+
+import static net.minecraft.client.data.models.BlockModelGenerators.createBooleanModelDispatch;
+import static net.minecraft.client.data.models.BlockModelGenerators.plainVariant;
+
+public class NestleBlocksModelProvider {
+
+
+    public static final ModelTemplate NESTLE_BLOCK_TEMPLATE = new ModelTemplate(ModelTemplates.CUBE.model,
+            Optional.empty(),
+            TextureSlot.BOTTOM,
+            TextureSlot.TOP,
+            TextureSlot.FRONT,
+            TextureSlot.BACK,
+            TextureSlot.SIDE).extend()
+            .element(elementBuilder -> {
+                elementBuilder.from(0.0f, 0.0f, 0.0f)
+                        .to(16.0f, 16.0f, 16.0f)
+                        .allFaces((direction, faceBuilder) -> {
+                            faceBuilder.cullface(direction);
+                            switch (direction) {
+                                case DOWN -> faceBuilder.texture(TextureSlot.BOTTOM);
+                                case UP -> faceBuilder.texture(TextureSlot.TOP);
+                                case NORTH -> faceBuilder.texture(TextureSlot.BACK);
+                                case SOUTH -> faceBuilder.texture(TextureSlot.FRONT);
+                                case WEST, EAST -> faceBuilder.texture(TextureSlot.SIDE);
+                            }
+                            switch (direction) {
+                                case DOWN, UP, NORTH, SOUTH, WEST -> faceBuilder.uvs(0.0f, 0.0f, 16.0f, 16.0f);
+                                case EAST -> faceBuilder.uvs(16.0f, 0.0f, 0.0f, 16.0f);
+                            }
+                        });
+            })
+            .build();
+
+    private static Material modLocMat(String s) {
+        return new Material(Identifier.fromNamespaceAndPath(Nestle.MOD_ID, s));
+    }
+
+    private static TextureMapping getGeneralMapping(Block block, ModelTemplate template) {
+        var mapping = new TextureMapping();
+        for (TextureSlot requiredSlot : template.requiredSlots) {
+            mapping.put(requiredSlot, TextureMapping.getBlockTexture(block, "_" + requiredSlot.getId()));
+        }
+        return mapping;
     }
 
 
-    private void registerNestleResistanceBlock() {
-        ResourceLocation bottomTexture = modLoc("block/nestle_resistance_block_bottom");
-        ResourceLocation topTexture = modLoc("block/nestle_resistance_block_top");
-        ResourceLocation sideTexture = modLoc("block/nestle_resistance_block_side");
-        ResourceLocation frontTexture = modLoc("block/nestle_resistance_block_front");
-        ResourceLocation backTexture = modLoc("block/nestle_resistance_block_back");
+    private static void registerNestleResistanceBlock(BlockModelGenerators blockModels) {
 
-        ResourceLocation bottomPoweredTexture = modLoc("block/nestle_resistance_block_bottom_powered");
-        ResourceLocation topPoweredTexture = modLoc("block/nestle_resistance_block_top_powered");
-        ResourceLocation sidePoweredTexture = modLoc("block/nestle_resistance_block_side_powered");
-        ResourceLocation frontPoweredTexture = modLoc("block/nestle_resistance_block_front");
-        ResourceLocation backPoweredTexture = modLoc("block/nestle_resistance_block_back");
+        Material bottomPoweredTexture = modLocMat("block/nestle_resistance_block_bottom_powered");
+        Material topPoweredTexture = modLocMat("block/nestle_resistance_block_top_powered");
+        Material sidePoweredTexture = modLocMat("block/nestle_resistance_block_side_powered");
+        Material frontPoweredTexture = modLocMat("block/nestle_resistance_block_front");
+        Material backPoweredTexture = modLocMat("block/nestle_resistance_block_back");
 
-        var model = models().withExistingParent("nestle_resistance_block", "nestle:templated_nestle_block")
-                .texture("top", topTexture)
-                .texture("bottom", bottomTexture)
-                .texture("side", sideTexture)
-                .texture("front", frontTexture)
-                .texture("back", backTexture);
 
-        var poweredModel = models().withExistingParent("nestle_resistance_block_powered", "nestle:templated_nestle_block")
-                .texture("top", topPoweredTexture)
-                .texture("bottom", bottomPoweredTexture)
-                .texture("side", sidePoweredTexture)
-                .texture("front", frontPoweredTexture)
-                .texture("back", backPoweredTexture);
-        horizontalBlock(ModBlocks.NESTLE_RESISTANCE_BLOCK.get(), state -> state.getValue(NestleBlock.POWERED) ? poweredModel : model);
+        var off = plainVariant(NESTLE_BLOCK_TEMPLATE.create(ModBlocks.NESTLE_RESISTANCE_BLOCK.get(),
+                getGeneralMapping(ModBlocks.NESTLE_RESISTANCE_BLOCK.get(), NESTLE_BLOCK_TEMPLATE),
+                blockModels.modelOutput));
+        var powered = plainVariant(NESTLE_BLOCK_TEMPLATE.createWithSuffix(ModBlocks.NESTLE_RESISTANCE_BLOCK.get(), "_powered",
+                new TextureMapping()
+                        .put(TextureSlot.BOTTOM, bottomPoweredTexture)
+                        .put(TextureSlot.TOP, topPoweredTexture)
+                        .put(TextureSlot.FRONT, frontPoweredTexture)
+                        .put(TextureSlot.BACK, backPoweredTexture)
+                        .put(TextureSlot.SIDE, sidePoweredTexture)
+                , blockModels.modelOutput));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.NESTLE_RESISTANCE_BLOCK.get())
+                .with(createBooleanModelDispatch(BlockStateProperties.POWERED, powered, off))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+
+
     }
 
-    private void registerNestleBlock() {
-        ResourceLocation bottomTexture = modLoc("block/nestle_block_bottom");
-        ResourceLocation topTexture = modLoc("block/nestle_block_top");
-        ResourceLocation sideTexture = modLoc("block/nestle_block_side");
-        ResourceLocation frontTexture = modLoc("block/nestle_resistance_block_front");
-        ResourceLocation backTexture = modLoc("block/nestle_block_back");
+    private static void registerNestleBlock(BlockModelGenerators blockModels) {
 
-        ResourceLocation bottomPoweredTexture = modLoc("block/nestle_block_bottom_powered");
-        ResourceLocation topPoweredTexture = modLoc("block/nestle_block_top_powered");
-        ResourceLocation sidePoweredTexture = modLoc("block/nestle_block_side_powered");
-        ResourceLocation frontPoweredTexture = modLoc("block/nestle_resistance_block_front");
-        ResourceLocation backPoweredTexture = modLoc("block/nestle_block_back");
+        Material bottomTexture = modLocMat("block/nestle_block_bottom");
+        Material topTexture = modLocMat("block/nestle_block_top");
+        Material sideTexture = modLocMat("block/nestle_block_side");
+        Material frontTexture = modLocMat("block/nestle_resistance_block_front");
+        Material backTexture = modLocMat("block/nestle_block_back");
+
+        Material bottomPoweredTexture = modLocMat("block/nestle_block_bottom_powered");
+        Material topPoweredTexture = modLocMat("block/nestle_block_top_powered");
+        Material sidePoweredTexture = modLocMat("block/nestle_block_side_powered");
+        Material frontPoweredTexture = modLocMat("block/nestle_resistance_block_front");
+        Material backPoweredTexture = modLocMat("block/nestle_block_back");
 
 
-        var model = models().withExistingParent("nestle_block", "nestle:templated_nestle_block")
-                .texture("top", topTexture)
-                .texture("bottom", bottomTexture)
-                .texture("side", sideTexture)
-                .texture("front", frontTexture)
-                .texture("back", backTexture);
+        var off = plainVariant(NESTLE_BLOCK_TEMPLATE.create(ModBlocks.NESTLE_BLOCK.get(),
+                new TextureMapping()
+                        .put(TextureSlot.BOTTOM, bottomTexture)
+                        .put(TextureSlot.TOP, topTexture)
+                        .put(TextureSlot.FRONT, frontTexture)
+                        .put(TextureSlot.BACK, backTexture)
+                        .put(TextureSlot.SIDE, sideTexture),
+                blockModels.modelOutput));
+        var powered = plainVariant(NESTLE_BLOCK_TEMPLATE.createWithSuffix(ModBlocks.NESTLE_BLOCK.get(), "_powered",
+                new TextureMapping()
+                        .put(TextureSlot.BOTTOM, bottomPoweredTexture)
+                        .put(TextureSlot.TOP, topPoweredTexture)
+                        .put(TextureSlot.FRONT, frontPoweredTexture)
+                        .put(TextureSlot.BACK, backPoweredTexture)
+                        .put(TextureSlot.SIDE, sidePoweredTexture)
+                , blockModels.modelOutput));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.NESTLE_BLOCK.get())
+                .with(createBooleanModelDispatch(BlockStateProperties.POWERED, powered, off))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
 
-        var poweredModel = models().withExistingParent("nestle_block_powered", "nestle:templated_nestle_block")
-                .texture("top", topPoweredTexture)
-                .texture("bottom", bottomPoweredTexture)
-                .texture("side", sidePoweredTexture)
-                .texture("front", frontPoweredTexture)
-                .texture("back", backPoweredTexture);
-
-        horizontalBlock(ModBlocks.NESTLE_BLOCK.get(), state -> state.getValue(NestleBlock.POWERED) ? poweredModel : model);
     }
 
-    @Override
-    protected void registerStatesAndModels() {
-        models().withExistingParent("templated_nestle_block", "minecraft:block/cube")
-                .texture("particle", "#top")
-                .element()
-                .from(0.0f, 0.0f, 0.0f)
-                .to(16.0f, 16.0f, 16.0f)
-                .allFaces((direction, faceBuilder) -> {
-                    faceBuilder.cullface(direction);
-                    switch (direction) {
-                        case DOWN -> faceBuilder.texture("#bottom");
-                        case UP -> faceBuilder.texture("#top");
-                        case NORTH -> faceBuilder.texture("#back");
-                        case SOUTH -> faceBuilder.texture("#front");
-                        case WEST, EAST -> faceBuilder.texture("#side");
-                    }
-                    switch (direction) {
-                        case DOWN, UP, NORTH, SOUTH, WEST -> faceBuilder.uvs(0.0f, 0.0f, 16.0f, 16.0f);
-                        case EAST -> faceBuilder.uvs(16.0f, 0.0f, 0.0f, 16.0f);
-                    }
-                })
-                .end();
+    public static void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        registerNestleResistanceBlock(blockModels);
+        registerNestleBlock(blockModels);
 
-        registerNestleResistanceBlock();
-        registerNestleBlock();
+
     }
+
+
 }

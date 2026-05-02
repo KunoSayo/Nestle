@@ -1,19 +1,14 @@
 package io.github.kunosayo.nestle.data;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.buffer.UnpooledHeapByteBuf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.VarInt;
 import net.minecraft.network.VarLong;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.UnknownNullability;
 
-import java.io.ByteArrayOutputStream;
 
 public class NestleValue {
     public static final StreamCodec<ByteBuf, NestleValue> STREAM_CODEC = StreamCodec.composite(
@@ -104,8 +99,8 @@ public class NestleValue {
     }
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        value = nbt.getLong("value");
-        times = nbt.getIntArray("times");
+        value = nbt.getLong("value").orElse(0L);
+        times = nbt.getIntArray("times").orElse(new int[18]);
         if (times.length != 18) {
             times = new int[18];
         }

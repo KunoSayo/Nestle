@@ -2,6 +2,7 @@ package io.github.kunosayo.nestle.effect;
 
 import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.init.ModEffects;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -18,16 +19,16 @@ public class DisgustNestleEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity pLivingEntity, int pAmplifier) {
         double radius = (NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get() + 1.5) * (pAmplifier + 1);
         var level = pLivingEntity.level();
         var cond = TargetingConditions.forNonCombat()
-                .selector(livingEntity -> !livingEntity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT))
+                .selector((livingEntity, _) -> !livingEntity.hasEffect(ModEffects.NESTLE_RESISTANCE_EFFECT))
                 .range(radius)
                 .ignoreLineOfSight();
         var rv = new Vec3(radius, radius, radius);
         var aabb = new AABB(pLivingEntity.position().subtract(rv), pLivingEntity.position().add(rv));
-        List<LivingEntity> entities = level.getNearbyEntities(LivingEntity.class, cond, pLivingEntity, aabb);
+        List<LivingEntity> entities = serverLevel.getNearbyEntities(LivingEntity.class, cond, pLivingEntity, aabb);
 
 
         var selfPos = pLivingEntity.position();

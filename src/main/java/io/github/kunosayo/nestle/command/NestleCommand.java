@@ -7,6 +7,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -43,7 +45,8 @@ public final class NestleCommand {
                             return result;
                         })
                         .then(Commands.argument("players", EntityArgument.players())
-                                .requires(commandSourceStack -> commandSourceStack.isPlayer() || commandSourceStack.hasPermission(2))
+                                .requires(commandSourceStack -> commandSourceStack.isPlayer()
+                                        || commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                                 .executes(context -> {
                                             var srcPlayer = context.getSource().getPlayer();
                                             var playersStream = EntityArgument.getPlayers(context, "players").stream();
@@ -59,7 +62,7 @@ public final class NestleCommand {
                                         }
                                 )
                                 .then(Commands.argument("targets", EntityArgument.entities())
-                                        .requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+                                        .requires(commandSourceStack -> commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                                         .executes(context -> {
                                             var players = EntityArgument.getPlayers(context, "players");
                                             var targets = EntityArgument.getEntities(context, "targets");

@@ -6,31 +6,24 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber(modid = Nestle.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class DataGen {
+@EventBusSubscriber(modid = Nestle.MOD_ID, value = Dist.CLIENT)
+public class DataGen implements IModBusEvent {
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         var generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         var provider = event.getLookupProvider();
 
-        // other providers here
-        generator.addProvider(
-                event.includeClient(),
-                new CompassModelProvider(output, existingFileHelper)
-        );
+        generator.addProvider(true, new ModModelProvider(output));
 
-        generator.addProvider(event.includeClient(), new NestleBlocksModelProvider(output, existingFileHelper));
+        generator.addProvider(true, new GenLootTable(output, provider));
 
-        generator.addProvider(event.includeServer(), new GenLootTable(output, provider));
+        generator.addProvider(true, new NestleBlockTagsProvider(output, provider));
 
-        generator.addProvider(event.includeServer(), new NestleBlockTagsProvider(output, provider, existingFileHelper));
-
-        generator.addProvider(event.includeServer(), new NestleAdvancementProvider(output, provider, existingFileHelper));
+        generator.addProvider(true, new NestleAdvancementProvider(output, provider));
     }
 
 }

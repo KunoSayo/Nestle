@@ -1,15 +1,22 @@
 package io.github.kunosayo.nestle.entity;
 
+import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.entity.data.NestleLeadData;
 import io.github.kunosayo.nestle.util.NestleUtil;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.UUID;
 
@@ -23,7 +30,7 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
             .sized(0.0f, 0.0f)
             .fireImmune()
             .canSpawnFarFromPlayer()
-            .build("nestle_lead_normal_entity");
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_lead_normal_entity")));
     /**
      * The player entity used nestle lead
      */
@@ -40,7 +47,6 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
             this.from = inParamFrom.getUUID();
         }
         this.target = inParamTarget;
-        this.noCulling = true;
     }
 
     @Override
@@ -59,6 +65,16 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
     }
 
     @Override
+    protected void readAdditionalSaveData(ValueInput valueInput) {
+
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput valueOutput) {
+
+    }
+
+    @Override
     public boolean isAlwaysTicking() {
         return true;
     }
@@ -70,22 +86,22 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
 
         var level = level();
         if (from == null) {
-            if (!level.isClientSide) {
-                kill();
+            if (level instanceof ServerLevel sl) {
+                kill(sl);
             }
             return;
         }
         var fromPlayer = level.getPlayerByUUID(from);
 
-        if (target == null && level.isClientSide) {
+        if (target == null && level.isClientSide()) {
             if (level.getEntity(targetID) instanceof LivingEntity l) {
                 target = l;
             }
         }
 
         if (fromPlayer == null || this.target == null || !fromPlayer.isAlive() || !this.target.isAlive() || fromPlayer.isSpectator()) {
-            if (!level.isClientSide) {
-                kill();
+            if (level instanceof ServerLevel sl) {
+                kill(sl);
             }
             return;
         }
@@ -93,17 +109,21 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
 
         var mid = fromPlayer.position().add(target.position()).multiply(0.5, 0.5, 0.5);
         if (fromPlayer.distanceToSqr(target) > 225.0) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 NestleLeadData.removeTwo(fromPlayer, target);
-                kill();
+                if (level instanceof ServerLevel sl) {
+                    kill(sl);
+                }
             }
             return;
         }
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             // Check valid.
             teleportTo(mid.x, mid.y, mid.z);
             if (!NestleLeadData.isNestle(fromPlayer, target)) {
-                kill();
+                if (level instanceof ServerLevel sl) {
+                    kill(sl);
+                }
                 return;
             }
         }
@@ -114,19 +134,15 @@ public class NestleLeadNormalEntity extends NestleLeadEntity {
     }
 
     @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float v) {
+        return false;
+    }
+
+    @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
 
     }
 
-    @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-
-    }
 
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {

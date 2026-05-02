@@ -6,6 +6,7 @@ import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.LocalPlayerResolver;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 import java.util.*;
@@ -73,7 +74,7 @@ public final class PlayerNestleInfoList {
     public static void clear() {
         for (PlayerNestleInfo playerNestleInfo : profileList) {
             if (playerNestleInfo.isGameProfileValid()) {
-                profileCache.put(playerNestleInfo.gameProfile.getId(), playerNestleInfo.gameProfile);
+                profileCache.put(playerNestleInfo.gameProfile.id(), playerNestleInfo.gameProfile);
             }
         }
         profileList.clear();
@@ -115,15 +116,15 @@ public final class PlayerNestleInfoList {
         var onlines = new HashSet<>();
 
         player.connection.getListedOnlinePlayers().forEach(playerInfo -> {
-            onlines.add(playerInfo.getProfile().getId());
+            onlines.add(playerInfo.getProfile().id());
         });
 
 
         profileList.subList(0, profileList.size() - filteredCount).sort((a, b) -> {
 
 
-            final boolean aSame = level.getPlayerByUUID(a.gameProfile.getId()) != null;
-            final boolean bSame = level.getPlayerByUUID(b.gameProfile.getId()) != null;
+            final boolean aSame = level.getPlayerByUUID(a.gameProfile.id()) != null;
+            final boolean bSame = level.getPlayerByUUID(b.gameProfile.id()) != null;
 
             if (aSame && !bSame) {
                 return -1;
@@ -132,8 +133,8 @@ public final class PlayerNestleInfoList {
                 return 1;
             }
 
-            final boolean aOnline = onlines.contains(a.gameProfile.getId());
-            final boolean bOnline = onlines.contains(b.gameProfile.getId());
+            final boolean aOnline = onlines.contains(a.gameProfile.id());
+            final boolean bOnline = onlines.contains(b.gameProfile.id());
             if (aOnline && !bOnline) {
                 return -1;
             }
@@ -157,7 +158,7 @@ public final class PlayerNestleInfoList {
 
     public static void removePlayer(UUID uuid) {
         dirty |= profileList.removeIf(playerNestleInfo -> {
-            if (playerNestleInfo.gameProfile.getId().equals(uuid)) {
+            if (playerNestleInfo.gameProfile.id().equals(uuid)) {
                 if (playerNestleInfo.filtered) {
                     --filteredCount;
                 }
@@ -192,11 +193,11 @@ public final class PlayerNestleInfoList {
         }
 
         public boolean isGameProfileValid() {
-            return !this.gameProfile.getName().equalsIgnoreCase(this.gameProfile.getId().toString());
+            return !this.gameProfile.name().equalsIgnoreCase(this.gameProfile.id().toString());
         }
 
         public boolean checkFilter() {
-            boolean newFilter = !filter.isEmpty() && !gameProfile.getName().toLowerCase().contains(filter);
+            boolean newFilter = !filter.isEmpty() && !gameProfile.name().toLowerCase().contains(filter);
             if (newFilter != filtered) {
                 filtered = newFilter;
                 if (filtered) {
@@ -248,36 +249,32 @@ public final class PlayerNestleInfoList {
                     @Override
                     public void run() {
 
-                        if (++count > 3 || !PlayerNestleInfo.this.gameProfile.getName().equalsIgnoreCase(gameProfile.getId().toString())) {
+                        if (++count > 3 || !PlayerNestleInfo.this.gameProfile.name().equalsIgnoreCase(gameProfile.id().toString())) {
                             return;
                         }
-                        try {
-                            SkullBlockEntity.fetchGameProfile(gameProfile.getId())
-                                    .get()
-                                    .filter(playerInfo -> !playerInfo.getName().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.getId().toString()))
-                                    .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> {
-                                        try {
-                                            Thread.sleep(50 + (long) (Math.random() * 1000));
-                                        } catch (InterruptedException ignored) {
+                        Minecraft.getInstance().services().profileResolver().fetchById(gameProfile.id())
+                                .filter(playerInfo -> !playerInfo.name().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.id().toString()))
+                                .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> {
+                                    try {
+                                        Thread.sleep(50 + (long) (Math.random() * 1000));
+                                    } catch (InterruptedException ignored) {
 
-                                        }
-                                        this.run();
-                                    });
-                        } catch (InterruptedException | ExecutionException ignored) {
+                                    }
+                                    this.run();
+                                });
 
-                        }
                     }
                 }
 
                 Optional.ofNullable(Minecraft.getInstance().player)
                         .flatMap(localPlayer -> localPlayer.connection.getOnlinePlayers().stream()
-                                .filter(playerInfo -> playerInfo.getProfile().getId().equals(this.gameProfile.getId()))
+                                .filter(playerInfo -> playerInfo.getProfile().id().equals(this.gameProfile.id()))
                                 .findAny()
                         )
                         .map(PlayerInfo::getProfile)
-                        .or(() -> Optional.ofNullable(profileCache.get(this.gameProfile.getId())))
+                        .or(() -> Optional.ofNullable(profileCache.get(this.gameProfile.id())))
                         // not uuid
-                        .filter(tgp -> !tgp.getName().equalsIgnoreCase(gameProfile.getId().toString()))
+                        .filter(tgp -> !tgp.name().equalsIgnoreCase(gameProfile.id().toString()))
                         .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> SingleTask.INSTANCE.submitTask(new RetryFetch()));
 
             }

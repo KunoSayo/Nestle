@@ -3,14 +3,15 @@ package io.github.kunosayo.nestle.client.screen;
 import io.github.kunosayo.nestle.client.gui.PlayerListScrollPanel;
 import io.github.kunosayo.nestle.client.gui.PlayerNestleInfoList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class NestleDetailScreen extends Screen {
-    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "detail_chart");
+    private static final Identifier BACKGROUND_SPRITE = Identifier.fromNamespaceAndPath("nestle", "detail_chart");
     private static final Component TITLE = Component.translatable("gui.nestle_detailed.title");
 
     private final PlayerNestleInfoList.PlayerNestleInfo info;
@@ -34,14 +35,13 @@ public final class NestleDetailScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, a);
         final int headY = startY + 8;
         PlayerListScrollPanel.renderPlayerAvatar(info.gameProfile, startX + 8, headY, guiGraphics);
 
         final int textY = startY + 8 + (32 - font.lineHeight) / 2;
-        guiGraphics.drawString(this.font, info.gameProfile.getName(),
+        guiGraphics.text(this.font, info.gameProfile.name(),
                 startX + 8 + 32 + 4, textY,
                 0xffffffff);
 
@@ -83,7 +83,8 @@ public final class NestleDetailScreen extends Screen {
                             // i is 17, different world.
                             msg = Component.translatable("tooltip.nestle.stat.different", info.getNestleValue().times[mi], percent);
                         }
-                        guiGraphics.renderTooltip(this.font, msg, mouseX, mouseY);
+
+                        guiGraphics.setTooltipForNextFrame(this.font, msg, mouseX, mouseY);
                     };
 
                 }
@@ -98,13 +99,13 @@ public final class NestleDetailScreen extends Screen {
         var nestleText = String.valueOf(info.getNestleValue().getValue());
         final int textWidth = font.width(nestleText);
         final int nestleTextX = startX + 300 - 16 - textWidth;
-        guiGraphics.drawString(font, nestleText,
+        guiGraphics.text(font, nestleText,
                 nestleTextX, textY, 0xffffffff);
 
         // draw seconds text
         var secText = totalTimes + "s";
         final int secTextWidth = font.width(secText);
-        guiGraphics.drawString(font, secText, startX + 300 - 8 - secTextWidth - 2, startY + 45, 0xffffffff);
+        guiGraphics.text(font, secText, startX + 300 - 8 - secTextWidth - 2, startY + 45, 0xffffffff);
 
 
         {
@@ -116,14 +117,14 @@ public final class NestleDetailScreen extends Screen {
                 final String percent = String.format("%d%%", Math.round(Math.max(100.0 - delta * 100.0 / highSize, 0.0)));
 
 
-                guiGraphics.drawString(font, percent, startX + 8, mouseY - font.lineHeight / 2, 0xffffffff);
+                guiGraphics.text(font, percent, startX + 8, mouseY - font.lineHeight / 2, 0xffffffff);
 
-                guiGraphics.hLine(startX + 23, startX + 300 - 8, mouseY, 0x7f333333);
+                guiGraphics.horizontalLine(startX + 23, startX + 300 - 8, mouseY, 0x7f333333);
             }
         }
 
         // render :heart:
-        guiGraphics.blitSprite(NestleScreen.ICON_SPRITE, 96, 16, 16, 0,
+        guiGraphics.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, NestleScreen.ICON_SPRITE, 96, 16, 16, 0,
                 nestleTextX - 16 - 2, headY + 8, 16, 16);
 
         if (renderTooltip != null) {
@@ -132,10 +133,10 @@ public final class NestleDetailScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, a);
+        guiGraphics.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, BACKGROUND_SPRITE, startX, startY, 300, 200);
 
-        guiGraphics.blitSprite(BACKGROUND_SPRITE, startX, startY, 300, 200);
     }
 
     @Override

@@ -4,16 +4,17 @@ import io.github.kunosayo.nestle.client.gui.PlayerListScrollPanel;
 import io.github.kunosayo.nestle.client.gui.PlayerNestleInfoList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class NestleScreen extends Screen {
-    public static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "playerlist");
-    public static final ResourceLocation ICON_SPRITE = ResourceLocation.fromNamespaceAndPath("nestle", "icons");
+    public static final Identifier BACKGROUND_SPRITE = Identifier.fromNamespaceAndPath("nestle", "playerlist");
+    public static final Identifier ICON_SPRITE = Identifier.fromNamespaceAndPath("nestle", "icons");
     private static final Component EMPTY_TIP = Component.translatable("gui.nestle.empty");
 
     private int lastCount = -1;
@@ -50,10 +51,10 @@ public final class NestleScreen extends Screen {
     }
 
     @Override
-    public void resize(Minecraft minecraft, int width, int height) {
+    public void resize(int width, int height) {
         this.searchBox = null;
         this.scrollPanel = null;
-        super.resize(minecraft, width, height);
+        super.resize(width, height);
     }
 
     @Override
@@ -93,22 +94,22 @@ public final class NestleScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         checkCount();
         if (this.scrollPanel != null) {
             this.scrollPanel.checkContent();
         }
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, a);
         if (PlayerNestleInfoList.profileList.isEmpty()) {
-            emptyWidget.render(guiGraphics, mouseX, mouseY, partialTick);
+            emptyWidget.extractRenderState(graphics, mouseX, mouseY, a);
         }
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-
-        guiGraphics.blitSprite(BACKGROUND_SPRITE, 250, 310, 0, 0,
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+        graphics.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, BACKGROUND_SPRITE, 250, 310, 0, 0,
                 startX, startY, 250, 250);
     }
+
 }

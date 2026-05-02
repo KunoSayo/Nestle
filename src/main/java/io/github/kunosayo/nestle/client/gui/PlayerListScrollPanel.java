@@ -1,24 +1,25 @@
 package io.github.kunosayo.nestle.client.gui;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import io.github.kunosayo.nestle.client.screen.NestleDetailScreen;
 import io.github.kunosayo.nestle.client.screen.NestleScreen;
 import io.github.kunosayo.nestle.data.NestleValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.PlayerFaceExtractor;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.neoforged.neoforge.client.gui.widget.ScrollPanel;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
+import java.util.concurrent.ExecutionException;
 
 public final class PlayerListScrollPanel extends ScrollPanel {
     private static final int BG_BUTTON_Y_OFFSET = (48 - 20) / 2 - 2;
@@ -40,10 +41,18 @@ public final class PlayerListScrollPanel extends ScrollPanel {
         }
     }
 
-    public static void renderPlayerAvatar(GameProfile profile, int x, int y, GuiGraphics graphics) {
-        ResourceLocation skin;
-        skin = Minecraft.getInstance().getSkinManager().getInsecureSkin(profile).texture();
-        PlayerFaceRenderer.draw(graphics, skin, x, y, 32);
+    public static void renderPlayerAvatar(GameProfile profile, int x, int y, GuiGraphicsExtractor graphics) {
+        PlayerSkin skin = DefaultPlayerSkin.getDefaultSkin();
+        var task = Minecraft.getInstance().getSkinManager().get(profile);
+        if (task.isDone()) {
+            try {
+                skin = task.get().orElse(DefaultPlayerSkin.getDefaultSkin());
+            } catch (InterruptedException | ExecutionException e) {
+                // ?
+                e.printStackTrace();
+            }
+        }
+        PlayerFaceExtractor.extractRenderState(graphics, skin, x, y, 32);
     }
 
     @Override
@@ -53,11 +62,13 @@ public final class PlayerListScrollPanel extends ScrollPanel {
     }
 
     @Override
-    protected void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY) {
+    protected void drawPanel(GuiGraphicsExtractor guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
+
         var onlines = new HashSet<>();
 
+        assert Minecraft.getInstance().player != null;
         Minecraft.getInstance().player.connection.getListedOnlinePlayers().forEach(playerInfo -> {
-            onlines.add(playerInfo.getProfile().getId());
+            onlines.add(playerInfo.getProfile().id());
         });
 
         var selected = getSelectedButton(mouseX, mouseY);
@@ -85,24 +96,17 @@ public final class PlayerListScrollPanel extends ScrollPanel {
                 break;
             }
 
-            RenderSystem.setShader(GameRenderer::getPositionColorShader);
-            BufferBuilder backgroundBuffer = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-            backgroundBuffer.addVertex(left, bgBottom, 0.0F).setColor(color);
-            backgroundBuffer.addVertex(entryRight, bgBottom, 0.0F).setColor(color);
-            backgroundBuffer.addVertex(entryRight, bgTop, 0.0F).setColor(color);
-            backgroundBuffer.addVertex(left, bgTop, 0.0F).setColor(color);
-            RenderSystem.disableDepthTest();
-            BufferUploader.drawWithShader(backgroundBuffer.buildOrThrow());
-            RenderSystem.enableDepthTest();
+            guiGraphics.fill(left, bgBottom, entryRight, bgTop, color);
+
 
             renderPlayerAvatar(gameProfile, this.left + 8, relativeY + 8, guiGraphics);
 
             final int nameX = this.left + 44;
-            guiGraphics.drawString(font, gameProfile.getName(), nameX, relativeY + 8, 0xffffffff);
+            guiGraphics.text(font, gameProfile.name(), nameX, relativeY + 8, 0xffffffff);
 
 
-            if (onlines.contains(gameProfile.getId())) {
-                guiGraphics.blitSprite(NestleScreen.ICON_SPRITE,
+            if (onlines.contains(gameProfile.id())) {
+                guiGraphics.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, NestleScreen.ICON_SPRITE,
                         96, 16, 0, 0,
                         nameX, relativeY + 24, 16, 16);
             }
@@ -112,18 +116,18 @@ public final class PlayerListScrollPanel extends ScrollPanel {
             final int ICON_MARGIN_X = 4;
 
             if (selected == info) {
-                guiGraphics.blitSprite(NestleScreen.BACKGROUND_SPRITE,
+                guiGraphics.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, NestleScreen.BACKGROUND_SPRITE,
                         250, 310, 250 - 24, 250 + 26,
                         right - BORDER_WIDTH - 24 - BUTTON_MARGIN_RIGHT, relativeY + BG_BUTTON_Y_OFFSET, 24, 26);
             } else {
-                guiGraphics.blitSprite(NestleScreen.BACKGROUND_SPRITE,
+                guiGraphics.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, NestleScreen.BACKGROUND_SPRITE,
                         250, 310, 250 - 24, 250,
                         right - BORDER_WIDTH - 24 - BUTTON_MARGIN_RIGHT, relativeY + BG_BUTTON_Y_OFFSET, 24, 26);
             }
 
             // render button icon
             final int buttonY = relativeY + 16;
-            guiGraphics.blitSprite(NestleScreen.ICON_SPRITE,
+            guiGraphics.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, NestleScreen.ICON_SPRITE,
                     96, 16, 32, 0,
                     right - BORDER_WIDTH - 16 - BUTTON_MARGIN_RIGHT - ICON_MARGIN_X, buttonY, 16, 16);
 
@@ -138,15 +142,15 @@ public final class PlayerListScrollPanel extends ScrollPanel {
             final int textX = right - BORDER_WIDTH - 24 - BUTTON_MARGIN_RIGHT - 8 - textWidth;
 
             // render nestle value text and seconds.
-            guiGraphics.drawString(font, nestleText,
+            guiGraphics.text(font, nestleText,
                     textX, newNestleValueTextY, 0xffffffff);
-            guiGraphics.drawString(font, nestleSecondText,
+            guiGraphics.text(font, nestleSecondText,
                     right - BORDER_WIDTH - 24 - BUTTON_MARGIN_RIGHT - 8 - secondTextWidth, buttonY + 16 - (font.lineHeight / 2), 0xffffffff);
 
             // render text :heart:
             // textY -> newTextY
 
-            guiGraphics.blitSprite(NestleScreen.ICON_SPRITE, 96, 16, 16, 0,
+            guiGraphics.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, NestleScreen.ICON_SPRITE, 96, 16, 16, 0,
                     textX - 16 - 1, relativeY + 16 + newNestleValueTextY - textY, 16, 16);
 
 
@@ -155,8 +159,7 @@ public final class PlayerListScrollPanel extends ScrollPanel {
     }
 
     @Override
-    protected boolean clickPanel(double mouseX, double mouseY, int button) {
-
+    protected boolean clickPanel(double mouseX, double mouseY, MouseButtonEvent event) {
         var info = getSelectedButton(mouseX + left, mouseY + this.top - (int) this.scrollDistance + border);
 
         if (info != null) {

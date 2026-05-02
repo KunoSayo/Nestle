@@ -1,0 +1,230 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "entries": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_00"
+        },
+        "threshold": 0.032258064
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_01"
+        },
+        "threshold": 0.06451613
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_02"
+        },
+        "threshold": 0.09677419
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_03"
+        },
+        "threshold": 0.12903225
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_04"
+        },
+        "threshold": 0.16129032
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_05"
+        },
+        "threshold": 0.19354838
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_06"
+        },
+        "threshold": 0.22580644
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_07"
+        },
+        "threshold": 0.2580645
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_08"
+        },
+        "threshold": 0.29032257
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_09"
+        },
+        "threshold": 0.32258064
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_10"
+        },
+        "threshold": 0.3548387
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_11"
+        },
+        "threshold": 0.38709676
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_12"
+        },
+        "threshold": 0.41935483
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_13"
+        },
+        "threshold": 0.4516129
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_14"
+        },
+        "threshold": 0.48387095
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_15"
+        },
+        "threshold": 0.516129
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_17"
+        },
+        "threshold": 0.5483871
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_18"
+        },
+        "threshold": 0.58064514
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_19"
+        },
+        "threshold": 0.61290324
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_20"
+        },
+        "threshold": 0.6451613
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_21"
+        },
+        "threshold": 0.67741936
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_22"
+        },
+        "threshold": 0.7096774
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_23"
+        },
+        "threshold": 0.7419355
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_24"
+        },
+        "threshold": 0.7741935
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_25"
+        },
+        "threshold": 0.8064516
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_26"
+        },
+        "threshold": 0.83870965
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_27"
+        },
+        "threshold": 0.87096775
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_28"
+        },
+        "threshold": 0.9032258
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_29"
+        },
+        "threshold": 0.9354839
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_30"
+        },
+        "threshold": 0.9677419
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nestle:item/nestle_compass_31"
+        },
+        "threshold": 1.0
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "nestle:item/nestle_compass_00"
+    },
+    "property": "minecraft:compass",
+    "target": "none"
+  }
+}

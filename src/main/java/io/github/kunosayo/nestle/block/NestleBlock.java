@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -40,7 +41,7 @@ public class NestleBlock extends HorizontalDirectionalBlock {
 
     @Override
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (entity instanceof LivingEntity livingEntity) {
@@ -61,8 +62,8 @@ public class NestleBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        if (!level.isClientSide) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @org.jspecify.annotations.Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide()) {
             boolean flag = state.getValue(POWERED);
             if (flag != level.hasNeighborSignal(pos)) {
                 if (flag) {
@@ -73,6 +74,8 @@ public class NestleBlock extends HorizontalDirectionalBlock {
             }
         }
     }
+
+
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {

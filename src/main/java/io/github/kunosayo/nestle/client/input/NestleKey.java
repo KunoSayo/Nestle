@@ -8,11 +8,14 @@ import io.github.kunosayo.nestle.item.NestleItem;
 import io.github.kunosayo.nestle.network.NestlePacket;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
@@ -21,11 +24,11 @@ import org.lwjgl.glfw.GLFW;
 public class NestleKey {
     public static final KeyMapping NESTLE_KEY = new KeyMapping("key.nestle.desc",
             KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z,
-            "key.category.nestle");
+            KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "key.category.nestle")));
 
     @SubscribeEvent
     public static void onKeyboardInput(InputEvent.Key event) {
-        if (isInGame() && event.getAction() == GLFW.GLFW_PRESS && NESTLE_KEY.matches(event.getKey(), event.getScanCode())) {
+        if (isInGame() && event.getAction() == GLFW.GLFW_PRESS && NESTLE_KEY.matches(event.getKeyEvent())) {
 
             var player = Minecraft.getInstance().player;
             if (player == null) {
@@ -39,7 +42,7 @@ public class NestleKey {
 
             if (PlayerNestleInfoList.clientNestleData.getValue(targetPlayer.getUUID()).getValue()
                     >= NestleConfig.NESTLE_CONFIG.getLeft().nestleFreeRequire.get()) {
-                PacketDistributor.sendToServer(new NestlePacket(targetPlayer.getUUID()));
+                ClientPacketDistributor.sendToServer(new NestlePacket(targetPlayer.getUUID()));
             }
         }
     }

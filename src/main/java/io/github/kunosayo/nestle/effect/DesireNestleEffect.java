@@ -2,6 +2,7 @@ package io.github.kunosayo.nestle.effect;
 
 import io.github.kunosayo.nestle.config.NestleConfig;
 import io.github.kunosayo.nestle.util.NestleUtil;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,15 +18,14 @@ public class DesireNestleEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity pLivingEntity, int pAmplifier) {
         double radius = (NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get() + 1.5) * (pAmplifier + 1);
-        var level = pLivingEntity.level();
         var cond = TargetingConditions.forNonCombat()
                 .range(radius)
                 .ignoreLineOfSight();
         var rv = new Vec3(radius, radius, radius);
         var aabb = new AABB(pLivingEntity.position().subtract(rv), pLivingEntity.position().add(rv));
-        List<LivingEntity> entities = level.getNearbyEntities(LivingEntity.class, cond, pLivingEntity, aabb);
+        List<LivingEntity> entities = serverLevel.getNearbyEntities(LivingEntity.class, cond, pLivingEntity, aabb);
 
 
         for (LivingEntity livingEntity : entities) {
@@ -34,7 +34,6 @@ public class DesireNestleEffect extends MobEffect {
 
         return true;
     }
-
 
     @Override
     public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {

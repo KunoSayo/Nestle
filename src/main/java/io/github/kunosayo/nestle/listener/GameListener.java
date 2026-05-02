@@ -13,10 +13,11 @@ import io.github.kunosayo.nestle.init.ModItems;
 import io.github.kunosayo.nestle.util.NestleUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
@@ -30,7 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-@EventBusSubscriber(modid = Nestle.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = Nestle.MOD_ID)
 public class GameListener {
     private static final HashSet<UUID> damaging = new HashSet<>();
     private static final Vec3 ALL_FIVE = new Vec3(5.0, 5.0, 5.0);
@@ -40,7 +41,13 @@ public class GameListener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent.Pre event) {
         var entity = event.getEntity();
-        if (entity.level().isClientSide) {
+        if (entity.level().isClientSide()) {
+            return;
+        }
+        ServerLevel sl;
+        if (entity.level() instanceof ServerLevel tsl) {
+            sl = tsl;
+        } else {
             return;
         }
         if (isRoot) {
@@ -81,13 +88,11 @@ public class GameListener {
             final boolean selfNestle = entity.hasEffect(ModEffects.NESTLE_EFFECT);
             final boolean requireDesireNestle = !selfNestle && NestleConfig.NESTLE_CONFIG.getLeft().entitiesNotSpreadDamageByDefaultSet.contains(entity.getType());
 
-            var otherEntityToGetDamage = entity.level()
-                    .getNearbyEntities(
-                            LivingEntity.class, TargetingConditions
-                                    .forNonCombat()
-                                    .ignoreLineOfSight()
-                                    .range(NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get()),
-                            entity, aabb)
+            var cond = TargetingConditions
+                    .forNonCombat()
+                    .ignoreLineOfSight()
+                    .range(NestleConfig.NESTLE_CONFIG.getLeft().nestleRadius.get());
+            var otherEntityToGetDamage = sl.getNearbyEntities(LivingEntity.class, cond, entity, aabb)
                     .stream()
                     .filter(livingEntity -> {
                         final boolean hasDesire = livingEntity.hasEffect(ModEffects.DESIRE_NESTLE_EFFECT);
@@ -157,7 +162,7 @@ public class GameListener {
     public static void onUseItem(PlayerInteractEvent.EntityInteractSpecific event) {
         var player = event.getEntity();
 
-        if (ModItems.NESTLE_LEAD.is(event.getItemStack().getItemHolder())) {
+        if (ModItems.NESTLE_LEAD.is(event.getItemStack().typeHolder())) {
             if (NestleConfig.NESTLE_CONFIG.getLeft().nestleLeadAvoidEntitiesSet.contains(event.getEntity().getType())) {
                 return;
             }
@@ -165,7 +170,7 @@ public class GameListener {
             if (entity instanceof Player target) {
                 event.setCanceled(true);
                 event.setCancellationResult(InteractionResult.SUCCESS);
-                if (player.level().isClientSide) {
+                if (player.level().isClientSide()) {
                     return;
                 }
                 if (NestleLeadData.isNestle(player, target)) {
@@ -179,11 +184,11 @@ public class GameListener {
                 NestleLeadPlayerEntity.inParamTarget = entity.getUUID();
 
 
-                NestleLeadPlayerEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
+                NestleLeadPlayerEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), EntitySpawnReason.EVENT);
             } else if (entity instanceof LivingEntity target) {
                 event.setCanceled(true);
                 event.setCancellationResult(InteractionResult.SUCCESS);
-                if (player.level().isClientSide) {
+                if (player.level().isClientSide()) {
                     return;
                 }
                 if (NestleLeadData.isNestle(player, target)) {
@@ -196,7 +201,7 @@ public class GameListener {
                 NestleLeadNormalEntity.inParamFrom = player;
                 NestleLeadNormalEntity.inParamTarget = target;
 
-                NestleLeadNormalEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), MobSpawnType.EVENT);
+                NestleLeadNormalEntity.ENTITY_TYPE.spawn(((ServerLevel) player.level()), player.getBlockPosBelowThatAffectsMyMovement(), EntitySpawnReason.EVENT);
 
                 NestleLeadNormalEntity.inParamFrom = null;
                 NestleLeadNormalEntity.inParamTarget = null;

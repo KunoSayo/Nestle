@@ -12,12 +12,13 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -27,24 +28,26 @@ public class NestleAdvancementProvider extends AdvancementProvider {
 
 
     public NestleAdvancementProvider(PackOutput output,
-                                     CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, existingFileHelper, List.of(new NestleAdvancementGenerator()));
+                                     CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, List.of(new NestleAdvancementGenerator()));
     }
 
-    private static final class NestleAdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
+    private static final class NestleAdvancementGenerator implements AdvancementSubProvider {
+
+
         @Override
-        public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver, ExistingFileHelper existingFileHelper) {
+        public void generate(HolderLookup.@NonNull Provider provider, @NonNull Consumer<AdvancementHolder> saver) {
             var root = Advancement.Builder.advancement().display(ModItems.NESTLE,
                             Component.translatable("advancements.nestle.nestle_advancement.title"),
                             Component.translatable("advancements.nestle.nestle_advancement.description"),
-                            ResourceLocation.fromNamespaceAndPath("nestle", "textures/block/nestle_block_top_powered.png"),
+                            Identifier.fromNamespaceAndPath("nestle", "textures/block/nestle_block_top_powered.png"),
                             AdvancementType.TASK,
                             true,
                             true,
                             true)
                     .addCriterion("nestle_require", NestleValueRequireTriggerInstance.instance(Either.right(1L)))
                     .requirements(AdvancementRequirements.allOf(List.of("nestle_require")))
-                    .save(saver, ResourceLocation.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_advancement"), existingFileHelper);
+                    .save(saver, Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_advancement"));
 
 
             // Bad nestle
@@ -60,7 +63,7 @@ public class NestleAdvancementProvider extends AdvancementProvider {
                             false)
                     .addCriterion("nestle_require", NestleValueRequireTriggerInstance.instance(Either.right(-1L)))
                     .requirements(AdvancementRequirements.allOf(List.of("nestle_require")))
-                    .save(saver, ResourceLocation.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_neg_advancement"), existingFileHelper);
+                    .save(saver, Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_neg_advancement"));
 
             // Close advancement
             var closeNestle = Advancement.Builder.advancement()
@@ -75,7 +78,7 @@ public class NestleAdvancementProvider extends AdvancementProvider {
                             false)
                     .addCriterion("nestle_require", NestleValueRequireTriggerInstance.instance(Either.left(Pair.of(0, 1))))
                     .requirements(AdvancementRequirements.allOf(List.of("nestle_require")))
-                    .save(saver, ResourceLocation.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_close_advancement"), existingFileHelper);
+                    .save(saver, Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_close_advancement"));
 
             Advancement.Builder.advancement()
                     .parent(closeNestle)
@@ -89,7 +92,7 @@ public class NestleAdvancementProvider extends AdvancementProvider {
                             false)
                     .addCriterion("nestle_require", NestleValueRequireTriggerInstance.instance(Either.right(0L)))
                     .requirements(AdvancementRequirements.allOf(List.of("nestle_require")))
-                    .save(saver, ResourceLocation.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_free_advancement"), existingFileHelper);
+                    .save(saver, Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_free_advancement"));
 
             // Different advancement
             Advancement.Builder.advancement()
@@ -104,7 +107,7 @@ public class NestleAdvancementProvider extends AdvancementProvider {
                             false)
                     .addCriterion("nestle_require", NestleValueRequireTriggerInstance.instance(Either.left(Pair.of(NestleValue.DIFFERENT_INDEX, 1))))
                     .requirements(AdvancementRequirements.allOf(List.of("nestle_require")))
-                    .save(saver, ResourceLocation.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_different_advancement"), existingFileHelper);
+                    .save(saver, Identifier.fromNamespaceAndPath(Nestle.MOD_ID, "nestle_different_advancement"));
 
 
         }
