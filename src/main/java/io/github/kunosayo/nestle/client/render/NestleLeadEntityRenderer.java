@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Leashable;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -23,6 +25,16 @@ public class NestleLeadEntityRenderer extends EntityRenderer<NestleLeadEntity, E
         return new EntityRenderState();
     }
 
+    private static Vec3 getLeashLocation(Entity entity, float pTick) {
+        if (entity instanceof Leashable leashable) {
+            var offset = leashable.getLeashOffset(pTick);
+            float entityYRotx = entity.getPreciseBodyRotation(pTick) * (float) (Math.PI / 180.0);
+            Vec3 rotatedAttachOffset = offset.yRot(-entityYRotx);
+            return rotatedAttachOffset.add(entity.oldPosition().lerp(entity.position(), pTick));
+        } else {
+            return entity.getRopeHoldPosition(pTick);
+        }
+    }
 
     @Override
     public void extractRenderState(NestleLeadEntity pEntity, EntityRenderState state, float partialTicks) {
@@ -31,15 +43,18 @@ public class NestleLeadEntityRenderer extends EntityRenderer<NestleLeadEntity, E
         if (fromPlayer == null || targetPlayer == null) {
             return;
         }
-
+        state.entityType = pEntity.getType();
         var leash = new EntityRenderState.LeashState();
-        var pos = fromPlayer.getRopeHoldPosition(partialTicks);
+        var pos = getLeashLocation(fromPlayer, partialTicks);
+        // holder (from player) rope location is stored in ERS XYZ
+        leash.start = fromPlayer.oldPosition().lerp(fromPlayer.position(), partialTicks);
+        // target rope location is stored in end + offset
+        leash.end = targetPlayer.oldPosition().lerp(targetPlayer.position(), partialTicks);
         state.x = pos.x;
         state.y = pos.y;
         state.z = pos.z;
-        leash.start = fromPlayer.oldPosition().lerp(fromPlayer.position(), partialTicks);
-        leash.end = targetPlayer.oldPosition().lerp(targetPlayer.position(), partialTicks);
-        leash.offset = leash.end.subtract(targetPlayer.getRopeHoldPosition(partialTicks));
+
+        leash.offset = getLeashLocation(targetPlayer, partialTicks).subtract(leash.end);
         state.leashStates = List.of(leash);
     }
 

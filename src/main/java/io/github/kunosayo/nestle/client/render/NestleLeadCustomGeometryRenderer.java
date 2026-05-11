@@ -55,7 +55,6 @@ public class NestleLeadCustomGeometryRenderer implements SubmitNodeCollector.Cus
 
     private void renderLeash(PoseStack.Pose pPoseStack, VertexConsumer vertexConsumer) {
 
-        Vec3 pEntity = leashState.end;
 
         // We use A B for position and U V for repo location.
         // A - B + U - A
@@ -63,25 +62,21 @@ public class NestleLeadCustomGeometryRenderer implements SubmitNodeCollector.Cus
 
         // we need translate
 //        pPoseStack.translate(pEntity.getX() - self.getX(), pEntity.getY() - self.getY(), pEntity.getZ() - self.getZ());
-        pPoseStack.translate((float) leashState.offset.x, (float) leashState.offset.y, (float) leashState.offset.z);
+//        pPoseStack.translate((float) leashState.offset.x, (float) leashState.offset.y, (float) leashState.offset.z);
 
-//        Vec3 leashedOffset = entityRepoLocation.subtract(pEntity);
-        Vec3 leashedOffset = leashState.start.subtract(pEntity);
+//
 
+        // holder (from player) rope location is stored in ERS XYZ
+        // target rope location is stored in end + offset
 
-
-        double lineStartX = leashedOffset.x + pEntity.x;
-        double lineStartY = leashedOffset.y + pEntity.y;
-        double lineStartZ = leashedOffset.z + pEntity.z;
-
-
-        float startX = (float) (holderRopeLocation.x - lineStartX);
-        float startY = (float) (holderRopeLocation.y - lineStartY);
-        float startZ = (float) (holderRopeLocation.z - lineStartZ);
+        var targetRopeLocation = leashState.end.add(leashState.offset);
+        float dx = (float) -(holderRopeLocation.x - targetRopeLocation.x);
+        float dy = (float) -(holderRopeLocation.y - targetRopeLocation.y);
+        float dz = (float) -(holderRopeLocation.z - targetRopeLocation.z);
         Matrix4f matrix4f = pPoseStack.pose();
-        float f4 = Mth.invSqrt(startX * startX + startZ * startZ) * 0.025F / 2.0F;
-        float f5 = startZ * f4;
-        float f6 = startX * f4;
+        float f4 = Mth.invSqrt(dx * dx + dz * dz) * 0.025F / 2.0F;
+        float f5 = dz * f4;
+        float f6 = dx * f4;
 
 
 //        BlockPos blockpos = BlockPos.containing(pEntity.getEyePosition(pPartialTick));
@@ -96,11 +91,11 @@ public class NestleLeadCustomGeometryRenderer implements SubmitNodeCollector.Cus
         int l = leashState.endSkyLight;
 
         for (int i1 = 0; i1 <= 24; i1++) {
-            addVertexPair(vertexConsumer, matrix4f, startX, startY, startZ, i, j, k, l, 0.025F, 0.025F, f5, f6, i1, false);
+            addVertexPair(vertexConsumer, matrix4f, dx, dy, dz, i, j, k, l, 0.025F, 0.025F, f5, f6, i1, false);
         }
 
         for (int j1 = 24; j1 >= 0; j1--) {
-            addVertexPair(vertexConsumer, matrix4f, startX, startY, startZ, i, j, k, l, 0.025F, 0.0F, f5, f6, j1, true);
+            addVertexPair(vertexConsumer, matrix4f, dx, dy, dz, i, j, k, l, 0.025F, 0.0F, f5, f6, j1, true);
         }
 
     }
