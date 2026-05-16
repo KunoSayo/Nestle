@@ -23,7 +23,7 @@ version = mod_version
 group = mod_group_id
 
 // 打包成 jar 时的名称
-base.archivesName = 'simple_path_finder'
+base.archivesName = 'nestle'
 
 // 需要的前置库，目前没有
 repositories {
@@ -84,6 +84,17 @@ neoForge {
             sourceSet(sourceSets.main)
         }
     }
+
+    unitTest {
+        // Enable JUnit support in the moddev plugin
+        enable()
+        // Configure which mod is being tested.
+        // This allows NeoForge to load the test/ classes and resources as belonging to the mod.
+        testedMod = mods."${mod_id}" // <mod name> must match the name in the mods { } block.
+        // Configure which mods are loaded in the test environment, if the default (all declared mods) is not appropriate.
+        // This must contain testedMod, and can include other mods as well.
+        // loadedMods = [mods.<mod name >, mods.<mod name 2>]
+    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -117,12 +128,17 @@ repositories {
     }
 }
 
-dependencies {
-    // Cloth Config (配置界面库)
-    implementation "maven.modrinth:cloth-config:26.1.154+neoforge"
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
 
-    // JEI
-    runtimeOnly("mezz.jei:jei-26.1.2-neoforge:29.5.0.26")
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 // 用于 neoforge.mods 里替换那一堆 ${xxxx}
