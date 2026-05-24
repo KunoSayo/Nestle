@@ -10,7 +10,7 @@
     }
   },
   "display": {
-    "background": "nestle:textures/block/nestle_block_top_powered.png",
+    "background": "nestle:block/nestle_block_top_powered",
     "description": {
       "translate": "advancements.nestle.nestle_advancement.description"
     },

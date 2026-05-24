@@ -40,7 +40,7 @@ public class NestleAdvancementProvider extends AdvancementProvider {
             var root = Advancement.Builder.advancement().display(ModItems.NESTLE,
                             Component.translatable("advancements.nestle.nestle_advancement.title"),
                             Component.translatable("advancements.nestle.nestle_advancement.description"),
-                            Identifier.fromNamespaceAndPath("nestle", "textures/block/nestle_block_top_powered.png"),
+                            Identifier.fromNamespaceAndPath("nestle", "block/nestle_block_top_powered"),
                             AdvancementType.TASK,
                             true,
                             true,
