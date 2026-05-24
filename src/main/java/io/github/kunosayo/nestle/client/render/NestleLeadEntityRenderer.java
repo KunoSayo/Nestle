@@ -38,12 +38,12 @@ public class NestleLeadEntityRenderer extends EntityRenderer<NestleLeadEntity, E
 
     @Override
     public void extractRenderState(NestleLeadEntity pEntity, EntityRenderState state, float partialTicks) {
+        state.entityType = pEntity.getType();
         var fromPlayer = pEntity.getSrc();
         var targetPlayer = pEntity.getDst();
         if (fromPlayer == null || targetPlayer == null) {
             return;
         }
-        state.entityType = pEntity.getType();
         var leash = new EntityRenderState.LeashState();
         var pos = getLeashLocation(fromPlayer, partialTicks);
         // holder (from player) rope location is stored in ERS XYZ
