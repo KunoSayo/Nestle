@@ -50,6 +50,7 @@
     "back": "nestle:block/nestle_resistance_block_back",
     "bottom": "nestle:block/nestle_resistance_block_bottom",
     "front": "nestle:block/nestle_resistance_block_front",
+    "particle": "nestle:block/nestle_resistance_block_top",
     "side": "nestle:block/nestle_resistance_block_side",
     "top": "nestle:block/nestle_resistance_block_top"
   }

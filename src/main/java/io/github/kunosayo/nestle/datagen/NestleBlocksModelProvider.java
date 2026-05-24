@@ -30,7 +30,8 @@ public class NestleBlocksModelProvider {
             TextureSlot.TOP,
             TextureSlot.FRONT,
             TextureSlot.BACK,
-            TextureSlot.SIDE).extend()
+            TextureSlot.SIDE,
+            TextureSlot.PARTICLE).extend()
             .element(elementBuilder -> {
                 elementBuilder.from(0.0f, 0.0f, 0.0f)
                         .to(16.0f, 16.0f, 16.0f)
@@ -58,8 +59,12 @@ public class NestleBlocksModelProvider {
     private static TextureMapping getGeneralMapping(Block block, ModelTemplate template) {
         var mapping = new TextureMapping();
         for (TextureSlot requiredSlot : template.requiredSlots) {
-            mapping.put(requiredSlot, TextureMapping.getBlockTexture(block, "_" + requiredSlot.getId()));
+            if (requiredSlot != TextureSlot.PARTICLE) {
+                mapping.put(requiredSlot, TextureMapping.getBlockTexture(block, "_" + requiredSlot.getId()));
+            }
         }
+        mapping.copySlot(TextureSlot.TOP, TextureSlot.PARTICLE);
+
         return mapping;
     }
 
@@ -83,6 +88,7 @@ public class NestleBlocksModelProvider {
                         .put(TextureSlot.FRONT, frontPoweredTexture)
                         .put(TextureSlot.BACK, backPoweredTexture)
                         .put(TextureSlot.SIDE, sidePoweredTexture)
+                        .copySlot(TextureSlot.TOP, TextureSlot.PARTICLE)
                 , blockModels.modelOutput));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.NESTLE_RESISTANCE_BLOCK.get())
                 .with(createBooleanModelDispatch(BlockStateProperties.POWERED, powered, off))
@@ -112,7 +118,8 @@ public class NestleBlocksModelProvider {
                         .put(TextureSlot.TOP, topTexture)
                         .put(TextureSlot.FRONT, frontTexture)
                         .put(TextureSlot.BACK, backTexture)
-                        .put(TextureSlot.SIDE, sideTexture),
+                        .put(TextureSlot.SIDE, sideTexture)
+                        .copySlot(TextureSlot.TOP, TextureSlot.PARTICLE),
                 blockModels.modelOutput));
         var powered = plainVariant(NESTLE_BLOCK_TEMPLATE.createWithSuffix(ModBlocks.NESTLE_BLOCK.get(), "_powered",
                 new TextureMapping()
@@ -121,7 +128,8 @@ public class NestleBlocksModelProvider {
                         .put(TextureSlot.FRONT, frontPoweredTexture)
                         .put(TextureSlot.BACK, backPoweredTexture)
                         .put(TextureSlot.SIDE, sidePoweredTexture)
-                , blockModels.modelOutput));
+                        .copySlot(TextureSlot.TOP, TextureSlot.PARTICLE),
+                blockModels.modelOutput));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModBlocks.NESTLE_BLOCK.get())
                 .with(createBooleanModelDispatch(BlockStateProperties.POWERED, powered, off))
                 .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
