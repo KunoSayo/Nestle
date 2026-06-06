@@ -1,9 +1,9 @@
-// 26.1.2	2026-05-24T19:40:53.8155335	Model Definitions - nestle
+// 26.1.2	2026-06-06T16:00:47.9630374	Model Definitions - nestle
 65258723186fce8d2fefc72d2726a200d7e6ccd1 assets/nestle/blockstates/nestle_block.json
 884c37abdac68d1ce6120427d710e834abf2b31b assets/nestle/blockstates/nestle_resistance_block.json
 d4e5911764e005d9d7ee96e5535869f2551fcdd9 assets/nestle/items/nestle.json
 21514f9f5c682509abe7ae5c4859f32be1c9d21d assets/nestle/items/nestle_block.json
-8352442708b4de8c92e69becefe6f09525669080 assets/nestle/items/nestle_compass.json
+bd7b5d3604be3783b85d9f31e31dc5e8a5ebdee2 assets/nestle/items/nestle_compass.json
 a4e5a48da0569746657386f76c4099d49c7be484 assets/nestle/items/nestle_lead.json
 d4966da231311195d1026573854d160a6c6bcb02 assets/nestle/items/nestle_resistance_block.json
 1f76ff87fcceba8f255df6384aa256899ce44cac assets/nestle/models/block/nestle_block.json
@@ -27,6 +27,7 @@ b6fac37fbaa57212a76e738d52d557f2756646cd assets/nestle/models/item/nestle_compas
 49ec2bfe24d9cf93dd9af38030e8c508006813f9 assets/nestle/models/item/nestle_compass_13.json
 f9c18d039e772d1d8c2bafc4c2a0bbad739b4fec assets/nestle/models/item/nestle_compass_14.json
 3319d8a68af10b932ef0acb4ef1d07955fe59f07 assets/nestle/models/item/nestle_compass_15.json
+e87d62f51687b5fec07d6b42b588a55e07d858ac assets/nestle/models/item/nestle_compass_16.json
 d00e627cc98c6813a031e3fa1a8c0a54306a5899 assets/nestle/models/item/nestle_compass_17.json
 8ba0f5b78b8f70a8752edc47245b29290770fad0 assets/nestle/models/item/nestle_compass_18.json
 b70fd74c3a1023e159133ea28fed170081ad99c0 assets/nestle/models/item/nestle_compass_19.json
