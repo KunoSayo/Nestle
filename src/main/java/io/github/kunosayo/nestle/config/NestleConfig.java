@@ -16,6 +16,7 @@ public class NestleConfig {
     public final ModConfigSpec.ConfigValue<Integer> damagePlayerValueReduce;
     public final ModConfigSpec.ConfigValue<Integer> nestleRadius;
     public final ModConfigSpec.ConfigValue<Integer> nestleFreeRequire;
+    public final ModConfigSpec.ConfigValue<Double> boundDamageValueScale;
     public final ModConfigSpec.ConfigValue<List<? extends String>> entitiesNotSpreadDamageByDefault;
     public final ModConfigSpec.ConfigValue<List<? extends String>> nestleLeadAvoidEntities;
     public final ModConfigSpec.ConfigValue<List<? extends String>> nestleValues;
@@ -32,6 +33,8 @@ public class NestleConfig {
                 .define("far_away_nestle_value", 1);
         damageApportionRequire = builder.comment("The nestle value to apportion the damage")
                 .define("damage_apportion_require", 720000);
+        boundDamageValueScale = builder.comment("The nestle value to reduce per spread damage by nestle bound")
+                .define("bound_damage_value_scale", 1.0);
         nestleFreeRequire = builder.comment("The nestle value to nestle freely")
                 .define("nestle_free_require", 720000);
         // about half hour when 5m

@@ -1,6 +1,7 @@
 package io.github.kunosayo.nestle.datagen;
 
 import io.github.kunosayo.nestle.Nestle;
+import io.github.kunosayo.nestle.client.property.NestleBoundBoundProperty;
 import io.github.kunosayo.nestle.client.property.NestleCompassAngle;
 import io.github.kunosayo.nestle.init.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -8,6 +9,7 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.renderer.item.ConditionalItemModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.data.PackOutput;
@@ -78,6 +80,17 @@ public class ModModelProvider extends ModelProvider {
                         1,
                         list,
                         Optional.of(list.getFirst().model())
+                ));
+
+        // Generate nestle_bound item with two states: unbound (false) and bound (true)
+        var unboundModel = ItemModelUtils.plainModel(itemModels.createFlatItemModel(ModItems.NESTLE_BOUND.get(), "_unbound", ModelTemplates.FLAT_ITEM));
+        var boundModel = ItemModelUtils.plainModel(itemModels.createFlatItemModel(ModItems.NESTLE_BOUND.get(), "", ModelTemplates.FLAT_ITEM));
+        itemModels.itemModelOutput.accept(ModItems.NESTLE_BOUND.get(),
+                new ConditionalItemModel.Unbaked(
+                        Optional.empty(),
+                        new NestleBoundBoundProperty(),
+                        boundModel,  // onTrue - when bound
+                        unboundModel // onFalse - when unbound
                 ));
     }
 

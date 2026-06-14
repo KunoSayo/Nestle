@@ -14,7 +14,7 @@ public class SingleTask {
     public void submitTask(Runnable task) {
         tasks.add(task);
         if (!threadRunning.compareAndExchangeRelease(false, true)) {
-            Thread.ofVirtual().name("Nestle fetch").start(() ->  {
+            Thread.ofPlatform().name("Nestle fetch").start(() ->  {
                 while (true) {
                     try {
                         while (!tasks.isEmpty()) {

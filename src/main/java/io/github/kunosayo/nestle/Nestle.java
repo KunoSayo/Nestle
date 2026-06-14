@@ -40,6 +40,7 @@ public final class Nestle {
 
     public Nestle(IEventBus modEventBus, ModContainer modContainer) {
         ModItems.ITEMS.register(modEventBus);
+        ModItems.DATA_COMPONENTS.register(modEventBus);
         ModEntities.ENTITIES.register(modEventBus);
 
         // Effects (and potions)

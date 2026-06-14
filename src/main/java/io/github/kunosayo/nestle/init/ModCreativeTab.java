@@ -19,5 +19,6 @@ public class ModCreativeTab {
                 output.accept(ModItems.NESTLE.get());
                 output.accept(ModItems.NESTLE_COMPASS.get());
                 output.accept(ModItems.NESTLE_LEAD.get());
+                output.accept(ModItems.NESTLE_BOUND.get());
             }).build());
 }

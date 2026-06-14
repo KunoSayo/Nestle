@@ -6,17 +6,15 @@ import io.github.kunosayo.nestle.data.NestleValue;
 import io.github.kunosayo.nestle.entity.data.NestleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.player.LocalPlayerResolver;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerNestleInfoList {
     public static final HashMap<UUID, PlayerNestleInfo> infoMap = new HashMap<>();
     public static NestleData clientNestleData = new NestleData();
     public static List<PlayerNestleInfo> profileList = new ArrayList<>();
-    public static HashMap<UUID, GameProfile> profileCache = new HashMap<>();
+    public static ConcurrentHashMap<UUID, GameProfile> profileCache = new ConcurrentHashMap<>();
 
     private static int filteredCount = 0;
     private static String filter = "";
@@ -95,7 +93,6 @@ public final class PlayerNestleInfoList {
 
         nestleValue.values.forEach(PlayerNestleInfoList::updatePlayer);
 
-        profileCache.clear();
         checkDirty();
     }
 
@@ -187,6 +184,7 @@ public final class PlayerNestleInfoList {
         public void setGameProfile(GameProfile gameProfile) {
             Minecraft.getInstance().execute(() -> {
                 this.gameProfile = gameProfile;
+                profileCache.put(gameProfile.id(), gameProfile);
                 checkFilter();
             });
 
@@ -252,11 +250,16 @@ public final class PlayerNestleInfoList {
                         if (++count > 3 || !PlayerNestleInfo.this.gameProfile.name().equalsIgnoreCase(gameProfile.id().toString())) {
                             return;
                         }
+                        try {
+                            // avoid too many requests
+                            Thread.sleep(100);
+                        } catch (InterruptedException ignored) {
+                        }
                         Minecraft.getInstance().services().profileResolver().fetchById(gameProfile.id())
                                 .filter(playerInfo -> !playerInfo.name().equalsIgnoreCase(PlayerNestleInfo.this.gameProfile.id().toString()))
                                 .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> {
                                     try {
-                                        Thread.sleep(50 + (long) (Math.random() * 1000));
+                                        Thread.sleep(1000 + (long) (Math.random() * 5000));
                                     } catch (InterruptedException ignored) {
 
                                     }
@@ -278,7 +281,18 @@ public final class PlayerNestleInfoList {
                         .ifPresentOrElse(PlayerNestleInfo.this::setGameProfile, () -> SingleTask.INSTANCE.submitTask(new RetryFetch()));
 
             }
-
         }
+    }
+
+    public static String getPlayerNameById(UUID uuid) {
+        return Optional.ofNullable(Minecraft.getInstance().player)
+                .flatMap(localPlayer -> localPlayer.connection.getOnlinePlayers().stream()
+                        .filter(playerInfo -> playerInfo.getProfile().id().equals(uuid))
+                        .findAny()
+                )
+                .map(PlayerInfo::getProfile)
+                .or(() -> Optional.ofNullable(profileCache.get(uuid)))
+                .map(GameProfile::name)
+                .orElseGet(uuid::toString);
     }
 }

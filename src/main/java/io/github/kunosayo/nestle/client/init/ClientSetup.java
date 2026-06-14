@@ -2,6 +2,7 @@ package io.github.kunosayo.nestle.client.init;
 
 import io.github.kunosayo.nestle.Nestle;
 import io.github.kunosayo.nestle.client.input.NestleKey;
+import io.github.kunosayo.nestle.client.property.NestleBoundBoundProperty;
 import io.github.kunosayo.nestle.client.property.NestleCompassAngle;
 import io.github.kunosayo.nestle.client.render.NestleLeadEntityRenderer;
 import io.github.kunosayo.nestle.entity.NestleLeadNormalEntity;
@@ -12,6 +13,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 
@@ -31,5 +33,10 @@ public class ClientSetup implements IModBusEvent {
     @SubscribeEvent
     public static void onRegisterRangeProperties(RegisterRangeSelectItemModelPropertyEvent event) {
         NestleCompassAngle.register(event);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterConditionalProperties(RegisterConditionalItemModelPropertyEvent event) {
+        NestleBoundBoundProperty.register(event);
     }
 }

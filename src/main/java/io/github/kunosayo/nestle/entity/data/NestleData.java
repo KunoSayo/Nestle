@@ -76,6 +76,15 @@ public class NestleData implements ValueIOSerializable {
         return getValue(uuid).addDifValue(delta);
     }
 
+    public static NestleValue getValueTo(ServerPlayer from, ServerPlayer to) {
+        return getValueTo(from, to.getUUID());
+    }
+
+    public static NestleValue getValueTo(ServerPlayer from, UUID to) {
+        var data = from.getData(ATTACHMENT_TYPE);
+        return data.getValue(to);
+    }
+
     @Override
     public void serialize(ValueOutput output) {
         var root = new CompoundTag();

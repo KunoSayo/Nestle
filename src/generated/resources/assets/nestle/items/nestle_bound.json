@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "nestle:item/nestle_bound_unbound"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "nestle:item/nestle_bound"
+    },
+    "property": "nestle:is_bound"
+  }
+}
