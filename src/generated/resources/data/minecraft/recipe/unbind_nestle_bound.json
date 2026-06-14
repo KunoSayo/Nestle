@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nestle",
+  "ingredients": [
+    "nestle:nestle_bound"
+  ],
+  "result": {
+    "id": "nestle:nestle_bound"
+  }
+}

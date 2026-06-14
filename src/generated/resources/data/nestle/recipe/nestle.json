@@ -3,20 +3,15 @@
   "category": "misc",
   "group": "nestle",
   "key": {
-    "#": {
-      "item": "minecraft:stone"
-    },
-    "I": {
-      "item": "nestle:nestle"
-    }
+    "#": "minecraft:string"
   },
   "pattern": [
     "###",
-    "#I#",
+    "###",
     "###"
   ],
   "result": {
-    "id": "nestle:nestle_block",
-    "count": 8
+    "count": 4,
+    "id": "nestle:nestle"
   }
 }

@@ -24,6 +24,8 @@ public class DataGen implements IModBusEvent {
         generator.addProvider(true, new NestleBlockTagsProvider(output, provider));
 
         generator.addProvider(true, new NestleAdvancementProvider(output, provider));
+
+        generator.addProvider(true, new NestleRecipeProvider.Runner(output, provider));
     }
 
 }

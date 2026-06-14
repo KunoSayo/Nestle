@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nestle",
+  "ingredients": [
+    "minecraft:cactus",
+    "nestle:nestle_block"
+  ],
+  "result": {
+    "id": "nestle:nestle_resistance_block"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nestle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nestle:nestle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nestle:nestle_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_nestle"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nestle:nestle_block"
+    ]
+  }
+}
