@@ -14,6 +14,7 @@
   "gui.nestle.empty": "Nobody is willing to nestle you",
   "gui.nestle_detailed.title": "Detailed Nestle",
   "key.category.nestle": "Nestle",
+  "key.category.nestle.key.category.nestle": "Nestle",
   "key.nestle.desc": "Nestle",
   "item_group.nestle.name": "Nestle",
   "item.nestle.nestle_block": "Nestle Block",
