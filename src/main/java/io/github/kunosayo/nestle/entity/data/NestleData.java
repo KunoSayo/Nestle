@@ -33,9 +33,7 @@ public class NestleData implements ValueIOSerializable {
             NestleData::new
     );
 
-
     public final HashMap<UUID, NestleValue> values;
-    public boolean givenStartItem;
 
     public NestleData() {
         values = new HashMap<>();
@@ -79,7 +77,6 @@ public class NestleData implements ValueIOSerializable {
     public static NestleValue getValueTo(ServerPlayer from, ServerPlayer to) {
         return getValueTo(from, to.getUUID());
     }
-
     public static NestleValue getValueTo(ServerPlayer from, UUID to) {
         var data = from.getData(ATTACHMENT_TYPE);
         return data.getValue(to);
@@ -94,7 +91,6 @@ public class NestleData implements ValueIOSerializable {
         var data = new byte[buffer.writerIndex()];
         buffer.readBytes(data);
         root.putByteArray("data", data);
-        root.putBoolean("givenStartItem", givenStartItem);
 
         output.store(root);
     }
@@ -107,8 +103,6 @@ public class NestleData implements ValueIOSerializable {
                     this.values.clear();
                     this.values.putAll(nestlePartData.values);
                 });
-        input.read("givenStartItem", ExtraCodecs.NBT)
-                .flatMap(Tag::asBoolean)
-                .ifPresent(aBoolean -> givenStartItem = aBoolean);
+
     }
 }

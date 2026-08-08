@@ -168,12 +168,6 @@ public final class Nestle {
     public void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer sp) {
             PacketDistributor.sendToPlayer(sp, new SyncNestleDataPacket(sp.getData(NestleData.ATTACHMENT_TYPE)));
-
-            var nestleData = sp.getData(NestleData.ATTACHMENT_TYPE);
-            if (!nestleData.givenStartItem) {
-                nestleData.givenStartItem = true;
-                sp.getInventory().add(new ItemStack(ModItems.NESTLE_COMPASS.value(), 1));
-            }
         }
     }
 
