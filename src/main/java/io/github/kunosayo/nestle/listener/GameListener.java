@@ -103,7 +103,7 @@ public class GameListener {
                     .filter(livingEntity -> {
                         final boolean hasDesire = livingEntity.hasEffect(ModEffects.DESIRE_NESTLE_EFFECT);
 
-                        if (livingEntity.isSpectator() || livingEntity.isInvulnerable() || livingEntity.isRemoved()) {
+                        if (livingEntity.isSpectator() || livingEntity.isInvulnerable() || livingEntity.isRemoved() || livingEntity.dead) {
                             return false;
                         }
                         if (livingEntity instanceof Player player) {
@@ -143,7 +143,7 @@ public class GameListener {
                 selfPlayer = theSelfPlayer;
                 var selfBound = NestleBoundItem.getPlayerActiveBounds(selfPlayer);
                 for (ServerPlayer otherPlayer : tsl.getServer().getPlayerList().getPlayers()) {
-                    if (otherPlayer.isCreative() || otherPlayer.isSpectator() || otherPlayer.isInvulnerable() || otherPlayer.isRemoved()) {
+                    if (otherPlayer.isCreative() || otherPlayer.isSpectator() || otherPlayer.isInvulnerable() || otherPlayer.isRemoved() || otherPlayer.dead) {
                         continue;
                     }
                     if (otherEntityToGetDamage.contains(otherPlayer)) {
