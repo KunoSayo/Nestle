@@ -39,7 +39,7 @@ public class NestleConfig {
                 .define("nestle_free_require", 720000);
         // about half hour when 5m
         damagePlayerValueReduce = builder.comment("The nestle value to minus if damage player and the value to add if nestle player")
-                .define("damage_apportion_require", 360000);
+                .define("damage_player_value_reduce", 360000);
         nestleRadius = builder.comment("The radius to nestle")
                 .define("nestle_radius", 5);
         nestleValues = builder.comment("The nestle value get if in the distance\nFormat: distance:nestle_value")

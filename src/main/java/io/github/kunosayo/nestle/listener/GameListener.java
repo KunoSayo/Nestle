@@ -212,8 +212,8 @@ public class GameListener {
     public static void onUseItem(PlayerInteractEvent.EntityInteractSpecific event) {
         var player = event.getEntity();
 
-        if (ModItems.NESTLE_LEAD.is(event.getItemStack().typeHolder())) {
-            if (NestleConfig.NESTLE_CONFIG.getLeft().nestleLeadAvoidEntitiesSet.contains(event.getEntity().getType())) {
+        if (event.getItemStack().is(ModItems.NESTLE_LEAD)) {
+            if (NestleConfig.NESTLE_CONFIG.getLeft().nestleLeadAvoidEntitiesSet.contains(event.getTarget().getType())) {
                 return;
             }
             var entity = event.getTarget();
